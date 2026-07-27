@@ -19,6 +19,7 @@ public class SuperAdmin extends Role {
         super(workArea);
     }
     
+    // METHODS
     @Override
     public void loadWorkArea() {
         // TODO

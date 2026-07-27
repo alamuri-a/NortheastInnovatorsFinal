@@ -4,12 +4,17 @@
  */
 package UserInterface;
 
+import Business.Ecosystem.Ecosystem;
+
 /**
  *
  * @author Ajay Alamuri
  */
 public class MainJFrame extends javax.swing.JFrame {
 
+    // ATTRIBUTES
+    Ecosystem system;
+    
     /**
      * Creates new form MainJFrame
      */
@@ -26,21 +31,57 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        homeSplitPane = new javax.swing.JSplitPane();
+        controlPanel = new javax.swing.JPanel();
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JTextField();
+        btnLogin = new javax.swing.JButton();
+        lblEmployees = new javax.swing.JLabel();
+        workAreaPanel = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        homeSplitPane.setDividerLocation(150);
+
+        controlPanel.setBackground(new java.awt.Color(153, 255, 255));
+        controlPanel.setMinimumSize(new java.awt.Dimension(100, 600));
+        controlPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblUsername.setText("Username:");
+        controlPanel.add(lblUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 110, 24));
+        controlPanel.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 110, -1));
+
+        lblPassword.setText("Password:");
+        controlPanel.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 110, 24));
+        controlPanel.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 110, -1));
+
+        btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+        controlPanel.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 90, -1));
+
+        lblEmployees.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblEmployees.setText("Employees");
+        controlPanel.add(lblEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 90, 40));
+
+        homeSplitPane.setLeftComponent(controlPanel);
+
+        workAreaPanel.setLayout(new java.awt.CardLayout());
+        homeSplitPane.setRightComponent(workAreaPanel);
+
+        getContentPane().add(homeSplitPane, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +119,14 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JPanel controlPanel;
+    private javax.swing.JSplitPane homeSplitPane;
+    private javax.swing.JLabel lblEmployees;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblUsername;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUsername;
+    private javax.swing.JPanel workAreaPanel;
     // End of variables declaration//GEN-END:variables
 }
