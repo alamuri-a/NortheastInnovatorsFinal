@@ -6,6 +6,7 @@ package Business.Roles;
 
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.CustomerServiceRepresentativeWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,11 +26,6 @@ public class CustomerServiceRepresentative extends Role {
     @Override
     public String toString() {
         return "Customer Service Representative";
-    }
-    
-    @Override
-    public void loadWorkArea() {
-        // TODO
     }
 
     public WorkTask getCurrentTask() {

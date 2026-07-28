@@ -4,7 +4,12 @@
  */
 package UserInterface;
 
+import Business.ConfigureABusiness;
 import Business.Ecosystem.Ecosystem;
+import Business.Ecosystem.Network;
+import Business.Enterprise.Enterprise;
+import Business.Organization.Organization;
+import Business.User.User;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,6 +25,7 @@ public class MainJFrame extends javax.swing.JFrame {
      * Creates new form MainJFrame
      */
     public MainJFrame() {
+        this.system = ConfigureABusiness.initialize();
         initComponents();
     }
 
@@ -43,6 +49,8 @@ public class MainJFrame extends javax.swing.JFrame {
         workAreaPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(400, 300));
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         homeSplitPane.setDividerLocation(150);
 
@@ -87,8 +95,41 @@ public class MainJFrame extends javax.swing.JFrame {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         if (username.isBlank() || password.isBlank()) {
-            JOptionPane.showMessageDialog(null, "Username/Password cannot be blank.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Username/Password cannot be blank.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+        
+        // Authentication and login
+        User loggedIn = null;
+        for (User u : system.getSuperAdmins().getUsers()) {
+            if (u.authenticate(username, password)) loggedIn = u;
+            if (loggedIn != null) break;
+        }
+        for (Network net : system.getNetworks()) {
+            for (Enterprise ent : net.getEnterprises().getEnterprises()) {
+                for (User u : ent.getAdmins().getUsers().getUsers()) {
+                    if (u.authenticate(username, password)) loggedIn = u;
+                    if (loggedIn != null) break;
+                }
+                for (Organization org : ent.getOrganizations().getOrganizations()) {
+                    for (User u : org.getUsers().getUsers()) {
+                        if (u.authenticate(username, password)) loggedIn = u;
+                        if (loggedIn != null) break;
+                    }
+                    if (loggedIn != null) break;
+                }
+                if (loggedIn != null) break;
+            }
+            if (loggedIn != null) break;
+        }
+        
+        if (loggedIn == null) {
+            JOptionPane.showMessageDialog(this, "Failed to login with provided Username and Password. Please check and try again.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        loggedIn.getRole().loadWorkArea(workAreaPanel);
+        JOptionPane.showMessageDialog(this, "Successfully logged in!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**

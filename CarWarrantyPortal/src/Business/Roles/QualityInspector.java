@@ -6,6 +6,7 @@ package Business.Roles;
 
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.QualityInspectorWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,11 +26,6 @@ public class QualityInspector extends Role {
     @Override
     public String toString() {
         return "Quality Inspector";
-    }
-    
-    @Override
-    public void loadWorkArea() {
-        // TODO
     }
 
     public WorkTask getCurrentTask() {
