@@ -4,6 +4,7 @@
  */
 package Business.Ecosystem;
 
+import Business.Enterprise.Enterprise;
 import java.util.ArrayList;
 
 /**
@@ -27,22 +28,26 @@ public class Ecosystem {
     }
     
     // METHODS
-    public String GetName() { return this.name; }
+    public String getName() { return this.name; }
     
-    public Network FindNetwork(int nID) {
+    public ArrayList<Network> getNetworks() { return networks; }
+
+    public void setNetworks(ArrayList<Network> networks) { this.networks = networks; }
+    
+    public Network findNetwork(int nID) {
         for (Network net : networks) {
-            if (net.GetID() == nID) return net;
+            if (net.getID() == nID) return net;
         }
         return null;
     }
     
-    public Network CreateNetwork(String nName) {
+    public Network createNetwork(String nName) {
         Network newNetwork = new Network(nName);
         this.networks.add(newNetwork);
         return newNetwork;
     }
     
-    public void DeleteNetwork(Network net) {
+    public void deleteNetwork(Network net) {
         this.networks.remove(net);
     }
     

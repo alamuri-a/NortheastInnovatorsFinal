@@ -2,29 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Business.WorkTaskQueue;
+package Business.Roles;
 
-import Business.User.User;
-import Business.Vehicle.Part;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Ajay Alamuri
  */
-public class InspectPartTask extends WorkTask {
+public class SuperAdmin extends Role {
     
     // ATTRIBUTES
-    Part part;
     
     // CONSTRUCTORS
-    public InspectPartTask(User assigner, Part pt) {
-        super(assigner);
-        this.part = pt;
+    public SuperAdmin(JPanel workArea) {
+        super(workArea);
     }
     
-    // METHODS
-    public boolean deny() {
+    @Override
+    public void loadWorkArea() {
         // TODO
-        return false;
     }
 }

@@ -21,33 +21,41 @@ public class EnterpriseDirectory {
     }
     
     // METHODS
-    public Enterprise FindEnterprise(int eID) {
+    public Enterprise findEnterprise(int eID) {
         for (Enterprise ent : enterprises) {
-            if (ent.GetID() == eID) return ent;
+            if (ent.getID() == eID) return ent;
         }
         return null;
     }
     
-    public ManufacturerEnterprise CreateManufacturerEnterprise(String mfeName) {
+    public ManufacturerEnterprise createManufacturerEnterprise(String mfeName) {
         ManufacturerEnterprise newEnterprise = new ManufacturerEnterprise(mfeName);
         this.enterprises.add(newEnterprise);
         return newEnterprise;
     }
     
-    public SupplierEnterprise CreateSupplierEnterprise(String seName) {
+    public SupplierEnterprise createSupplierEnterprise(String seName) {
         SupplierEnterprise newEnterprise = new SupplierEnterprise(seName);
         this.enterprises.add(newEnterprise);
         return newEnterprise;
     }
     
-    public DealershipEnterprise CreateDealershipEnterprise(String deName) {
+    public DealershipEnterprise createDealershipEnterprise(String deName) {
         DealershipEnterprise newEnterprise = new DealershipEnterprise(deName);
         this.enterprises.add(newEnterprise);
         return newEnterprise;
     }
     
-    public void RemoveEnterprise(Enterprise e) {
+    public void removeEnterprise(Enterprise e) {
         this.enterprises.remove(e);
+    }
+
+    public ArrayList<Enterprise> getEnterprises() {
+        return enterprises;
+    }
+
+    public void setEnterprises(ArrayList<Enterprise> enterprises) {
+        this.enterprises = enterprises;
     }
     
 }

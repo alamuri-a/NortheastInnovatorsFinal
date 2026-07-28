@@ -27,9 +27,25 @@ public class Network {
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
     
-    public String GetName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
     
-    public void SetName(String n) { this.name = n; }
+    public void setName(String n) {
+        this.name = n;
+    }
+
+    public EnterpriseDirectory getEnterprises() {
+        return enterprises;
+    }
+
+    public void setEnterprises(EnterpriseDirectory enterprises) {
+        this.enterprises = enterprises;
+    }
+    
+    
 }

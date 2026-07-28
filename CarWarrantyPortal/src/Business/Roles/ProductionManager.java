@@ -28,7 +28,15 @@ public class ProductionManager extends Role {
     }
     
     @Override
-    public void LoadWorkArea() {
+    public void loadWorkArea() {
         // TODO
+    }
+
+    public WorkTask getCurrentTask() {
+        return currentTask;
+    }
+
+    public void setCurrentTask(WorkTask currentTask) {
+        this.currentTask = currentTask;
     }
 }

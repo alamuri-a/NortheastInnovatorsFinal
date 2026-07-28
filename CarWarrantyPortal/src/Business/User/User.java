@@ -32,19 +32,39 @@ public class User {
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
     
-    public Employee GetEmployee() { return this.employee; }
+    public Employee getEmployee() {
+        return this.employee;
+    }
     
-    public String GetUsername() { return this.username; }
+    public String getUsername() {
+        return this.username;
+    }
     
-    public void SetUsername(String n) { this.username = n; }
+    public void setUsername(String n) {
+        this.username = n;
+    }
     
-    public String GetPassword() { return this.password; }
+    public String getPassword() {
+        return this.password;
+    }
     
-    public void SetPassword(String p) { this.password = p; }
+    public void setPassword(String p) {
+        this.password = p;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
     
-    public boolean Authenticate(String usernameAttempt, String passwordAttempt) {
+    public boolean authenticate(String usernameAttempt, String passwordAttempt) {
         return (username.equals(usernameAttempt) && password.equals(passwordAttempt));
     }
 }

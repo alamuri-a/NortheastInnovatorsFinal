@@ -10,16 +10,18 @@ import javax.swing.JPanel;
  *
  * @author Ajay Alamuri
  */
-public abstract class Role {
+public class Admin extends Role {
     
     // ATTRIBUTES
-    JPanel workArea;
     
     // CONSTRUCTORS
-    public Role(JPanel area) {
-        this.workArea = area;
+    public Admin(JPanel workArea) {
+        super(workArea);
     }
     
     // METHODS
-    public abstract void loadWorkArea();
+    @Override
+    public void loadWorkArea() {
+        //
+    }
 }

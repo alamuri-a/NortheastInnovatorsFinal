@@ -19,7 +19,7 @@ public class Person {
     }
     
     // METHODS
-    public String GetName() { return this.name; }
+    public String getName() { return this.name; }
     
-    public void SetName(String n) { this.name = n; }
+    public void setName(String n) { this.name = n; }
 }

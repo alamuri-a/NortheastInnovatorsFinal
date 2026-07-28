@@ -30,7 +30,43 @@ public class Automobile {
     }
     
     // METHODS
-    public int GetVIN() { return this.VIN; }
+    public int getVIN() {
+        return this.VIN;
+    }
     
-    public Person GetOwner() { return this.owner; }
+    public Person getOwner() {
+        return this.owner;
+    }
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public ArrayList<Part> getParts() {
+        return parts;
+    }
+
+    public void setParts(ArrayList<Part> parts) {
+        this.parts = parts;
+    }
+    
+    public ArrayList<Part> Diagnose() {
+        ArrayList<Part> brokenParts = new ArrayList();
+        for (Part p : parts) {
+            if (!p.isWorking()) brokenParts.add(p);
+        }
+        return brokenParts;
+    }
 }

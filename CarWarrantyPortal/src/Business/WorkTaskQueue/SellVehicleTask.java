@@ -24,7 +24,7 @@ public class SellVehicleTask extends WorkTask {
     }
     
     // METHODS
-    public boolean OrderBuild() {
+    public boolean orderBuild() {
         // TODO
         return false;
     }

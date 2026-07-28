@@ -21,20 +21,30 @@ public class EmployeeDirectory {
     }
     
     // METHODS
-    public Employee FindEmployee(int eID) {
+    public Employee findEmployee(int eID) {
         for (Employee emp : employees) {
-            if (emp.GetID() == eID) return emp;
+            if (emp.getID() == eID) return emp;
         }
         return null;
     }
     
-    public Employee CreateEmployee(Person p) {
+    public Employee createEmployee(Person p) {
         Employee newEmployee = new Employee(p);
         this.employees.add(newEmployee);
         return newEmployee;
     }
     
-    public void RemoveEmployee(Employee e) {
+    public void removeEmployee(Employee e) {
         this.employees.remove(e);
     }
+
+    public ArrayList<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(ArrayList<Employee> employees) {
+        this.employees = employees;
+    }
+    
+    
 }
