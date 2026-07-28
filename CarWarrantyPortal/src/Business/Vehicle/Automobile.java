@@ -62,6 +62,11 @@ public class Automobile {
         this.parts = parts;
     }
     
+    /**
+    * Remove specified enterprise from list of enterprise
+    * 
+    * @return array list of @{link Part} from automobile which are broken
+    */
     public ArrayList<Part> Diagnose() {
         ArrayList<Part> brokenParts = new ArrayList();
         for (Part p : parts) {

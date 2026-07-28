@@ -22,6 +22,11 @@ public class ServiceTask extends WorkTask {
     }
     
     // METHODS
+    /**
+     * Request specified part from supplier
+     * 
+     * @return True if back order is complete, False if still waiting
+     */
     public boolean BackOrder() {
         // TODO
         return false;

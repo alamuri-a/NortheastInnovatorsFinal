@@ -23,6 +23,11 @@ public class InspectPartTask extends WorkTask {
     }
     
     // METHODS
+    /**
+     * Deny shipping of part due to defects
+     * 
+     * @return True if part is not working, False if part is working
+     */
     public boolean deny() {
         // TODO
         return false;

@@ -21,5 +21,8 @@ public abstract class Role {
     }
     
     // METHODS
+    /**
+    * Loads role work area into UI
+    */
     public abstract void loadWorkArea();
 }

@@ -24,6 +24,11 @@ public class SellVehicleTask extends WorkTask {
     }
     
     // METHODS
+    /**
+     * Request production to make specified car
+     * 
+     * @return True if build is complete, False if still waiting
+     */
     public boolean orderBuild() {
         // TODO
         return false;

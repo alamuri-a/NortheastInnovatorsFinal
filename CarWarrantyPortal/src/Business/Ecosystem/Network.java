@@ -46,6 +46,4 @@ public class Network {
     public void setEnterprises(EnterpriseDirectory enterprises) {
         this.enterprises = enterprises;
     }
-    
-    
 }

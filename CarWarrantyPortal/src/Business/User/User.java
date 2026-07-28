@@ -64,6 +64,14 @@ public class User {
         this.role = role;
     }
     
+    /**
+    * Checks the provided username and password against stored credential and returns whether matching or not
+    * 
+    * @param usernameAttempt String with username to check
+    * @param passwordAttempt String with password to check
+    * 
+    * @return True if username and password are correct, False otherwise
+    */
     public boolean authenticate(String usernameAttempt, String passwordAttempt) {
         return (username.equals(usernameAttempt) && password.equals(passwordAttempt));
     }

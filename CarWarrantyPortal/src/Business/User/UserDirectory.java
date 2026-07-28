@@ -23,6 +23,13 @@ public class UserDirectory {
     }
     
     // METHODS
+    /**
+    * Gets user with matching ID or returns NULL if no user found with matching ID
+    * 
+    * @param uID the user ID
+    * 
+    * @return {@link User} or NULL
+    */
     public User findUser(int uID) {
         for (User usr : users) {
             if (usr.getID() == uID) return usr;
@@ -30,12 +37,27 @@ public class UserDirectory {
         return null;
     }
     
+    /**
+    * Create a new User, add to internal list of users, then return user for modification
+    * 
+    * @param emp Employee object that user account is attached to
+    * @param username String username for account login
+    * @param password String password for account login
+    * @param role Role handling authorization for user account
+    * 
+    * @return {@link User} the new User object created
+    */
     public User createUser(Employee emp, String username, String password, Role role) {
         User newUser = new User(emp, username, password, role);
         this.users.add(newUser);
         return newUser;
     }
     
+    /**
+    * Remove specified user from list of user
+    * 
+    * @param u reference to the user to be deleted
+    */
     public void removeUser(User u) {
         this.users.remove(u);
     }

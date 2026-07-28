@@ -21,6 +21,13 @@ public class EmployeeDirectory {
     }
     
     // METHODS
+    /**
+    * Gets employee with matching ID or returns NULL if no employee found with matching ID
+    * 
+    * @param eID the employee ID
+    * 
+    * @return {@link Employee} or NULL
+    */
     public Employee findEmployee(int eID) {
         for (Employee emp : employees) {
             if (emp.getID() == eID) return emp;
@@ -28,12 +35,24 @@ public class EmployeeDirectory {
         return null;
     }
     
+    /**
+    * Create a new Employee, add to internal list of employees, then return employee for modification
+    * 
+    * @param p Person reference Employee object is created from
+    * 
+    * @return {@link Employee} the new Employee object created
+    */
     public Employee createEmployee(Person p) {
         Employee newEmployee = new Employee(p);
         this.employees.add(newEmployee);
         return newEmployee;
     }
     
+    /**
+    * Remove specified employee from list of employees
+    * 
+    * @param e reference to the employee to be deleted
+    */
     public void removeEmployee(Employee e) {
         this.employees.remove(e);
     }
