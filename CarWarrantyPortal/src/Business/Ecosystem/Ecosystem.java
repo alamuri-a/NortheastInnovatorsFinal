@@ -4,6 +4,7 @@
  */
 package Business.Ecosystem;
 
+import Business.User.UserDirectory;
 import java.util.ArrayList;
 
 /**
@@ -15,6 +16,7 @@ public class Ecosystem {
     // ATTRIBUTES
     String name;
     ArrayList<Network> networks;
+    UserDirectory superAdmins;
     // Database masterDB
     
     // CONSTRUCTORS
@@ -24,6 +26,7 @@ public class Ecosystem {
         // DB initalization
         
         this.networks = new ArrayList(); // If networks in DB, use those
+        this.superAdmins = new UserDirectory();
     }
     
     // METHODS
@@ -37,6 +40,14 @@ public class Ecosystem {
     
     public void setNetworks(ArrayList<Network> networks) {
         this.networks = networks;
+    }
+
+    public UserDirectory getSuperAdmins() {
+        return superAdmins;
+    }
+
+    public void setSuperAdmins(UserDirectory superAdmins) {
+        this.superAdmins = superAdmins;
     }
     
     /**

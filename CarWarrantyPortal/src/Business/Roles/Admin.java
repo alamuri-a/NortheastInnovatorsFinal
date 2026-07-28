@@ -4,6 +4,7 @@
  */
 package Business.Roles;
 
+import UserInterface.WorkAreas.AdminWorkAreaJPanel;
 import javax.swing.JPanel;
 
 /**
@@ -15,13 +16,13 @@ public class Admin extends Role {
     // ATTRIBUTES
     
     // CONSTRUCTORS
-    public Admin(JPanel workArea) {
-        super(workArea);
+    public Admin() {
+        super(new AdminWorkAreaJPanel());
     }
     
     // METHODS
     @Override
-    public void loadWorkArea() {
-        //
+    public String toString() {
+        return "Admin";
     }
 }

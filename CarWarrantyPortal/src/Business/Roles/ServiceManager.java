@@ -6,6 +6,7 @@ package Business.Roles;
 
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.ServiceManagerWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -27,11 +28,6 @@ public class ServiceManager extends Role {
         return "Service Manager";
     }
     
-    @Override
-    public void loadWorkArea() {
-        // TODO
-    }
-
     public WorkTask getCurrentTask() {
         return currentTask;
     }

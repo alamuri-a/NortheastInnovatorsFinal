@@ -6,6 +6,7 @@ package Business.Roles;
 
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.LogisticsCoordinatorWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,11 +26,6 @@ public class LogisticsCoordinator extends Role {
     @Override
     public String toString() {
         return "Logistics Coordinator";
-    }
-    
-    @Override
-    public void loadWorkArea() {
-        // TODO
     }
 
     public WorkTask getCurrentTask() {

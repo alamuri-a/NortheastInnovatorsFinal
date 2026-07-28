@@ -4,6 +4,7 @@
  */
 package Business.Roles;
 
+import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
@@ -23,6 +24,12 @@ public abstract class Role {
     // METHODS
     /**
     * Loads role work area into UI
+    * 
+    * @param workAreaContainer container that holds the card layout for workflow
     */
-    public abstract void loadWorkArea();
+    public void loadWorkArea(JPanel workAreaContainer) {
+        workAreaContainer.removeAll();
+        workAreaContainer.add(workArea, "WorkAreaLandingPage");
+        ((CardLayout) workAreaContainer.getLayout()).next(workAreaContainer);
+    }
 }

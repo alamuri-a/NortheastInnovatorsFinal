@@ -6,6 +6,7 @@ package Business.Roles;
 
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.ServiceTechnicianWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,11 +26,6 @@ public class ServiceTechnician extends Role {
     @Override
     public String toString() {
         return "Service Technician";
-    }
-    
-    @Override
-    public void loadWorkArea() {
-        // TODO
     }
 
     public WorkTask getCurrentTask() {
