@@ -23,5 +23,13 @@ public class Employee {
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() { return this.id; }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 }

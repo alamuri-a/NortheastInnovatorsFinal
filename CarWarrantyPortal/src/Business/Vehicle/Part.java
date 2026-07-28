@@ -19,4 +19,17 @@ public class Part {
         this.id = ID;
         this.working = Math.random() < 0.8;
     }
+    
+    // METHODS
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isWorking() {
+        return working;
+    }
 }

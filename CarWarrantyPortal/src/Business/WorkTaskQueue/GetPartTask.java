@@ -23,7 +23,14 @@ public class GetPartTask extends WorkTask {
     }
     
     // METHODS
-    public boolean BackOrder() {
+    /**
+     * Request production to make specified part
+     * 
+     * @param part Part needing to be back ordered
+     * 
+     * @return True if back order is complete, False if still waiting
+     */
+    public boolean BackOrder(Part part) {
         // TODO
         return false;
     }

@@ -21,33 +21,74 @@ public class EnterpriseDirectory {
     }
     
     // METHODS
-    public Enterprise FindEnterprise(int eID) {
+    /**
+    * Gets enterprise with matching ID or returns NULL if no enterprise found with matching ID
+    * 
+    * @param eID the enterprise ID
+    * 
+    * @return {@link Enterprise} or NULL
+    */
+    public Enterprise findEnterprise(int eID) {
         for (Enterprise ent : enterprises) {
-            if (ent.GetID() == eID) return ent;
+            if (ent.getID() == eID) return ent;
         }
         return null;
     }
     
-    public ManufacturerEnterprise CreateManufacturerEnterprise(String mfeName) {
+    /**
+    * Create a new ManufacturerEnterprise, add to internal list of enterprises, then return enterprise for modification
+    * 
+    * @param mfeName the new manufacturer's name
+    * 
+    * @return {@link ManufacturerEnterprise} the new ManufacturerEnterprise object created
+    */
+    public ManufacturerEnterprise createManufacturerEnterprise(String mfeName) {
         ManufacturerEnterprise newEnterprise = new ManufacturerEnterprise(mfeName);
         this.enterprises.add(newEnterprise);
         return newEnterprise;
     }
     
-    public SupplierEnterprise CreateSupplierEnterprise(String seName) {
+    /**
+    * Create a new SupplierEnterprise, add to internal list of enterprises, then return enterprise for modification
+    * 
+    * @param seName the new manufacturer's name
+    * 
+    * @return {@link SupplierEnterprise} the new SupplierEnterprise object created
+    */
+    public SupplierEnterprise createSupplierEnterprise(String seName) {
         SupplierEnterprise newEnterprise = new SupplierEnterprise(seName);
         this.enterprises.add(newEnterprise);
         return newEnterprise;
     }
     
-    public DealershipEnterprise CreateDealershipEnterprise(String deName) {
+    /**
+    * Create a new DealershipEnterprise, add to internal list of enterprises, then return enterprise for modification
+    * 
+    * @param deName the new manufacturer's name
+    * 
+    * @return {@link DealershipEnterprise} the new DealershipEnterprise object created
+    */
+    public DealershipEnterprise createDealershipEnterprise(String deName) {
         DealershipEnterprise newEnterprise = new DealershipEnterprise(deName);
         this.enterprises.add(newEnterprise);
         return newEnterprise;
     }
     
-    public void RemoveEnterprise(Enterprise e) {
+    /**
+    * Remove specified enterprise from list of enterprise
+    * 
+    * @param e reference to the enterprise to be deleted
+    */
+    public void removeEnterprise(Enterprise e) {
         this.enterprises.remove(e);
+    }
+
+    public ArrayList<Enterprise> getEnterprises() {
+        return enterprises;
+    }
+
+    public void setEnterprises(ArrayList<Enterprise> enterprises) {
+        this.enterprises = enterprises;
     }
     
 }

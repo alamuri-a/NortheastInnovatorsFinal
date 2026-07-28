@@ -33,14 +33,24 @@ public class WorkQueue {
     }
     
     // METHODS
-    public WorkTask GetTask(int tID) {
+    public WorkTask getTask(int tID) {
         for (WorkTask task : tasks) {
             if (task.GetID() == tID) return task;
         }
         return null;
     }
     
-    public BuildPartTask CreateBuildPartTask(User assigner, Part part) throws Exception {
+    /**
+    * Create a new BuildPartTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param part the part needing to be built
+    * 
+    * @return {@link BuildPartTask} the new BuildPartTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Production organization
+    */
+    public BuildPartTask createBuildPartTask(User assigner, Part part) throws Exception {
         if (this.organization instanceof ProductionOrganization) {
             BuildPartTask newTask = new BuildPartTask(assigner, part);
             this.tasks.add(newTask);
@@ -49,7 +59,18 @@ public class WorkQueue {
         throw new Exception("Build Part task can only be created for Production organizations.");
     }
     
-    public BuildCarTask CreateBuildCarTask(User assigner, String make, String model) throws Exception {
+    /**
+    * Create a new BuildCarTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param make the manufacturer of new vehicle
+    * @param model the specific model of new vehicle
+    * 
+    * @return {@link BuildCarTask} the new BuildCarTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Production organization
+    */
+    public BuildCarTask createBuildCarTask(User assigner, String make, String model) throws Exception {
         if (this.organization instanceof ProductionOrganization) {
             BuildCarTask newTask = new BuildCarTask(assigner, make, model);
             this.tasks.add(newTask);
@@ -58,7 +79,17 @@ public class WorkQueue {
         throw new Exception("Build Car task can only be created for Production organizations.");
     }
     
-    public InspectPartTask CreateInspectPartTask(User assigner, Part part) throws Exception {
+    /**
+    * Create a new InspectPartTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param part the part being inspected
+    * 
+    * @return {@link InspectPartTask} the new InspectPartTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than QA organization
+    */
+    public InspectPartTask createInspectPartTask(User assigner, Part part) throws Exception {
         if (this.organization instanceof QualityAssuranceOrganization) {
             InspectPartTask newTask = new InspectPartTask(assigner, part);
             this.tasks.add(newTask);
@@ -67,7 +98,17 @@ public class WorkQueue {
         throw new Exception("Inspect Part task can only be created for QA organizations.");
     }
     
-    public IssueRecallTask CreateIssueRecallTask(User assigner, Part part) throws Exception {
+    /**
+    * Create a new IssueRecallTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param part the part being recalled
+    * 
+    * @return {@link IssueRecallTask} the new IssueRecallTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than QA organization
+    */
+    public IssueRecallTask createIssueRecallTask(User assigner, Part part) throws Exception {
         if (this.organization instanceof QualityAssuranceOrganization) {
             IssueRecallTask newTask = new IssueRecallTask(assigner, part);
             this.tasks.add(newTask);
@@ -76,7 +117,17 @@ public class WorkQueue {
         throw new Exception("Issue Recall task can only be created for QA organizations.");
     }
     
-    public ProcessShipmentTask CreateProcessShipmentTask(User assigner, Part part) throws Exception {
+    /**
+    * Create a new ProcessShipmentTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param part the part coming in
+    * 
+    * @return {@link ProcessShipmentTask} the new ProcessShipmentTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Logistics organization
+    */
+    public ProcessShipmentTask createProcessShipmentTask(User assigner, Part part) throws Exception {
         if (this.organization instanceof LogisticsOrganization) {
             ProcessShipmentTask newTask = new ProcessShipmentTask(assigner, part);
             this.tasks.add(newTask);
@@ -85,7 +136,18 @@ public class WorkQueue {
         throw new Exception("Process Shipment task can only be created for Logistics organizations.");
     }
     
-    public SendShipmentTask CreateSendShipmentTask(User assigner, DealershipEnterprise targetEnterprise, Part part) throws Exception {
+    /**
+    * Create a new SendShipmentTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param targetEnterprise DealershipEnterprise part is being sent to
+    * @param part the part being sent out
+    * 
+    * @return {@link SendShipmentTask} the new SendShipmentTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Logistics organization
+    */
+    public SendShipmentTask createSendShipmentTask(User assigner, DealershipEnterprise targetEnterprise, Part part) throws Exception {
         if (this.organization instanceof LogisticsOrganization) {
             SendShipmentTask newTask = new SendShipmentTask(assigner, targetEnterprise, part);
             this.tasks.add(newTask);
@@ -94,7 +156,17 @@ public class WorkQueue {
         throw new Exception("Send Shipment task can only be created for Logistics organizations.");
     }
     
-    public GetPartTask CreateGetPartTask(User assigner, Part part) throws Exception {
+    /**
+    * Create a new GetPartTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param part the part to be fetched
+    * 
+    * @return {@link GetPartTask} the new GetPartTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Warehousing organization
+    */
+    public GetPartTask createGetPartTask(User assigner, Part part) throws Exception {
         if (this.organization instanceof WarehousingOrganization) {
             GetPartTask newTask = new GetPartTask(assigner, part);
             this.tasks.add(newTask);
@@ -103,7 +175,17 @@ public class WorkQueue {
         throw new Exception("Get Part task can only be created for Warehousing organizations.");
     }
     
-    public ServiceTask CreateServiceTask(User assigner, int vin) throws Exception {
+    /**
+    * Create a new ServiceTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param vin ID of the car being serviced
+    * 
+    * @return {@link ServiceTask} the new ServiceTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Service organization
+    */
+    public ServiceTask createServiceTask(User assigner, int vin) throws Exception {
         if (this.organization instanceof ServiceOrganization) {
             ServiceTask newTask = new ServiceTask(assigner, vin);
             this.tasks.add(newTask);
@@ -112,7 +194,17 @@ public class WorkQueue {
         throw new Exception("Service task can only be created for Service organizations.");
     }
     
-    public BackOrderTask CreateBackOrderTask(User assigner, Part part) throws Exception {
+    /**
+    * Create a new BackOrderTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param part the part to order
+    * 
+    * @return {@link BackOrderTask} the new BackOrderTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Service organization
+    */
+    public BackOrderTask createBackOrderTask(User assigner, Part part) throws Exception {
         if (this.organization instanceof ServiceOrganization) {
             BackOrderTask newTask = new BackOrderTask(assigner, part);
             this.tasks.add(newTask);
@@ -121,7 +213,17 @@ public class WorkQueue {
         throw new Exception("Back Order task can only be created for Service organizations.");
     }
     
-    public TradeInTask CreateTradeInTask(User assigner, int vin) throws Exception {
+    /**
+    * Create a new TradeInTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param vin ID of the car being traded in
+    * 
+    * @return {@link TradeInTask} the new TradeInTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Service organization
+    */
+    public TradeInTask createTradeInTask(User assigner, int vin) throws Exception {
         if (this.organization instanceof ServiceOrganization) {
             TradeInTask newTask = new TradeInTask(assigner, vin);
             this.tasks.add(newTask);
@@ -130,7 +232,17 @@ public class WorkQueue {
         throw new Exception("Trade In task can only be created for Service organizations.");
     }
     
-    public ServiceAppointmentTask CreateServiceAppointmentTask(User assigner, int vin) throws Exception {
+    /**
+    * Create a new ServiceAppointmentTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param vin ID of the car needing service
+    * 
+    * @return {@link ServiceAppointmentTask} the new ServiceAppointmentTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Sales organization
+    */
+    public ServiceAppointmentTask createServiceAppointmentTask(User assigner, int vin) throws Exception {
         if (this.organization instanceof SalesOrganization) {
             ServiceAppointmentTask newTask = new ServiceAppointmentTask(assigner, vin);
             this.tasks.add(newTask);
@@ -139,9 +251,19 @@ public class WorkQueue {
         throw new Exception("Service Appointment task can only be created for Sales organizations.");
     }
     
-    public SellVehicleTask CreateSellVehicleTask(User assigner, String model) throws Exception {
+    /**
+    * Create a new SellVehicleTask, add to internal list of tasks, then return task for modification
+    * 
+    * @param assigner the user creating request
+    * @param model model of the car being sold
+    * 
+    * @return {@link SellVehicleTask} the new SellVehicleTask object created
+    * 
+    * @throws Exception If attempted to be instantiated for organization other than Sales organization
+    */
+    public SellVehicleTask createSellVehicleTask(User assigner, String model) throws Exception {
         if (this.organization instanceof SalesOrganization) {
-            SellVehicleTask newTask = new SellVehicleTask(assigner, this.organization.GetCompany().GetName(), model);
+            SellVehicleTask newTask = new SellVehicleTask(assigner, this.organization.getCompany().getName(), model);
             this.tasks.add(newTask);
             return newTask;
         }
