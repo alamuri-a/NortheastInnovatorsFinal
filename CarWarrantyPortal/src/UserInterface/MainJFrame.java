@@ -5,6 +5,7 @@
 package UserInterface;
 
 import Business.Ecosystem.Ecosystem;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -80,7 +81,14 @@ public class MainJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO add your handling code here:
+        // Authenticate user, then load work area
+        
+        // Field validation for username and password
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        if (username.isBlank() || password.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Username/Password cannot be blank.", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
