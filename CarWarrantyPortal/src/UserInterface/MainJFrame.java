@@ -4,16 +4,28 @@
  */
 package UserInterface;
 
+import Business.ConfigureABusiness;
+import Business.Ecosystem.Ecosystem;
+import Business.Ecosystem.Network;
+import Business.Enterprise.Enterprise;
+import Business.Organization.Organization;
+import Business.User.User;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Ajay Alamuri
  */
 public class MainJFrame extends javax.swing.JFrame {
 
+    // ATTRIBUTES
+    Ecosystem system;
+    
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
+        this.system = ConfigureABusiness.initialize();
         initComponents();
     }
 
@@ -26,21 +38,99 @@ public class MainJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        homeSplitPane = new javax.swing.JSplitPane();
+        controlPanel = new javax.swing.JPanel();
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JTextField();
+        btnLogin = new javax.swing.JButton();
+        lblEmployees = new javax.swing.JLabel();
+        workAreaPanel = new javax.swing.JPanel();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(400, 300));
+        setPreferredSize(new java.awt.Dimension(800, 600));
+
+        homeSplitPane.setDividerLocation(150);
+
+        controlPanel.setBackground(new java.awt.Color(153, 255, 255));
+        controlPanel.setMinimumSize(new java.awt.Dimension(100, 600));
+        controlPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblUsername.setText("Username:");
+        controlPanel.add(lblUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 110, 24));
+        controlPanel.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 110, -1));
+
+        lblPassword.setText("Password:");
+        controlPanel.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 110, 24));
+        controlPanel.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 110, -1));
+
+        btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+        controlPanel.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 90, -1));
+
+        lblEmployees.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblEmployees.setText("Employees");
+        controlPanel.add(lblEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 90, 40));
+
+        homeSplitPane.setLeftComponent(controlPanel);
+
+        workAreaPanel.setLayout(new java.awt.CardLayout());
+        homeSplitPane.setRightComponent(workAreaPanel);
+
+        getContentPane().add(homeSplitPane, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // Authenticate user, then load work area
+        
+        // Field validation for username and password
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        if (username.isBlank() || password.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Username/Password cannot be blank.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Authentication and login
+        User loggedIn = null;
+        for (User u : system.getSuperAdmins().getUsers()) {
+            if (u.authenticate(username, password)) loggedIn = u;
+            if (loggedIn != null) break;
+        }
+        for (Network net : system.getNetworks()) {
+            for (Enterprise ent : net.getEnterprises().getEnterprises()) {
+                for (User u : ent.getAdmins().getUsers().getUsers()) {
+                    if (u.authenticate(username, password)) loggedIn = u;
+                    if (loggedIn != null) break;
+                }
+                for (Organization org : ent.getOrganizations().getOrganizations()) {
+                    for (User u : org.getUsers().getUsers()) {
+                        if (u.authenticate(username, password)) loggedIn = u;
+                        if (loggedIn != null) break;
+                    }
+                    if (loggedIn != null) break;
+                }
+                if (loggedIn != null) break;
+            }
+            if (loggedIn != null) break;
+        }
+        
+        if (loggedIn == null) {
+            JOptionPane.showMessageDialog(this, "Failed to login with provided Username and Password. Please check and try again.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        loggedIn.getRole().loadWorkArea(workAreaPanel);
+        JOptionPane.showMessageDialog(this, "Successfully logged in!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +168,14 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JPanel controlPanel;
+    private javax.swing.JSplitPane homeSplitPane;
+    private javax.swing.JLabel lblEmployees;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblUsername;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUsername;
+    private javax.swing.JPanel workAreaPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -30,10 +30,34 @@ public abstract class Enterprise {
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
     
-    public String GetName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
     
-    public void SetName(String n) { this.name = n; }
+    public void setName(String n) {
+        this.name = n;
+    }
+
+    public OrganizationDirectory getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(OrganizationDirectory organizations) {
+        this.organizations = organizations;
+    }
+
+    public AdminOrganization getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(AdminOrganization admins) {
+        this.admins = admins;
+    }
+    
+    
     
 }

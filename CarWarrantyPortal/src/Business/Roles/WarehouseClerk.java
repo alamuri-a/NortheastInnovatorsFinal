@@ -6,6 +6,7 @@ package Business.Roles;
 
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.WarehouseClerkWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -26,9 +27,12 @@ public class WarehouseClerk extends Role {
     public String toString() {
         return "Customer Service Representative";
     }
-    
-    @Override
-    public void LoadWorkArea() {
-        // TODO
+
+    public WorkTask getCurrentTask() {
+        return currentTask;
+    }
+
+    public void setCurrentTask(WorkTask currentTask) {
+        this.currentTask = currentTask;
     }
 }

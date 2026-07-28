@@ -2,24 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Business.People;
+package Business.Roles;
+
+import UserInterface.WorkAreas.AdminWorkAreaJPanel;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Ajay Alamuri
  */
-public class Person {
+public class Admin extends Role {
     
     // ATTRIBUTES
-    String name;
     
     // CONSTRUCTORS
-    public Person(String n) {
-        this.name = n;
+    public Admin() {
+        super(new AdminWorkAreaJPanel());
     }
     
     // METHODS
-    public String getName() { return this.name; }
-    
-    public void setName(String n) { this.name = n; }
+    @Override
+    public String toString() {
+        return "Admin";
+    }
 }

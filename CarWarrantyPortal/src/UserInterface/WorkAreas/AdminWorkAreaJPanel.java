@@ -8,12 +8,12 @@ package UserInterface.WorkAreas;
  *
  * @author Ajay Alamuri
  */
-public class ServiceTechnicianWorkAreaJPanel extends javax.swing.JPanel {
+public class AdminWorkAreaJPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ServiceTechnicianWorkAreaJPanel
+     * Creates new form AdminWorkAreaJPanel
      */
-    public ServiceTechnicianWorkAreaJPanel() {
+    public AdminWorkAreaJPanel() {
         initComponents();
     }
 
@@ -26,7 +26,7 @@ public class ServiceTechnicianWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(255, 204, 153));
+        setBackground(new java.awt.Color(153, 255, 255));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

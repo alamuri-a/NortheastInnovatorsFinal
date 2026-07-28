@@ -24,15 +24,46 @@ public class AdminOrganization {
     // CONSTRUCTORS
     public AdminOrganization(Enterprise ent) {
         this.company = ent;
-        this.name = ent.GetName() + "Admin";
+        this.name = ent.getName() + "Admin";
         this.users = new UserDirectory();
         this.employees = new EmployeeDirectory();
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
     
-    public String GetName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
     
-    public void SetName(String n) { this.name = n; }
+    public void setName(String n) {
+        this.name = n;
+    }
+
+    public UserDirectory getUsers() {
+        return users;
+    }
+
+    public void setUsers(UserDirectory users) {
+        this.users = users;
+    }
+
+    public EmployeeDirectory getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(EmployeeDirectory employees) {
+        this.employees = employees;
+    }
+
+    public Enterprise getCompany() {
+        return company;
+    }
+
+    public void setCompany(Enterprise company) {
+        this.company = company;
+    }
+    
 }

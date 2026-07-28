@@ -36,11 +36,53 @@ public abstract class Organization {
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
     
-    public String GetName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
     
-    public void SetName(String n) { this.name = n; }
+    public void setName(String n) {
+        this.name = n;
+    }
     
-    public Enterprise GetCompany() { return this.company; }
+    public Enterprise getCompany() {
+        return this.company;
+    }
+
+    public UserDirectory getUsers() {
+        return users;
+    }
+
+    public void setUsers(UserDirectory users) {
+        this.users = users;
+    }
+
+    public EmployeeDirectory getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(EmployeeDirectory employees) {
+        this.employees = employees;
+    }
+
+    public WorkQueue getInTasks() {
+        return inTasks;
+    }
+
+    public void setInTasks(WorkQueue inTasks) {
+        this.inTasks = inTasks;
+    }
+
+    public WorkQueue getOutTasks() {
+        return outTasks;
+    }
+
+    public void setOutTasks(WorkQueue outTasks) {
+        this.outTasks = outTasks;
+    }
+    
+    
 }
