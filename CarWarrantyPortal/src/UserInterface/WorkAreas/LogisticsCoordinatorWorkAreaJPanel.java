@@ -8,6 +8,8 @@ import Business.Ecosystem.Ecosystem;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
 import Business.User.User;
+import UserInterface.LogisticsCoordinator.WorkQueueJPanel;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
@@ -32,6 +34,8 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         this.business = system;
         
         initComponents();
+        lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
+        lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
     }
 
     /**
@@ -53,8 +57,9 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         jButton6 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(153, 153, 255));
-        setMinimumSize(new java.awt.Dimension(700, 600));
+        setMinimumSize(new java.awt.Dimension(650, 600));
         setName(""); // NOI18N
+        setPreferredSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -63,12 +68,24 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         lblTitle.setText("<Company Name> <Org Name>");
+        lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
+        lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
 
         btnCurrentTask.setText("Current Task");
+        btnCurrentTask.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCurrentTaskActionPerformed(evt);
+            }
+        });
         add(btnCurrentTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 160, 160, 80));
 
         btnQueue.setText("Check Queue");
+        btnQueue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueueActionPerformed(evt);
+            }
+        });
         add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 160, 80));
 
         jButton3.setText("jButton1");
@@ -83,6 +100,17 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         jButton6.setText("jButton1");
         add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 420, 160, 80));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
+        // TODO add your handling code here:
+        WorkQueueJPanel wqjp = new WorkQueueJPanel(workArea, user, organization, business);
+        this.workArea.add(wqjp, "OrgWorkQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnQueueActionPerformed
+
+    private void btnCurrentTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurrentTaskActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCurrentTaskActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

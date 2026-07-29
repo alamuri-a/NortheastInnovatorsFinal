@@ -23,6 +23,7 @@ public class LogisticsCoordinator extends Role {
     // CONSTRUCTOR
     public LogisticsCoordinator() {
         super();
+        this.currentTask = null;
     }
     
     // METHODS

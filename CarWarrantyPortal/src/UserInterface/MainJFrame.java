@@ -56,18 +56,20 @@ public class MainJFrame extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(800, 600));
 
         homeSplitPane.setDividerLocation(150);
+        homeSplitPane.setMinimumSize(new java.awt.Dimension(100, 600));
 
         controlPanel.setBackground(new java.awt.Color(153, 255, 255));
-        controlPanel.setMinimumSize(new java.awt.Dimension(100, 600));
+        controlPanel.setMinimumSize(new java.awt.Dimension(150, 600));
+        controlPanel.setPreferredSize(new java.awt.Dimension(150, 600));
         controlPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblUsername.setText("Username:");
-        controlPanel.add(lblUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 110, 24));
-        controlPanel.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 110, -1));
+        controlPanel.add(lblUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 110, 24));
+        controlPanel.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 110, -1));
 
         lblPassword.setText("Password:");
-        controlPanel.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 110, 24));
-        controlPanel.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 110, -1));
+        controlPanel.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 110, 24));
+        controlPanel.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 110, -1));
 
         btnLogin.setText("Login");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -75,14 +77,16 @@ public class MainJFrame extends javax.swing.JFrame {
                 btnLoginActionPerformed(evt);
             }
         });
-        controlPanel.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 90, -1));
+        controlPanel.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 90, -1));
 
         lblEmployees.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblEmployees.setText("Employees");
-        controlPanel.add(lblEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 90, 40));
+        controlPanel.add(lblEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 90, 40));
 
         homeSplitPane.setLeftComponent(controlPanel);
 
+        workAreaPanel.setMinimumSize(new java.awt.Dimension(650, 600));
+        workAreaPanel.setPreferredSize(new java.awt.Dimension(650, 600));
         workAreaPanel.setLayout(new java.awt.CardLayout());
         homeSplitPane.setRightComponent(workAreaPanel);
 

@@ -21,4 +21,10 @@ public class ProcessShipmentTask extends WorkTask {
         super(assigner);
         this.part = pt;
     }
+    
+    // METHODS
+    @Override
+    public String toString() {
+        return "Process Shipment";
+    }
 }
