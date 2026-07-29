@@ -4,6 +4,9 @@
  */
 package Business.Roles;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import UserInterface.WorkAreas.AdminWorkAreaJPanel;
 import javax.swing.JPanel;
 
@@ -17,12 +20,17 @@ public class Admin extends Role {
     
     // CONSTRUCTORS
     public Admin() {
-        super(new AdminWorkAreaJPanel());
+        super();
     }
     
     // METHODS
     @Override
     public String toString() {
         return "Admin";
+    }
+    
+    @Override
+    public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
+        return new AdminWorkAreaJPanel(workAreaContainer, user, organization, system);
     }
 }

@@ -4,16 +4,33 @@
  */
 package UserInterface.WorkAreas;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
+import Business.User.User;
+import javax.swing.JPanel;
+
 /**
  *
  * @author Ajay Alamuri
  */
 public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
 
+    // ATTRIBUTES
+    LogisticsOrganization organization;
+    JPanel workArea;
+    User user;
+    Ecosystem business;
+    
     /**
      * Creates new form LogisticsCoordinatorWorkAreaJPanel
      */
-    public LogisticsCoordinatorWorkAreaJPanel() {
+    public LogisticsCoordinatorWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
+        this.organization = (LogisticsOrganization) org;
+        this.workArea = csp;
+        this.user = usr;
+        this.business = system;
+        
         initComponents();
     }
 
@@ -26,21 +43,56 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(153, 153, 255));
+        lblWelcome = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
+        btnCurrentTask = new javax.swing.JButton();
+        btnQueue = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBackground(new java.awt.Color(153, 153, 255));
+        setMinimumSize(new java.awt.Dimension(700, 600));
+        setName(""); // NOI18N
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblWelcome.setText("Welcome <User>");
+        add(lblWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 460, -1));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTitle.setText("<Company Name> <Org Name>");
+        add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
+
+        btnCurrentTask.setText("Current Task");
+        add(btnCurrentTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 160, 160, 80));
+
+        btnQueue.setText("Check Queue");
+        add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 160, 80));
+
+        jButton3.setText("jButton1");
+        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 290, 160, 80));
+
+        jButton4.setText("jButton1");
+        add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 290, 160, 80));
+
+        jButton5.setText("jButton1");
+        add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 420, 160, 80));
+
+        jButton6.setText("jButton1");
+        add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 420, 160, 80));
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCurrentTask;
+    private javax.swing.JButton btnQueue;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
 }

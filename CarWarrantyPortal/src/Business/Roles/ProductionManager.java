@@ -4,6 +4,9 @@
  */
 package Business.Roles;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.ProductionManagerWorkAreaJPanel;
 import javax.swing.JPanel;
@@ -19,7 +22,7 @@ public class ProductionManager extends Role {
     
     // CONSTRUCTOR
     public ProductionManager() {
-        super(new ProductionManagerWorkAreaJPanel());
+        super();
     }
     
     // METHODS
@@ -28,6 +31,11 @@ public class ProductionManager extends Role {
         return "Production Manager";
     }
 
+    @Override
+    public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
+        return new ProductionManagerWorkAreaJPanel(workAreaContainer, user, organization, system);
+    }
+    
     public WorkTask getCurrentTask() {
         return currentTask;
     }
