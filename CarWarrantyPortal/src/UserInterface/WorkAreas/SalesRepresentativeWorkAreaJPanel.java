@@ -3,10 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package UserInterface.WorkAreas;
-
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 /**
  *
  * @author Ajay Alamuri
+ * @author Nicholas Woodward
  */
 public class SalesRepresentativeWorkAreaJPanel extends javax.swing.JPanel {
 
@@ -14,8 +21,39 @@ public class SalesRepresentativeWorkAreaJPanel extends javax.swing.JPanel {
      * Creates new form SalesRepresentative
      */
     public SalesRepresentativeWorkAreaJPanel() {
-        initComponents();
-    }
+    initComponents();
+    buildCustomOrderScreen();
+}
+    /**
+ * Builds the Sales Representative work area for the custom vehicle-order
+ * and global supply-chain workflow.
+ */
+private void buildCustomOrderScreen() {
+    removeAll();
+    setLayout(new BorderLayout());
+
+    JPanel headerPanel = new JPanel(new BorderLayout());
+    headerPanel.setBackground(new Color(20, 36, 58));
+    headerPanel.setBorder(new EmptyBorder(16, 20, 16, 20));
+
+    JLabel titleLabel = new JLabel("Custom Vehicle Orders");
+    titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+    titleLabel.setForeground(Color.WHITE);
+    titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+    JLabel subtitleLabel = new JLabel(
+            "US Sales -> Mexico / Asia Suppliers -> German Production");
+    subtitleLabel.setForeground(new Color(210, 225, 240));
+    subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+    headerPanel.add(titleLabel, BorderLayout.NORTH);
+    headerPanel.add(subtitleLabel, BorderLayout.SOUTH);
+
+    add(headerPanel, BorderLayout.NORTH);
+
+    revalidate();
+    repaint();
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
