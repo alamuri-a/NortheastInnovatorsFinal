@@ -33,9 +33,13 @@ public class WorkQueue {
     }
     
     // METHODS
+    public ArrayList<WorkTask> getTasks() {
+        return this.tasks;
+    }
+    
     public WorkTask getTask(int tID) {
         for (WorkTask task : tasks) {
-            if (task.GetID() == tID) return task;
+            if (task.getID() == tID) return task;
         }
         return null;
     }

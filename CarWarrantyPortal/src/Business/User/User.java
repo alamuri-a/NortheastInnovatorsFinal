@@ -32,6 +32,11 @@ public class User {
     }
     
     // METHODS
+    @Override
+    public String toString() {
+        return this.employee.getPerson().getName();
+    }
+    
     public int getID() {
         return this.id;
     }

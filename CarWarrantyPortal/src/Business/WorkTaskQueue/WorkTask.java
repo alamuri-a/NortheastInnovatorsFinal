@@ -25,10 +25,29 @@ public abstract class WorkTask {
         this.id = ++instances;
         this.completed = false;
         this.assigner = aser;
+        this.assignee = null;
     }
     
     // METHODS
-    public int GetID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
+
+    public User getAssigner() {
+        return assigner;
+    }
+
+    public User getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(User assignee) {
+        this.assignee = assignee;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
     
     public void Complete() {
         this.completed = true;

@@ -24,4 +24,10 @@ public class SendShipmentTask extends WorkTask {
         this.dealership = dealer;
         this.part = pt;
     }
+    
+    // METHODS
+    @Override
+    public String toString() {
+        return "Send Shipment";
+    }
 }
