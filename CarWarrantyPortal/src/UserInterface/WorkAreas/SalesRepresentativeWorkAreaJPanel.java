@@ -3,6 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package UserInterface.WorkAreas;
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -20,7 +23,7 @@ public class SalesRepresentativeWorkAreaJPanel extends javax.swing.JPanel {
     /**
      * Creates new form SalesRepresentative
      */
-    public SalesRepresentativeWorkAreaJPanel() {
+    public SalesRepresentativeWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
     initComponents();
     buildCustomOrderScreen();
 }

@@ -4,6 +4,9 @@
  */
 package Business.Roles;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.WarehouseClerkWorkAreaJPanel;
 import javax.swing.JPanel;
@@ -19,13 +22,18 @@ public class WarehouseClerk extends Role {
     
     // CONSTRUCTOR
     public WarehouseClerk() {
-        super(new WarehouseClerkWorkAreaJPanel());
+        super();
     }
     
     // METHODS
     @Override
     public String toString() {
         return "Customer Service Representative";
+    }
+    
+    @Override
+    public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
+        return new WarehouseClerkWorkAreaJPanel(workAreaContainer, user, organization, system);
     }
 
     public WorkTask getCurrentTask() {

@@ -4,7 +4,9 @@
  */
 package Business.Roles;
 
-import java.awt.CardLayout;
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import javax.swing.JPanel;
 
 /**
@@ -14,22 +16,16 @@ import javax.swing.JPanel;
 public abstract class Role {
     
     // ATTRIBUTES
-    JPanel workArea;
     
     // CONSTRUCTORS
-    public Role(JPanel area) {
-        this.workArea = area;
-    }
     
     // METHODS
     /**
     * Loads role work area into UI
     * 
     * @param workAreaContainer container that holds the card layout for workflow
+    * 
+    * @return JPanel with work area landing page
     */
-    public void loadWorkArea(JPanel workAreaContainer) {
-        workAreaContainer.removeAll();
-        workAreaContainer.add(workArea, "WorkAreaLandingPage");
-        ((CardLayout) workAreaContainer.getLayout()).next(workAreaContainer);
-    }
+    public abstract JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system);
 }

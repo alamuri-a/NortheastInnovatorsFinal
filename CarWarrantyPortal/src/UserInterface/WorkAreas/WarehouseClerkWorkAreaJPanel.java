@@ -4,6 +4,11 @@
  */
 package UserInterface.WorkAreas;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
+import javax.swing.JPanel;
+
 /**
  *
  * @author Ajay Alamuri
@@ -13,7 +18,7 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     /**
      * Creates new form WarehouseClerkWorkAreaJPanel
      */
-    public WarehouseClerkWorkAreaJPanel() {
+    public WarehouseClerkWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
         initComponents();
     }
 

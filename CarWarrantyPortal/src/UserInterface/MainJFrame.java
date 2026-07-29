@@ -10,7 +10,9 @@ import Business.Ecosystem.Network;
 import Business.Enterprise.Enterprise;
 import Business.Organization.Organization;
 import Business.User.User;
+import java.awt.CardLayout;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -20,6 +22,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     // ATTRIBUTES
     Ecosystem system;
+    User loggedIn;
     
     /**
      * Creates new form MainJFrame
@@ -100,36 +103,42 @@ public class MainJFrame extends javax.swing.JFrame {
         }
         
         // Authentication and login
-        User loggedIn = null;
+        this.loggedIn = null;
+        Organization o = null;
         for (User u : system.getSuperAdmins().getUsers()) {
-            if (u.authenticate(username, password)) loggedIn = u;
-            if (loggedIn != null) break;
+            if (u.authenticate(username, password)) this.loggedIn = u;
+            if (this.loggedIn != null) break;
         }
         for (Network net : system.getNetworks()) {
             for (Enterprise ent : net.getEnterprises().getEnterprises()) {
                 for (User u : ent.getAdmins().getUsers().getUsers()) {
-                    if (u.authenticate(username, password)) loggedIn = u;
-                    if (loggedIn != null) break;
+                    if (u.authenticate(username, password)) this.loggedIn = u;
+                    if (this.loggedIn != null) break;
                 }
                 for (Organization org : ent.getOrganizations().getOrganizations()) {
                     for (User u : org.getUsers().getUsers()) {
-                        if (u.authenticate(username, password)) loggedIn = u;
-                        if (loggedIn != null) break;
+                        if (u.authenticate(username, password)) {
+                            this.loggedIn = u;
+                            o = org;
+                        }
+                        if (this.loggedIn != null) break;
                     }
-                    if (loggedIn != null) break;
+                    if (this.loggedIn != null) break;
                 }
-                if (loggedIn != null) break;
+                if (this.loggedIn != null) break;
             }
-            if (loggedIn != null) break;
+            if (this.loggedIn != null) break;
         }
         
-        if (loggedIn == null) {
+        if (this.loggedIn == null) {
             JOptionPane.showMessageDialog(this, "Failed to login with provided Username and Password. Please check and try again.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
-        loggedIn.getRole().loadWorkArea(workAreaPanel);
         JOptionPane.showMessageDialog(this, "Successfully logged in!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        JPanel nextPage = this.loggedIn.getRole().createWorkArea(workAreaPanel, this.loggedIn, o, this.system);
+        workAreaPanel.add(nextPage, "WorkArea");
+        ((CardLayout) workAreaPanel.getLayout()).next(workAreaPanel);
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**

@@ -4,6 +4,9 @@
  */
 package Business.Roles;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.LogisticsCoordinatorWorkAreaJPanel;
 import javax.swing.JPanel;
@@ -19,13 +22,18 @@ public class LogisticsCoordinator extends Role {
     
     // CONSTRUCTOR
     public LogisticsCoordinator() {
-        super(new LogisticsCoordinatorWorkAreaJPanel());
+        super();
     }
     
     // METHODS
     @Override
     public String toString() {
         return "Logistics Coordinator";
+    }
+    
+    @Override
+    public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
+        return new LogisticsCoordinatorWorkAreaJPanel(workAreaContainer, user, organization, system);
     }
 
     public WorkTask getCurrentTask() {

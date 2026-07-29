@@ -4,6 +4,9 @@
  */
 package Business.Roles;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.ServiceManagerWorkAreaJPanel;
 import javax.swing.JPanel;
@@ -19,13 +22,18 @@ public class ServiceManager extends Role {
     
     // CONSTRUCTOR
     public ServiceManager() {
-        super(new ServiceManagerWorkAreaJPanel());
+        super();
     }
     
     // METHODS
     @Override
     public String toString() {
         return "Service Manager";
+    }
+    
+    @Override
+    public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
+        return new ServiceManagerWorkAreaJPanel(workAreaContainer, user, organization, system);
     }
     
     public WorkTask getCurrentTask() {

@@ -4,8 +4,12 @@
  */
 package Business.Roles;
 
+import Business.Ecosystem.Ecosystem;
+import Business.Organization.Organization;
+import Business.User.User;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WorkAreas.CustomerServiceRepresentativeWorkAreaJPanel;
+import UserInterface.WorkAreas.LogisticsCoordinatorWorkAreaJPanel;
 import javax.swing.JPanel;
 
 /**
@@ -19,7 +23,7 @@ public class CustomerServiceRepresentative extends Role {
     
     // CONSTRUCTOR
     public CustomerServiceRepresentative() {
-        super(new CustomerServiceRepresentativeWorkAreaJPanel());
+        super();
     }
     
     // METHODS
@@ -28,6 +32,11 @@ public class CustomerServiceRepresentative extends Role {
         return "Customer Service Representative";
     }
 
+    @Override
+    public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
+        return new CustomerServiceRepresentativeWorkAreaJPanel(workAreaContainer, user, organization, system);
+    }
+    
     public WorkTask getCurrentTask() {
         return currentTask;
     }
