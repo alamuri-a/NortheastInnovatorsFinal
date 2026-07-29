@@ -33,7 +33,22 @@ import Business.User.User;
 /**
  *
  * @author Ajay Alamuri
+ * @author Meredith Molyneux
  */
+public class ConfigureABusiness  {
+
+ public static Ecosystem configure(){
+
+        Ecosystem system = Ecosystem.getInstance();
+
+        //Create a network
+        //create an enterprise
+        //initialize some organizations
+        //have some employees
+        //create user account
+
+
+
 public class ConfigureABusiness {
     
     public static Ecosystem initialize() {

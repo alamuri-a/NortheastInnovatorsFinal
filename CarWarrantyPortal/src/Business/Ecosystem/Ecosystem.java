@@ -16,6 +16,8 @@ public class Ecosystem {
     // ATTRIBUTES
     String name;
     ArrayList<Network> networks;
+    private static Ecosystem business;// Database masterDB
+   
     UserDirectory superAdmins;
     // Database masterDB
     
@@ -23,12 +25,31 @@ public class Ecosystem {
     public Ecosystem(String n) {
         this.name = n;
         
-        // DB initalization
+    // CONSTRUCTORS
+
+        // * Required by db4o to reconstruct objects from the database.
+     
+    public Ecosystem() {
+        this.name = "Auto Ecosystem";
+        this.networks = new ArrayList();
         
+        }
+     /**
+     * Custom Constructor (Keep this for manual naming)
+     */
+     public Ecosystem(String n) {
+        this.name = n;
+        this.networks = new ArrayList();
+     }
+
+    public static Ecosystem getInstance(){
+        if(business == null){
+            business = new Ecosystem();
+        }
+        return business;
         this.networks = new ArrayList(); // If networks in DB, use those
         this.superAdmins = new UserDirectory();
     }
-    
     // METHODS
     public String getName() {
         return this.name;
