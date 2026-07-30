@@ -54,9 +54,9 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         tblTasks = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(153, 153, 255));
-        setMinimumSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        lblTitle.setBackground(new java.awt.Color(204, 255, 153));
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         lblTitle.setText("<Org Name> Completed Tasks");
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
@@ -98,7 +98,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JTable tblTasks;
     // End of variables declaration//GEN-END:variables
-
+    
     public void refreshTable() {
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         

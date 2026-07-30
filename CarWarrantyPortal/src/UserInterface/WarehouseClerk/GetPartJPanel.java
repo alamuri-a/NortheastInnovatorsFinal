@@ -11,7 +11,6 @@ import Business.Roles.WarehouseClerk;
 import Business.User.User;
 import Business.Vehicle.Part;
 import Business.WorkTaskQueue.GetPartTask;
-import Business.WorkTaskQueue.ProcessShipmentTask;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -64,6 +63,7 @@ public class GetPartJPanel extends javax.swing.JPanel {
         btnComplete = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         btnBackOrder = new javax.swing.JButton();
+        btnUnassign = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 255, 153));
         setMinimumSize(new java.awt.Dimension(650, 600));
@@ -117,6 +117,14 @@ public class GetPartJPanel extends javax.swing.JPanel {
             }
         });
         add(btnBackOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 400, 90, -1));
+
+        btnUnassign.setText("Unassign");
+        btnUnassign.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUnassignActionPerformed(evt);
+            }
+        });
+        add(btnUnassign, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 440, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -173,13 +181,35 @@ public class GetPartJPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Task has already been completed.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        
+        BackOrderJPanel bojp = new BackOrderJPanel(workArea, user, organization, business, task);
+        this.workArea.add(bojp, "BackOrders");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnBackOrderActionPerformed
+
+    private void btnUnassignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnassignActionPerformed
+        // Unassign task
+        
+        if (task.getAssignee() != null) {
+            
+            // Display confirmation dialog
+            int dialogResult = JOptionPane.showConfirmDialog(null,"Are you sure you want to unassign this task?", "Warning", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                task.setAssignee(null);
+                ((WarehouseClerk) user.getRole()).setCurrentTask(null);
+                
+                workArea.remove(this);
+                ((CardLayout) workArea.getLayout()).previous(workArea);
+            }
+        }
+    }//GEN-LAST:event_btnUnassignActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnBackOrder;
     private javax.swing.JButton btnComplete;
+    private javax.swing.JButton btnUnassign;
     private javax.swing.JLabel lblPart;
     private javax.swing.JLabel lblQuantity;
     private javax.swing.JLabel lblStock;
@@ -189,7 +219,7 @@ public class GetPartJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 
-    private void refreshFields() {
+    public void refreshFields() {
         int stock = ((SupplierEnterprise) organization.getCompany()).getPartQuantity(task.getPart());
         int quantity = task.getQuantity();
         
