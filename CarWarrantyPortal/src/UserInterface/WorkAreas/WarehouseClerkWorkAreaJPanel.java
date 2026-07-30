@@ -44,8 +44,6 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
-        
-        DemoData();
     }
 
     /**
@@ -190,18 +188,4 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
-
-    private void DemoData() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Person p = new Person("Person" + i);
-                Employee emp = organization.getEmployees().createEmployee(p);
-                User newUser = organization.getUsers().createUser(emp, "temp", "temp", new LogisticsCoordinator());
-                Part part = new Part(i);
-                organization.getInTasks().createGetPartTask(newUser, part, i);
-            }
-        } catch (Exception e) {
-            
-        }
-    }
 }
