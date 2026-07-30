@@ -39,7 +39,7 @@ public class ProcessShipmentJPanel extends javax.swing.JPanel {
         this.task = tsk;
         
         initComponents();
-        lblTitle.setText(organization.getName() + " Shipment Processing");
+        lblTitle.setText(organization.getName() + " Incoming Shipment Processing");
         
         refreshFields();
     }
@@ -69,7 +69,7 @@ public class ProcessShipmentJPanel extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        lblTitle.setText("<Org Name> Shipment Processing");
+        lblTitle.setText("<Org Name> Incoming Shipment Processing");
         lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
         lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));

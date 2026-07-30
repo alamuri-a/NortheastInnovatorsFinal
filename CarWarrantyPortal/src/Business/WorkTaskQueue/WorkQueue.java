@@ -155,14 +155,15 @@ public class WorkQueue {
     * @param assigner the user creating request
     * @param targetEnterprise DealershipEnterprise part is being sent to
     * @param part the part being sent out
+    * @param quantity count of parts requested
     * 
     * @return {@link SendShipmentTask} the new SendShipmentTask object created
     * 
     * @throws Exception If attempted to be instantiated for organization other than Logistics organization
     */
-    public SendShipmentTask createSendShipmentTask(User assigner, DealershipEnterprise targetEnterprise, Part part) throws Exception {
+    public SendShipmentTask createSendShipmentTask(User assigner, DealershipEnterprise targetEnterprise, Part part, int quantity) throws Exception {
         if (this.organization instanceof LogisticsOrganization) {
-            SendShipmentTask newTask = new SendShipmentTask(assigner, targetEnterprise, part);
+            SendShipmentTask newTask = new SendShipmentTask(assigner, targetEnterprise, part, quantity);
             this.tasks.add(newTask);
             return newTask;
         }
