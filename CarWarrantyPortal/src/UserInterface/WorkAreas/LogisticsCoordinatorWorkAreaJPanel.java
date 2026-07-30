@@ -12,6 +12,7 @@ import Business.User.User;
 import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SendShipmentTask;
 import Business.WorkTaskQueue.WorkTask;
+import UserInterface.LogisticsCoordinator.DoneQueueJPanel;
 import UserInterface.LogisticsCoordinator.ProcessShipmentJPanel;
 import UserInterface.LogisticsCoordinator.SendShipmentJPanel;
 import UserInterface.LogisticsCoordinator.WorkQueueJPanel;
@@ -59,7 +60,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         btnCurrentTask = new javax.swing.JButton();
         btnQueue = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnFinished = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
@@ -95,16 +96,21 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         });
         add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 80));
 
-        jButton3.setText("jButton1");
+        jButton3.setText("Recalls");
         add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 80));
 
-        jButton4.setText("jButton1");
-        add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
+        btnFinished.setText("View Completed Tasks");
+        btnFinished.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinishedActionPerformed(evt);
+            }
+        });
+        add(btnFinished, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
 
         jButton5.setText("jButton1");
         add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 160, 80));
 
-        jButton6.setText("jButton1");
+        jButton6.setText("My Profile");
         add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 160, 80));
     }// </editor-fold>//GEN-END:initComponents
 
@@ -134,12 +140,19 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnCurrentTaskActionPerformed
 
+    private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
+        // TODO add your handling code here:
+        DoneQueueJPanel dqjp = new DoneQueueJPanel(workArea, user, organization, business);
+        this.workArea.add(dqjp, "DoneQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnFinishedActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCurrentTask;
+    private javax.swing.JButton btnFinished;
     private javax.swing.JButton btnQueue;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel lblTitle;
