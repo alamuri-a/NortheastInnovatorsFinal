@@ -34,7 +34,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         this.business = system;
         
         initComponents();
-        lblTitle.setText(this.organization.getName() + " Queue");
+        lblTitle.setText(this.organization.getName() + " Completed Tasks");
         
         refreshTable();
     }
@@ -58,7 +58,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        lblTitle.setText("<Org Name> Queue");
+        lblTitle.setText("<Org Name> Completed Tasks");
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
 
         btnBack.setText("<<< Back");
