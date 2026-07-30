@@ -30,6 +30,7 @@ public class MainJFrame extends javax.swing.JFrame {
     public MainJFrame() {
         this.system = ConfigureABusiness.initialize();
         initComponents();
+        btnLogout.setVisible(false);
     }
 
     /**
@@ -49,6 +50,7 @@ public class MainJFrame extends javax.swing.JFrame {
         txtPassword = new javax.swing.JTextField();
         btnLogin = new javax.swing.JButton();
         lblEmployees = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JButton();
         workAreaPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -81,6 +83,14 @@ public class MainJFrame extends javax.swing.JFrame {
         lblEmployees.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblEmployees.setText("Employees");
         controlPanel.add(lblEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 90, 40));
+
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+        controlPanel.add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 230, 90, -1));
 
         homeSplitPane.setLeftComponent(controlPanel);
 
@@ -133,16 +143,43 @@ public class MainJFrame extends javax.swing.JFrame {
             if (this.loggedIn != null) break;
         }
         
+        // No valid login
         if (this.loggedIn == null) {
             JOptionPane.showMessageDialog(this, "Failed to login with provided Username and Password. Please check and try again.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
+        // Login
+        btnLogin.setVisible(false);
+        btnLogout.setVisible(true);
         JOptionPane.showMessageDialog(this, "Successfully logged in!", "Success", JOptionPane.INFORMATION_MESSAGE);
         JPanel nextPage = this.loggedIn.getRole().createWorkArea(workAreaPanel, this.loggedIn, o, this.system);
         workAreaPanel.add(nextPage, "WorkArea");
         ((CardLayout) workAreaPanel.getLayout()).next(workAreaPanel);
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        // Clear work area and reset logged in user
+        
+        if (this.loggedIn != null) {
+            // Display confirmation dialog for logout
+            int dialogResult = JOptionPane.showConfirmDialog(null,"Are you sure you want to logout?", "Warning", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                workAreaPanel.removeAll();
+                workAreaPanel.repaint();
+                this.loggedIn = null;
+                
+                txtUsername.setText("");
+                txtPassword.setText("");
+                
+                btnLogout.setVisible(false);
+                btnLogin.setVisible(true);
+                
+                JOptionPane.showMessageDialog(this, "Successfully logged out!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,6 +218,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JSplitPane homeSplitPane;
     private javax.swing.JLabel lblEmployees;
