@@ -16,18 +16,32 @@ public class SendShipmentTask extends WorkTask {
     
     // ATTRIBUTES
     Part part;
+    int partCount;
     DealershipEnterprise dealership;
     
     // CONSTRUCTORS
-    public SendShipmentTask(User assigner, DealershipEnterprise dealer, Part pt) {
+    public SendShipmentTask(User assigner, DealershipEnterprise dealer, Part pt, int quantity) {
         super(assigner);
         this.dealership = dealer;
         this.part = pt;
+        this.partCount = quantity;
     }
     
     // METHODS
     @Override
     public String toString() {
         return "Send Shipment";
+    }
+
+    public Part getPart() {
+        return part;
+    }
+
+    public int getPartCount() {
+        return partCount;
+    }
+
+    public DealershipEnterprise getDealership() {
+        return dealership;
     }
 }

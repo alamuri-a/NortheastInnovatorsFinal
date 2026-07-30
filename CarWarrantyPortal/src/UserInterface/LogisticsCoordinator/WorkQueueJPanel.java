@@ -156,7 +156,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
             row[0] = task;
             row[1] = task.getAssigner();
             row[2] = (task.getAssignee() == null) ? null : task.getAssignee();
-            row[3] = (!task.isCompleted() && task.getAssignee() == null) ? "Waiting" : "In Progress";
+            row[3] = task.isCompleted() ? "Complete" : task.getAssignee() == null ? "Waiting" : "In Progress";
             
             model.addRow(row);
         }
@@ -179,7 +179,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
                 }
                 if (dealer == null) return;
 
-                organization.getInTasks().createSendShipmentTask(newUser, dealer, part);
+                organization.getInTasks().createSendShipmentTask(newUser, dealer, part, i);
             }
         } catch (Exception e) {
             

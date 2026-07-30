@@ -10,8 +10,10 @@ import Business.Organization.Organization;
 import Business.Roles.LogisticsCoordinator;
 import Business.User.User;
 import Business.WorkTaskQueue.ProcessShipmentTask;
+import Business.WorkTaskQueue.SendShipmentTask;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.LogisticsCoordinator.ProcessShipmentJPanel;
+import UserInterface.LogisticsCoordinator.SendShipmentJPanel;
 import UserInterface.LogisticsCoordinator.WorkQueueJPanel;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -124,6 +126,10 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         if (task instanceof ProcessShipmentTask psTask) {
             ProcessShipmentJPanel psjp = new ProcessShipmentJPanel(workArea, user, organization, business, psTask);
             this.workArea.add(psjp, "ProcessShipment");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        } else if (task instanceof SendShipmentTask ssTask) {
+            SendShipmentJPanel ssjp = new SendShipmentJPanel(workArea, user, organization, business, ssTask);
+            this.workArea.add(ssjp, "SendShipment");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
         }
     }//GEN-LAST:event_btnCurrentTaskActionPerformed
