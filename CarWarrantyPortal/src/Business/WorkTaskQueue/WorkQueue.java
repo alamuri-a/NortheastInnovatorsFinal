@@ -44,6 +44,15 @@ public class WorkQueue {
         return null;
     }
     
+    public WorkTask popTask(WorkTask task) {
+        int index = this.tasks.indexOf(task);
+        return this.tasks.remove(index);
+    }
+    
+    public boolean pushTask(WorkTask task) {
+        return this.tasks.add(task);
+    }
+    
     /**
     * Create a new BuildPartTask, add to internal list of tasks, then return task for modification
     * 

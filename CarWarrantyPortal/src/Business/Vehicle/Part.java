@@ -32,4 +32,9 @@ public class Part {
     public boolean isWorking() {
         return working;
     }
+    
+    @Override
+    public String toString() {
+        return "Part Number " + this.id;
+    }
 }

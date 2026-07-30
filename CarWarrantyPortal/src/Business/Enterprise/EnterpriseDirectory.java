@@ -91,4 +91,12 @@ public class EnterpriseDirectory {
         this.enterprises = enterprises;
     }
     
+    public ArrayList<DealershipEnterprise> getDealerships() {
+        ArrayList<DealershipEnterprise> dealers = new ArrayList();
+        for (Enterprise e : this.enterprises) {
+            if (e instanceof DealershipEnterprise dealer) dealers.add(dealer);
+        }
+        return dealers;
+    }
+    
 }

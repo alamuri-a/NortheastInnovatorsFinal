@@ -8,6 +8,7 @@ import Business.Enterprise.Enterprise;
 import Business.People.EmployeeDirectory;
 import Business.User.UserDirectory;
 import Business.WorkTaskQueue.WorkQueue;
+import Business.WorkTaskQueue.WorkTask;
 
 /**
  *
@@ -83,6 +84,4 @@ public abstract class Organization {
     public void setOutTasks(WorkQueue outTasks) {
         this.outTasks = outTasks;
     }
-    
-    
 }

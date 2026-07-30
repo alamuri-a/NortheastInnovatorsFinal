@@ -53,7 +53,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 300));
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         homeSplitPane.setDividerLocation(150);
         homeSplitPane.setMinimumSize(new java.awt.Dimension(100, 600));

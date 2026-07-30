@@ -4,6 +4,9 @@
  */
 package Business.Enterprise;
 
+import Business.Vehicle.Part;
+import java.util.HashMap;
+
 /**
  *
  * @author Ajay Alamuri
@@ -11,11 +14,22 @@ package Business.Enterprise;
 public class SupplierEnterprise extends Enterprise {
     
     // ATTRIBUTES
-    // Database partsStock;
+    HashMap<Part, Integer> partsStock;
     
     // CONSTRUCTORS
     public SupplierEnterprise(String n) {
         super(n);
+        this.partsStock = new HashMap();
+    }
+    
+    // METHODS
+    public int getPartQuantity(Part part) {
+        Integer quantity = this.partsStock.get(part);
+        return (quantity == null) ? 0 : (int) quantity;
+    }
+    
+    public void setPartQuantity(Part part, int newQuantity) {
+        this.partsStock.put(part, newQuantity);
     }
     
 }
