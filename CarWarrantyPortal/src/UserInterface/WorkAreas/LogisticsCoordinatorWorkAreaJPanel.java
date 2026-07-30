@@ -7,9 +7,14 @@ package UserInterface.WorkAreas;
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
+import Business.Roles.LogisticsCoordinator;
 import Business.User.User;
+import Business.WorkTaskQueue.ProcessShipmentTask;
+import Business.WorkTaskQueue.WorkTask;
+import UserInterface.LogisticsCoordinator.ProcessShipmentJPanel;
 import UserInterface.LogisticsCoordinator.WorkQueueJPanel;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -78,7 +83,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
                 btnCurrentTaskActionPerformed(evt);
             }
         });
-        add(btnCurrentTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 160, 160, 80));
+        add(btnCurrentTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 160, 160, 80));
 
         btnQueue.setText("Check Queue");
         btnQueue.addActionListener(new java.awt.event.ActionListener() {
@@ -86,19 +91,19 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
                 btnQueueActionPerformed(evt);
             }
         });
-        add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 160, 160, 80));
+        add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 80));
 
         jButton3.setText("jButton1");
-        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 290, 160, 80));
+        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 80));
 
         jButton4.setText("jButton1");
-        add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 290, 160, 80));
+        add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
 
         jButton5.setText("jButton1");
-        add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 420, 160, 80));
+        add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 160, 80));
 
         jButton6.setText("jButton1");
-        add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 420, 160, 80));
+        add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 160, 80));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
@@ -110,6 +115,17 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnCurrentTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurrentTaskActionPerformed
         // TODO add your handling code here:
+        WorkTask task = ((LogisticsCoordinator) user.getRole()).getCurrentTask();
+        if (task == null) {
+            JOptionPane.showMessageDialog(null, "You currently do not have a task assigned.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (task instanceof ProcessShipmentTask psTask) {
+            ProcessShipmentJPanel psjp = new ProcessShipmentJPanel(workArea, user, organization, business, psTask);
+            this.workArea.add(psjp, "ProcessShipment");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        }
     }//GEN-LAST:event_btnCurrentTaskActionPerformed
 
 

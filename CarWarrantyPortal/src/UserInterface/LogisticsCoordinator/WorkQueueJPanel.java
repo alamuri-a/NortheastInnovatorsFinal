@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author abala
+ * @author Ajay Alamuri
  */
 public class WorkQueueJPanel extends javax.swing.JPanel {
 
@@ -95,7 +95,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblTasks);
 
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 660, 220));
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 610, 220));
 
         btnAssign.setText("Assign To Me");
         btnAssign.addActionListener(new java.awt.event.ActionListener() {
@@ -103,7 +103,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
                 btnAssignActionPerformed(evt);
             }
         });
-        add(btnAssign, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 320, 130, -1));
+        add(btnAssign, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 130, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed

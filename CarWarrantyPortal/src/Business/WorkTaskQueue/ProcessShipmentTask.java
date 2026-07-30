@@ -27,4 +27,8 @@ public class ProcessShipmentTask extends WorkTask {
     public String toString() {
         return "Process Shipment";
     }
+
+    public Part getPart() {
+        return part;
+    }
 }
