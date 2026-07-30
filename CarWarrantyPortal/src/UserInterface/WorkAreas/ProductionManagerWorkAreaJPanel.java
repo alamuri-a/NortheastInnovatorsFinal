@@ -6,20 +6,45 @@ package UserInterface.WorkAreas;
 
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.Organization;
+import Business.Organization.ProductionOrganization;
+import Business.Roles.ProductionManager;
 import Business.User.User;
+import Business.WorkTaskQueue.BuildCarTask;
+import Business.WorkTaskQueue.BuildPartTask;
+import Business.WorkTaskQueue.WorkTask;
+import UserInterface.ProductionMgr.NewOrderJPanel;
+import UserInterface.ProductionMgr.NewPartJPanel;
+import UserInterface.ProductionMgr.ProdMgrDoneQueue;
+import UserInterface.ProductionMgr.ProdMgrProfile;
+import UserInterface.ProductionMgr.ProdMgrWorkQueue;
+import UserInterface.ProductionMgr.RecallComplianceTracking;
+import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  *
  * @author Ajay Alamuri
+ * @author Meredith Molyneux
  */
 public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
-
+        ProductionOrganization organization;
+        JPanel workArea;
+        User user;
+        Ecosystem business;
     /**
      * Creates new form ProductionManagerWorkAreaJPanel
      */
     public ProductionManagerWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
+            this.organization = (ProductionOrganization)org;
+            this.workArea = csp;
+            this.user = usr;
+            this.business = system;
+        
+        
         initComponents();
+        lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
+        lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
     }
 
     /**
@@ -31,21 +56,123 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(204, 153, 255));
+        btnQueue = new javax.swing.JButton();
+        btnMyRequest = new javax.swing.JButton();
+        btnClosedRequests = new javax.swing.JButton();
+        btnMyProfile = new javax.swing.JButton();
+        btnRecallTracking = new javax.swing.JButton();
+        lblWelcome = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBackground(new java.awt.Color(204, 153, 255));
+        setMinimumSize(new java.awt.Dimension(700, 600));
+        setPreferredSize(new java.awt.Dimension(680, 500));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnQueue.setText("Check Queue");
+        btnQueue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueueActionPerformed(evt);
+            }
+        });
+        add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 70));
+
+        btnMyRequest.setText("My Requests");
+        btnMyRequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyRequestActionPerformed(evt);
+            }
+        });
+        add(btnMyRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 160, 160, 70));
+
+        btnClosedRequests.setText("Closed Requests");
+        btnClosedRequests.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClosedRequestsActionPerformed(evt);
+            }
+        });
+        add(btnClosedRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 70));
+
+        btnMyProfile.setText("My Profile");
+        btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyProfileActionPerformed(evt);
+            }
+        });
+        add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 70));
+
+        btnRecallTracking.setText("Recall Tracking");
+        btnRecallTracking.setMinimumSize(new java.awt.Dimension(700, 600));
+        btnRecallTracking.setPreferredSize(new java.awt.Dimension(680, 500));
+        btnRecallTracking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecallTrackingActionPerformed(evt);
+            }
+        });
+        add(btnRecallTracking, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 160, 70));
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblWelcome.setText("Welcome <User>");
+        add(lblWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 460, -1));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTitle.setText("<Company Name> <Org Name>");
+        lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
+        lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
+        add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 660, -1));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
+          ProdMgrWorkQueue pmwq = new ProdMgrWorkQueue(workArea, user, organization, business);
+        this.workArea.add(pmwq, "ProdMgrWorkQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnQueueActionPerformed
+
+    private void btnRecallTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallTrackingActionPerformed
+       RecallComplianceTracking rctp = new RecallComplianceTracking(workArea, user, organization, business);
+        this.workArea.add(rctp, "Recall Compliance Tracking");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnRecallTrackingActionPerformed
+
+    private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
+        ProdMgrProfile pmp = new ProdMgrProfile(workArea, user, organization, business);
+        this.workArea.add(pmp, "ProdMgrWorkQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnMyProfileActionPerformed
+
+    private void btnClosedRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosedRequestsActionPerformed
+        ProdMgrDoneQueue pmdq = new ProdMgrDoneQueue(workArea, user, organization, business);
+        this.workArea.add(pmdq, "ProdMgrWorkQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnClosedRequestsActionPerformed
+
+    private void btnMyRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyRequestActionPerformed
+          WorkTask task = ((ProductionManager) user.getRole()).getCurrentTask();
+        if (task == null) {
+            JOptionPane.showMessageDialog(null, "You currently do not have a task assigned.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (task instanceof BuildCarTask bcTask) {
+            NewOrderJPanel nojp = new NewOrderJPanel(workArea, user, organization, business, bcTask);
+            this.workArea.add(nojp, "New Custom Order Panel");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+            } else if (task instanceof BuildPartTask bpTask) {
+       
+
+            NewPartJPanel kpjp = new NewPartJPanel(workArea, user, organization, business, bpTask);
+            this.workArea.add(kpjp, "New Part Panel");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        }
+    }//GEN-LAST:event_btnMyRequestActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClosedRequests;
+    private javax.swing.JButton btnMyProfile;
+    private javax.swing.JButton btnMyRequest;
+    private javax.swing.JButton btnQueue;
+    private javax.swing.JButton btnRecallTracking;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
 }
