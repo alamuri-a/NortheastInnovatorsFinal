@@ -15,7 +15,9 @@ import Business.WorkTaskQueue.WorkTask;
 import UserInterface.LogisticsCoordinator.DoneQueueJPanel;
 import UserInterface.LogisticsCoordinator.MyProfileJPanel;
 import UserInterface.LogisticsCoordinator.ProcessShipmentJPanel;
+import UserInterface.LogisticsCoordinator.RecallsJPanel;
 import UserInterface.LogisticsCoordinator.SendShipmentJPanel;
+import UserInterface.LogisticsCoordinator.ViewNetworkJPanel;
 import UserInterface.LogisticsCoordinator.WorkQueueJPanel;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -62,7 +64,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         btnQueue = new javax.swing.JButton();
         btnRecalls = new javax.swing.JButton();
         btnFinished = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnNetwork = new javax.swing.JButton();
         btnMyProfile = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(153, 153, 255));
@@ -98,6 +100,11 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 80));
 
         btnRecalls.setText("Recalls");
+        btnRecalls.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecallsActionPerformed(evt);
+            }
+        });
         add(btnRecalls, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 80));
 
         btnFinished.setText("View Completed Tasks");
@@ -108,8 +115,13 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         });
         add(btnFinished, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
 
-        jButton5.setText("View Network");
-        add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 160, 80));
+        btnNetwork.setText("View Network");
+        btnNetwork.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNetworkActionPerformed(evt);
+            }
+        });
+        add(btnNetwork, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 160, 80));
 
         btnMyProfile.setText("My Profile");
         btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
@@ -140,6 +152,9 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
             this.workArea.add(psjp, "ProcessShipment");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
         } else if (task instanceof SendShipmentTask ssTask) {
+            
+            // ===============================WIP===============================
+            
             SendShipmentJPanel ssjp = new SendShipmentJPanel(workArea, user, organization, business, ssTask);
             this.workArea.add(ssjp, "SendShipment");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
@@ -160,14 +175,31 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnMyProfileActionPerformed
 
+    private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
+        // TODO add your handling code here:
+        ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
+        this.workArea.add(vnjp, "ViewNetwork");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnNetworkActionPerformed
+
+    private void btnRecallsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallsActionPerformed
+        // TODO add your handling code here:
+        
+        //===============================WIP===============================
+        
+        RecallsJPanel rjp = new RecallsJPanel(workArea, user, organization, business);
+        this.workArea.add(rjp, "Recalls");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnRecallsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCurrentTask;
     private javax.swing.JButton btnFinished;
     private javax.swing.JButton btnMyProfile;
+    private javax.swing.JButton btnNetwork;
     private javax.swing.JButton btnQueue;
     private javax.swing.JButton btnRecalls;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables

@@ -99,4 +99,20 @@ public class EnterpriseDirectory {
         return dealers;
     }
     
+    public ArrayList<SupplierEnterprise> getSuppliers() {
+        ArrayList<SupplierEnterprise> suppliers = new ArrayList();
+        for (Enterprise e : this.enterprises) {
+            if (e instanceof SupplierEnterprise supplier) suppliers.add(supplier);
+        }
+        return suppliers;
+    }
+    
+    public ArrayList<ManufacturerEnterprise> getManufacturers() {
+        ArrayList<ManufacturerEnterprise> manufacturers = new ArrayList();
+        for (Enterprise e : this.enterprises) {
+            if (e instanceof ManufacturerEnterprise manufacturer) manufacturers.add(manufacturer);
+        }
+        return manufacturers;
+    }
+    
 }
