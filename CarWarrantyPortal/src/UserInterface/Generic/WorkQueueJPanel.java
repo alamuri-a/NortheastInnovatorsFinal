@@ -2,13 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package UserInterface.LogisticsCoordinator;
+package UserInterface.Generic;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Organization.LogisticsOrganization;
+import Business.Ecosystem.Network;
+import Business.Enterprise.DealershipEnterprise;
+import Business.Enterprise.Enterprise;
+import Business.Organization.Organization;
+import Business.People.Employee;
+import Business.People.Person;
+import Business.Roles.LogisticsCoordinator;
+import Business.Roles.WarehouseClerk;
 import Business.User.User;
+import Business.Vehicle.Part;
 import Business.WorkTaskQueue.WorkTask;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -16,18 +25,18 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Ajay Alamuri
  */
-public class DoneQueueJPanel extends javax.swing.JPanel {
+public class WorkQueueJPanel extends javax.swing.JPanel {
 
     // ATTRIBUTES
-    LogisticsOrganization organization;
+    Organization organization;
     JPanel workArea;
     User user;
     Ecosystem business;
     
     /**
-     * Creates new form DoneQueueJPanel
+     * Creates new form WorkQueue
      */
-    public DoneQueueJPanel(JPanel csp, User usr, LogisticsOrganization org, Ecosystem system) {
+    public WorkQueueJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
         this.organization = org;
         this.workArea = csp;
         this.user = usr;
@@ -52,9 +61,10 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         btnBack = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTasks = new javax.swing.JTable();
+        btnAssign = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(153, 153, 255));
         setMinimumSize(new java.awt.Dimension(650, 600));
+        setPreferredSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -77,12 +87,20 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Task", "Assigned By", "Completed By", "Status"
+                "Task", "Assigned By", "Assigned To", "Status"
             }
         ));
         jScrollPane1.setViewportView(tblTasks);
 
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 610, 400));
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 610, 220));
+
+        btnAssign.setText("Assign To Me");
+        btnAssign.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAssignActionPerformed(evt);
+            }
+        });
+        add(btnAssign, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 320, 130, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -91,8 +109,33 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
+    private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
+        // TODO add your handling code here:
+        
+        int selectedRow = tblTasks.getSelectedRow();
+        if (selectedRow < 0 || selectedRow > tblTasks.getRowCount()) {
+            JOptionPane.showMessageDialog(null, "Please select a task from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        WorkTask selectedTask = (WorkTask) tblTasks.getValueAt(selectedRow, 0);
+        if (selectedTask.getAssignee() != null) {
+            JOptionPane.showMessageDialog(null, "An employee is already working on this task, please select another task.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        } else if (((LogisticsCoordinator) user.getRole()).getCurrentTask() != null) {
+            JOptionPane.showMessageDialog(null, "Cannot select another task while currently assigned one.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        ((LogisticsCoordinator) user.getRole()).setCurrentTask(selectedTask);
+        selectedTask.setAssignee(user);
+        
+        refreshTable();
+    }//GEN-LAST:event_btnAssignActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAssign;
     private javax.swing.JButton btnBack;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitle;
@@ -104,13 +147,13 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         
         model.setRowCount(0);
         
-        for (WorkTask task : this.organization.getOutTasks().getTasks()) {
+        for (WorkTask task : this.organization.getInTasks().getTasks()) {
             Object[] row = new Object[4];
             
             row[0] = task;
             row[1] = task.getAssigner();
             row[2] = (task.getAssignee() == null) ? null : task.getAssignee();
-            row[3] = task.isCompleted() ? "Complete" : "Error";
+            row[3] = task.isCompleted() ? "Complete" : task.getAssignee() == null ? "Waiting" : "In Progress";
             
             model.addRow(row);
         }

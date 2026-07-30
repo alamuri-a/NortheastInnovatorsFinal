@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package UserInterface.LogisticsCoordinator;
+package UserInterface.Generic;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
 import Business.User.User;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 public class MyProfileJPanel extends javax.swing.JPanel {
 
     // ATTRIBUTES
-    LogisticsOrganization organization;
+    Organization organization;
     JPanel workArea;
     User user;
     Ecosystem business;
@@ -26,7 +26,7 @@ public class MyProfileJPanel extends javax.swing.JPanel {
     /**
      * Creates new form MyProfileJPanel
      */
-    public MyProfileJPanel(JPanel csp, User usr, LogisticsOrganization org, Ecosystem system) {
+    public MyProfileJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
         this.organization = org;
         this.workArea = csp;
         this.user = usr;
@@ -63,7 +63,6 @@ public class MyProfileJPanel extends javax.swing.JPanel {
         lblPassword = new javax.swing.JLabel();
         txtPassword = new javax.swing.JTextField();
 
-        setBackground(new java.awt.Color(153, 153, 255));
         setMinimumSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 

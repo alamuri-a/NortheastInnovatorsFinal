@@ -5,20 +5,27 @@
 package UserInterface.WorkAreas;
 
 import Business.Ecosystem.Ecosystem;
+import Business.Ecosystem.Network;
+import Business.Enterprise.DealershipEnterprise;
+import Business.Enterprise.Enterprise;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
+import Business.People.Employee;
+import Business.People.Person;
 import Business.Roles.LogisticsCoordinator;
+import Business.Roles.WarehouseClerk;
 import Business.User.User;
+import Business.Vehicle.Part;
 import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SendShipmentTask;
 import Business.WorkTaskQueue.WorkTask;
-import UserInterface.LogisticsCoordinator.DoneQueueJPanel;
-import UserInterface.LogisticsCoordinator.MyProfileJPanel;
+import UserInterface.Generic.DoneQueueJPanel;
+import UserInterface.Generic.MyProfileJPanel;
 import UserInterface.LogisticsCoordinator.ProcessShipmentJPanel;
 import UserInterface.LogisticsCoordinator.RecallsJPanel;
 import UserInterface.LogisticsCoordinator.SendShipmentJPanel;
-import UserInterface.LogisticsCoordinator.ViewNetworkJPanel;
-import UserInterface.LogisticsCoordinator.WorkQueueJPanel;
+import UserInterface.Generic.ViewNetworkJPanel;
+import UserInterface.Generic.WorkQueueJPanel;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -47,6 +54,8 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
+        
+        DemoData();
     }
 
     /**
@@ -135,6 +144,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
         // TODO add your handling code here:
         WorkQueueJPanel wqjp = new WorkQueueJPanel(workArea, user, organization, business);
+        wqjp.setBackground(this.getBackground());
         this.workArea.add(wqjp, "OrgWorkQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnQueueActionPerformed
@@ -164,6 +174,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
         // TODO add your handling code here:
         DoneQueueJPanel dqjp = new DoneQueueJPanel(workArea, user, organization, business);
+        dqjp.setBackground(this.getBackground());
         this.workArea.add(dqjp, "DoneQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnFinishedActionPerformed
@@ -171,6 +182,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
         // TODO add your handling code here:
         MyProfileJPanel mpjp = new MyProfileJPanel(workArea, user, organization, business);
+        mpjp.setBackground(this.getBackground());
         this.workArea.add(mpjp, "MyProfile");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnMyProfileActionPerformed
@@ -178,6 +190,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
         // TODO add your handling code here:
         ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
+        vnjp.setBackground(this.getBackground());
         this.workArea.add(vnjp, "ViewNetwork");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnNetworkActionPerformed
@@ -203,4 +216,28 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
+
+    private void DemoData() {
+        try {
+            for (int i = 0; i < 10; i++) {
+                Person p = new Person("Person" + i);
+                Employee emp = organization.getEmployees().createEmployee(p);
+                User newUser = organization.getUsers().createUser(emp, "temp", "temp", new WarehouseClerk());
+                Part part = new Part(i);
+                organization.getInTasks().createProcessShipmentTask(newUser, part);
+
+                DealershipEnterprise dealer = null;
+                for (Network n : business.getNetworks()) {
+                    for (Enterprise e : n.getEnterprises().getEnterprises()) {
+                        if (e instanceof DealershipEnterprise dealershipEnterprise) dealer = dealershipEnterprise;
+                    }
+                }
+                if (dealer == null) return;
+
+                organization.getInTasks().createSendShipmentTask(newUser, dealer, part, i);
+            }
+        } catch (Exception e) {
+            
+        }
+    }
 }
