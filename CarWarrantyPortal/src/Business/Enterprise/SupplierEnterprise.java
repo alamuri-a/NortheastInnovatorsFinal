@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class SupplierEnterprise extends Enterprise {
     
     // ATTRIBUTES
-    HashMap<Part, Integer> partsStock;
+    HashMap<Integer, Integer> partsStock;
     
     // CONSTRUCTORS
     public SupplierEnterprise(String n) {
@@ -24,12 +24,12 @@ public class SupplierEnterprise extends Enterprise {
     
     // METHODS
     public int getPartQuantity(Part part) {
-        Integer quantity = this.partsStock.get(part);
+        Integer quantity = this.partsStock.get(part.getId());
         return (quantity == null) ? 0 : (int) quantity;
     }
     
     public void setPartQuantity(Part part, int newQuantity) {
-        this.partsStock.put(part, newQuantity);
+        this.partsStock.put(part.getId(), newQuantity);
     }
     
 }

@@ -4,6 +4,7 @@
  */
 package Business.WorkTaskQueue;
 
+import Business.Organization.ProductionOrganization;
 import Business.User.User;
 import Business.Vehicle.Part;
 
@@ -15,23 +16,40 @@ public class GetPartTask extends WorkTask {
     
     // ATTRIBUTES
     Part part;
+    int quantity;
+    boolean backordered;
     
     // CONSTRUCTORS
-    public GetPartTask(User assigner, Part pt) {
+    public GetPartTask(User assigner, Part pt, int count) {
         super(assigner);
         this.part = pt;
+        this.quantity = count;
+        this.backordered = false;
     }
     
     // METHODS
+    @Override
+    public String toString() {
+        return "Get Part";
+    }
+
+    public Part getPart() {
+        return part;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public boolean isBackordered() {
+        return backordered;
+    }
+    
+    
     /**
      * Request production to make specified part
-     * 
-     * @param part Part needing to be back ordered
-     * 
-     * @return True if back order is complete, False if still waiting
      */
-    public boolean BackOrder(Part part) {
-        // TODO
-        return false;
+    public void BackOrder(ProductionOrganization production) {
+        this.backordered = true;
     }
 }

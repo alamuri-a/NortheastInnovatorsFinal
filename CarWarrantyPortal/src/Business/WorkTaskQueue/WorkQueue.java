@@ -180,9 +180,9 @@ public class WorkQueue {
     * 
     * @throws Exception If attempted to be instantiated for organization other than Warehousing organization
     */
-    public GetPartTask createGetPartTask(User assigner, Part part) throws Exception {
+    public GetPartTask createGetPartTask(User assigner, Part part, int quantity) throws Exception {
         if (this.organization instanceof WarehousingOrganization) {
-            GetPartTask newTask = new GetPartTask(assigner, part);
+            GetPartTask newTask = new GetPartTask(assigner, part, quantity);
             this.tasks.add(newTask);
             return newTask;
         }

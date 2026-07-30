@@ -2,12 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package UserInterface.LogisticsCoordinator;
+package UserInterface.WarehouseClerk;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Organization.LogisticsOrganization;
-import Business.Roles.LogisticsCoordinator;
+import Business.Organization.WarehousingOrganization;
+import Business.Roles.WarehouseClerk;
 import Business.User.User;
+import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.WorkTask;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -21,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
 public class WorkQueueJPanel extends javax.swing.JPanel {
 
     // ATTRIBUTES
-    LogisticsOrganization organization;
+    WarehousingOrganization organization;
     JPanel workArea;
     User user;
     Ecosystem business;
@@ -29,7 +30,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
     /**
      * Creates new form WorkQueue
      */
-    public WorkQueueJPanel(JPanel csp, User usr, LogisticsOrganization org, Ecosystem system) {
+    public WorkQueueJPanel(JPanel csp, User usr, WarehousingOrganization org, Ecosystem system) {
         this.organization = org;
         this.workArea = csp;
         this.user = usr;
@@ -56,7 +57,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
         tblTasks = new javax.swing.JTable();
         btnAssign = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(153, 153, 255));
+        setBackground(new java.awt.Color(204, 255, 153));
         setMinimumSize(new java.awt.Dimension(650, 600));
         setPreferredSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -116,12 +117,12 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
         if (selectedTask.getAssignee() != null) {
             JOptionPane.showMessageDialog(null, "An employee is already working on this task, please select another task.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
-        } else if (((LogisticsCoordinator) user.getRole()).getCurrentTask() != null) {
+        } else if (((WarehouseClerk) user.getRole()).getCurrentTask() != null) {
             JOptionPane.showMessageDialog(null, "Cannot select another task while currently assigned one.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
-        ((LogisticsCoordinator) user.getRole()).setCurrentTask(selectedTask);
+        ((WarehouseClerk) user.getRole()).setCurrentTask(selectedTask);
         selectedTask.setAssignee(user);
         
         refreshTable();
@@ -147,7 +148,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
             row[0] = task;
             row[1] = task.getAssigner();
             row[2] = task.getAssignee() == null ? null : task.getAssignee();
-            row[3] = task.getAssignee() == null ? "Waiting" : "In Progress";
+            row[3] = ((GetPartTask) task).isBackordered() ? "Backordered" : task.getAssignee() == null ? "Waiting" : "In Progress";
             
             model.addRow(row);
         }

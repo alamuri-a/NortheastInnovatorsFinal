@@ -6,7 +6,18 @@ package UserInterface.WorkAreas;
 
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.Organization;
+import Business.Organization.WarehousingOrganization;
+import Business.People.Employee;
+import Business.People.Person;
+import Business.Roles.LogisticsCoordinator;
+import Business.Roles.WarehouseClerk;
 import Business.User.User;
+import Business.Vehicle.Part;
+import Business.WorkTaskQueue.GetPartTask;
+import Business.WorkTaskQueue.WorkTask;
+import UserInterface.WarehouseClerk.*;
+import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -15,11 +26,26 @@ import javax.swing.JPanel;
  */
 public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
 
+    // ATTRIBUTES
+    WarehousingOrganization organization;
+    JPanel workArea;
+    User user;
+    Ecosystem business;
+    
     /**
      * Creates new form WarehouseClerkWorkAreaJPanel
      */
     public WarehouseClerkWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
+        this.organization = (WarehousingOrganization) org;
+        this.workArea = csp;
+        this.user = usr;
+        this.business = system;
+        
         initComponents();
+        lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
+        lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
+        
+        DemoData();
     }
 
     /**
@@ -31,21 +57,151 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(204, 255, 153));
+        lblWelcome = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
+        btnCurrentTask2 = new javax.swing.JButton();
+        btnQueue = new javax.swing.JButton();
+        btnRecalls = new javax.swing.JButton();
+        btnFinished = new javax.swing.JButton();
+        btnNetwork = new javax.swing.JButton();
+        btnMyProfile = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBackground(new java.awt.Color(204, 255, 153));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblWelcome.setText("Welcome <User>");
+        add(lblWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 460, -1));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTitle.setText("<Company Name> <Org Name>");
+        lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
+        lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
+        add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
+
+        btnCurrentTask2.setText("Current Task");
+        btnCurrentTask2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCurrentTask2ActionPerformed(evt);
+            }
+        });
+        add(btnCurrentTask2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 160, 160, 80));
+
+        btnQueue.setText("Check Queue");
+        btnQueue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueueActionPerformed(evt);
+            }
+        });
+        add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 80));
+
+        btnRecalls.setText("Recalls");
+        btnRecalls.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecallsActionPerformed(evt);
+            }
+        });
+        add(btnRecalls, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 80));
+
+        btnFinished.setText("View Completed Tasks");
+        btnFinished.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinishedActionPerformed(evt);
+            }
+        });
+        add(btnFinished, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
+
+        btnNetwork.setText("View Network");
+        btnNetwork.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNetworkActionPerformed(evt);
+            }
+        });
+        add(btnNetwork, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 160, 80));
+
+        btnMyProfile.setText("My Profile");
+        btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyProfileActionPerformed(evt);
+            }
+        });
+        add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 160, 80));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCurrentTask2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurrentTask2ActionPerformed
+        // TODO add your handling code here:
+        WorkTask task = ((WarehouseClerk) user.getRole()).getCurrentTask();
+        if (task == null) {
+            JOptionPane.showMessageDialog(null, "You currently do not have a task assigned.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        GetPartJPanel gpjp = new GetPartJPanel(workArea, user, organization, business, (GetPartTask) task);
+        this.workArea.add(gpjp, "GetPart");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnCurrentTask2ActionPerformed
+
+    private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
+        // TODO add your handling code here:
+        WorkQueueJPanel wqjp = new WorkQueueJPanel(workArea, user, organization, business);
+        this.workArea.add(wqjp, "OrgWorkQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnQueueActionPerformed
+
+    private void btnRecallsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallsActionPerformed
+        // TODO add your handling code here:
+
+        //===============================WIP===============================
+
+        RecallsJPanel rjp = new RecallsJPanel(workArea, user, organization, business);
+        this.workArea.add(rjp, "Recalls");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnRecallsActionPerformed
+
+    private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
+        // TODO add your handling code here:
+        DoneQueueJPanel dqjp = new DoneQueueJPanel(workArea, user, organization, business);
+        this.workArea.add(dqjp, "DoneQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnFinishedActionPerformed
+
+    private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
+        // TODO add your handling code here:
+        ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
+        this.workArea.add(vnjp, "ViewNetwork");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnNetworkActionPerformed
+
+    private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
+        // TODO add your handling code here:
+        MyProfileJPanel mpjp = new MyProfileJPanel(workArea, user, organization, business);
+        this.workArea.add(mpjp, "MyProfile");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnMyProfileActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCurrentTask2;
+    private javax.swing.JButton btnFinished;
+    private javax.swing.JButton btnMyProfile;
+    private javax.swing.JButton btnNetwork;
+    private javax.swing.JButton btnQueue;
+    private javax.swing.JButton btnRecalls;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
+
+    private void DemoData() {
+        try {
+            for (int i = 0; i < 10; i++) {
+                Person p = new Person("Person" + i);
+                Employee emp = organization.getEmployees().createEmployee(p);
+                User newUser = organization.getUsers().createUser(emp, "temp", "temp", new LogisticsCoordinator());
+                Part part = new Part(i);
+                organization.getInTasks().createGetPartTask(newUser, part, i);
+            }
+        } catch (Exception e) {
+            
+        }
+    }
 }
