@@ -153,7 +153,7 @@ public class ProcessShipmentJPanel extends javax.swing.JPanel {
         ((LogisticsCoordinator) user.getRole()).completeTask();
         
         // Notify and refresh
-        JOptionPane.showMessageDialog(null, "Shipment successfully processed, please return and track a new task.");
+        JOptionPane.showMessageDialog(null, "Shipment successfully processed, please return and track a new task.", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshFields();
     }//GEN-LAST:event_btnCompleteActionPerformed
 
