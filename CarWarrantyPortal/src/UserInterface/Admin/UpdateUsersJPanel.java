@@ -7,7 +7,6 @@ package UserInterface.Admin;
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.AdminOrganization;
 import Business.Organization.Organization;
-import Business.People.Employee;
 import Business.User.User;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -18,29 +17,29 @@ import javax.swing.JPanel;
  *
  * @author Ajay Alamuri
  */
-public class UpdateEmployeesJPanel extends javax.swing.JPanel {
+public class UpdateUsersJPanel extends javax.swing.JPanel {
 
     // ATTRIBUTES
     AdminOrganization organization;
     JPanel workArea;
     User user;
     Ecosystem business;
-    Employee selectedEmployee;
+    User selectedUser;
     Organization selectedOrganization;
     
     /**
-     * Creates new form UpdateEmployeesJPanel
+     * Creates new form UpdateUsersJPanel
      */
-    public UpdateEmployeesJPanel(JPanel csp, User usr, AdminOrganization org, Ecosystem system, Employee emp, Organization orgs) {
+    public UpdateUsersJPanel(JPanel csp, User usr, AdminOrganization org, Ecosystem system, User user, Organization orgz) {
         this.organization = org;
         this.workArea = csp;
         this.user = usr;
         this.business = system;
-        this.selectedEmployee = emp;
-        this.selectedOrganization = orgs;
+        this.selectedUser = user;
+        this.selectedOrganization = orgz;
         
         initComponents();
-        this.lblTitle.setText(selectedEmployee.getPerson().getName() + " Update");
+        lblTitle.setText(selectedUser.getUsername() + " Update");
         
         refreshFields();
     }
@@ -63,6 +62,12 @@ public class UpdateEmployeesJPanel extends javax.swing.JPanel {
         lblTitle = new javax.swing.JLabel();
         lblOrganization = new javax.swing.JLabel();
         txtOrganization = new javax.swing.JTextField();
+        lblUsername = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        lblRole = new javax.swing.JLabel();
+        txtRole = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(153, 255, 255));
         setMinimumSize(new java.awt.Dimension(650, 600));
@@ -76,15 +81,15 @@ public class UpdateEmployeesJPanel extends javax.swing.JPanel {
         });
         add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 510, 130, -1));
 
-        lblID.setText("Employee ID:");
-        add(lblID, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, 80, 30));
+        lblID.setText("User Account ID:");
+        add(lblID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 100, 30));
 
         txtID.setEditable(false);
-        add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 230, 110, 30));
+        add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 150, 110, 30));
 
         lblName.setText("Employee Name:");
-        add(lblName, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 270, 100, 30));
-        add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, 110, 30));
+        add(lblName, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, 100, 30));
+        add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 240, 110, 30));
 
         btnUpdate.setText("Update");
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
@@ -92,17 +97,31 @@ public class UpdateEmployeesJPanel extends javax.swing.JPanel {
                 btnUpdateActionPerformed(evt);
             }
         });
-        add(btnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 310, -1, -1));
+        add(btnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 370, -1, -1));
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        lblTitle.setText("<Employee Name> Update");
+        lblTitle.setText("<User Name> Update");
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
 
         lblOrganization.setText("Organization:");
-        add(lblOrganization, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 80, 30));
+        add(lblOrganization, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 110, 80, 30));
 
         txtOrganization.setEditable(false);
-        add(txtOrganization, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 190, 110, 30));
+        add(txtOrganization, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 110, 110, 30));
+
+        lblUsername.setText("Username:");
+        add(lblUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 280, 70, 30));
+        add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 280, 110, 30));
+
+        lblRole.setText("Role:");
+        add(lblRole, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 190, 40, 30));
+
+        txtRole.setEditable(false);
+        add(txtRole, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 190, 110, 30));
+
+        lblPassword.setText("Password:");
+        add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 320, 70, 30));
+        add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 320, 110, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -116,22 +135,26 @@ public class UpdateEmployeesJPanel extends javax.swing.JPanel {
 
         // Field validation
         String name = txtName.getText();
-        if (name.isBlank()) {
-            JOptionPane.showMessageDialog(null, "Employee name cannot be blank", "Warning", JOptionPane.WARNING_MESSAGE);
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        if (name.isBlank() || username.isBlank() || password.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Employee name/Username/Password cannot be blank.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         // Update in backend
-        selectedEmployee.getPerson().setName(name);
+        selectedUser.setUsername(username);
+        selectedUser.setPassword(password);
+        selectedUser.getEmployee().getPerson().setName(name);
 
         // Update previous page table
         Component[] panelStack = workArea.getComponents();
         JPanel lastPanel = (JPanel) panelStack[panelStack.length - 2];
-        ManageEmployeesJPanel mejp = (ManageEmployeesJPanel) lastPanel;
-        mejp.refreshTables(); // Update table
+        ManageUsersJPanel mujp = (ManageUsersJPanel) lastPanel;
+        mujp.refreshTable(); // Update table
 
         // Notify and refresh
-        JOptionPane.showMessageDialog(null, "Successfully updated employee name!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Successfully updated user information!", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshFields();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -142,15 +165,24 @@ public class UpdateEmployeesJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblOrganization;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblRole;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblUsername;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtOrganization;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtRole;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
     private void refreshFields() {
         txtOrganization.setText(selectedOrganization.getName());
-        txtID.setText(String.valueOf(selectedEmployee.getID()));
-        txtName.setText(selectedEmployee.getPerson().getName());
+        txtID.setText(String.valueOf(selectedUser.getID()));
+        txtRole.setText(selectedUser.getRole().toString());
+        txtName.setText(selectedUser.toString());
+        txtUsername.setText(selectedUser.getUsername());
+        txtPassword.setText(selectedUser.getPassword());
     }
 }

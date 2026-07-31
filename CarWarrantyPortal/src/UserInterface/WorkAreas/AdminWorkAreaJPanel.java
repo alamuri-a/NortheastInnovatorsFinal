@@ -10,6 +10,7 @@ import Business.Organization.Organization;
 import Business.User.User;
 import UserInterface.Admin.ManageEmployeesJPanel;
 import UserInterface.Admin.ManageOrganizationsJPanel;
+import UserInterface.Admin.ManageUsersJPanel;
 import UserInterface.Admin.MyProfileJPanel;
 import UserInterface.Admin.ViewNetworkJPanel;
 import java.awt.CardLayout;
@@ -123,6 +124,9 @@ public class AdminWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersActionPerformed
         // TODO add your handling code here:
+        ManageUsersJPanel mujp = new ManageUsersJPanel(workArea, user, organization, business);
+        this.workArea.add(mujp, "ManageUsers");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnUsersActionPerformed
 
     private void btnOrganizationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrganizationsActionPerformed
