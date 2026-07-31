@@ -28,6 +28,8 @@ public class DealershipEnterprise extends Enterprise {
     // Service, appointment, recall, or trade-in tasks related to dealership vehicles.
     private final ArrayList<WorkTask> serviceRecords;
 
+    private Type enterpriseType;
+
     /**
      * Creates a dealership enterprise with empty business-record collections.
      *
@@ -125,5 +127,10 @@ public class DealershipEnterprise extends Enterprise {
      */
     public List<WorkTask> getServiceRecords() {
         return Collections.unmodifiableList(serviceRecords);
+    }
+
+       @Override
+    public Type getEnterpriseType() {
+        return Type.Dealer; // Hardcoded return for this subclass
     }
 }

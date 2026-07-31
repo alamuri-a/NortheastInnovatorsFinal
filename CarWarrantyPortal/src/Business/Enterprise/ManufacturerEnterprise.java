@@ -7,16 +7,28 @@ package Business.Enterprise;
 /**
  *
  * @author Ajay Alamuri
+ * @author Meredith Molyneux
  */
 public class ManufacturerEnterprise extends Enterprise {
     
     // ATTRIBUTES
+      private Type enterpriseType;
+    //Orders recieved for new parts and vehicles including custom orders
+
+    //Quality Assurance records and shipments to dealers and parts supplier
+
+    //Recall records
+
     // Database partsDB
     // Database shipments;
     
     // CONSTRUCTORS
-    public ManufacturerEnterprise(String n) {
-        super(n);
+    public ManufacturerEnterprise(String name) {
+        super(name);
+
     }
-    
+       @Override
+    public Type getEnterpriseType() {
+        return Type.Manu; // Hardcoded return for this subclass
+    }
 }

@@ -63,7 +63,38 @@ public class OrganizationDirectory {
         }
         return null;
     }
-    
+        /**
+     * Factory method to create an organization based on its Enum type
+     *
+     * @param type The Organization.Type enum from the combo box selection
+     * @return The newly created Organization, or null if type is invalid
+     */
+    public Organization createOrganization(Organization.Type type) {
+        try {
+            switch (type) {
+                case Production:
+                    return createProductionOrganization(type.getValue());
+                case QA:
+                    return createQualityAssuranceOrganization(type.getValue());
+                case Sales:
+                    return createSalesOrganization(type.getValue());
+                case ServiceCenter:
+                    return createServiceOrganization(type.getValue());
+                case Warehousing:
+                    return createWarehousingOrganization(type.getValue());
+                case Logistics:
+                    return createLogisticsOrganization(type.getValue());
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            // Catches the Enterprise validation exceptions and alerts the terminal
+            System.err.println("Creation Failed: " + e.getMessage());
+            // Optional: You could show a JOptionPane error dialog here if you import javax.swing.JOptionPane
+        }
+        return null;
+    }
+
     /**
     * Create a new ProductionOrganization, add to internal list of organizations, then return organization for modification
     * 

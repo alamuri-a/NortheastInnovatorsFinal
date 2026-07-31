@@ -10,6 +10,7 @@ import Business.Organization.OrganizationDirectory;
 /**
  *
  * @author Ajay Alamuri
+ * @author Meredith Molyneux
  */
 public abstract class Enterprise {
     
@@ -18,7 +19,7 @@ public abstract class Enterprise {
     String name;
     OrganizationDirectory organizations;
     AdminOrganization admins;
-    
+    private Type enterpriseType;
     static int instances = 0;
     
     // CONSTRUCTORS
@@ -30,11 +31,32 @@ public abstract class Enterprise {
     }
     
     // METHODS
+       public enum Type{
+        Manu("Manufacturer"),
+        Dealer("Dealership"),
+        Supplier("Supplier");
+
+        private String value;
+
+        private Type(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+    @Override
+    public String toString() {
+        return value; // Makes the combo box display "Manufacturer" cleanly
+    }
+    }
     @Override
     public String toString() {
         return this.name;
     }
-    
+    public abstract Type getEnterpriseType();
+        
     public int getID() {
         return this.id;
     }
@@ -62,7 +84,5 @@ public abstract class Enterprise {
     public void setAdmins(AdminOrganization admins) {
         this.admins = admins;
     }
-    
-    
-    
+       
 }
