@@ -7,12 +7,8 @@ package UserInterface.WorkAreas;
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.Organization;
 import Business.Organization.WarehousingOrganization;
-import Business.People.Employee;
-import Business.People.Person;
-import Business.Roles.LogisticsCoordinator;
 import Business.Roles.WarehouseClerk;
 import Business.User.User;
-import Business.Vehicle.Part;
 import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.WarehouseClerk.*;
@@ -127,7 +123,7 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCurrentTask2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurrentTask2ActionPerformed
-        // TODO add your handling code here:
+        // Load task handling page if user assigned a task, else notify and do nothing
         WorkTask task = ((WarehouseClerk) user.getRole()).getCurrentTask();
         if (task == null) {
             JOptionPane.showMessageDialog(null, "You currently do not have a task assigned.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -140,14 +136,14 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCurrentTask2ActionPerformed
 
     private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
-        // TODO add your handling code here:
+        // Load incoming task queue page
         WorkQueueJPanel wqjp = new WorkQueueJPanel(workArea, user, organization, business);
         this.workArea.add(wqjp, "OrgWorkQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnQueueActionPerformed
 
     private void btnRecallsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallsActionPerformed
-        // TODO add your handling code here:
+        // Load recalls page
 
         //===============================WIP===============================
 
@@ -157,21 +153,21 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRecallsActionPerformed
 
     private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
-        // TODO add your handling code here:
+        // Load finished task queue page
         DoneQueueJPanel dqjp = new DoneQueueJPanel(workArea, user, organization, business);
         this.workArea.add(dqjp, "DoneQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnFinishedActionPerformed
 
     private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
-        // TODO add your handling code here:
+        // Load network view page
         ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
         this.workArea.add(vnjp, "ViewNetwork");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnNetworkActionPerformed
 
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
-        // TODO add your handling code here:
+        // Load profile management page
         MyProfileJPanel mpjp = new MyProfileJPanel(workArea, user, organization, business);
         this.workArea.add(mpjp, "MyProfile");
         ((CardLayout) this.workArea.getLayout()).next(workArea);

@@ -87,7 +87,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
@@ -101,6 +101,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTable() {
+        // Fill table with necessary info
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         
         model.setRowCount(0);

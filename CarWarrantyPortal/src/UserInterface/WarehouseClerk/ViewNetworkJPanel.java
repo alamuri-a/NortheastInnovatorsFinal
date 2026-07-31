@@ -143,6 +143,7 @@ public class ViewNetworkJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshTables() {
+        // Load data for respective tables
         refreshManufacturers();
         refreshDealerships();
         refreshSuppliers();

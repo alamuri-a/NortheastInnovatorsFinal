@@ -240,6 +240,7 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshFields() {
+        // Fill fields with necessary data
         int required = task.getPartCount();
         int stock = ((SupplierEnterprise) organization.getCompany()).getPartQuantity(task.getPart());
         

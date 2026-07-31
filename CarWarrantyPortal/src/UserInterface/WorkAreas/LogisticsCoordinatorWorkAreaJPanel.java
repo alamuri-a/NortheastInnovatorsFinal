@@ -17,10 +17,10 @@ import Business.Roles.WarehouseClerk;
 import Business.User.User;
 import Business.Vehicle.Part;
 import Business.WorkTaskQueue.ProcessShipmentTask;
+import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.SendShipmentTask;
 import Business.WorkTaskQueue.WorkTask;
 import Business.WorkTaskQueue.VehicleDeliveryTask;
-import Business.WorkTaskQueue.SellVehicleTask;
 import UserInterface.LogisticsCoordinator.*;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -51,8 +51,6 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
-        
-        DemoData();
     }
 
     /**
@@ -139,117 +137,91 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
-        // TODO add your handling code here:
+        // Load incoming work queue page
         WorkQueueJPanel wqjp = new WorkQueueJPanel(workArea, user, organization, business);
         this.workArea.add(wqjp, "OrgWorkQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnQueueActionPerformed
 
     private void btnCurrentTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurrentTaskActionPerformed
-WorkTask task = ((LogisticsCoordinator) user.getRole()).getCurrentTask();
-
-    if (task == null) {
-        JOptionPane.showMessageDialog(
-                null,
-                "You currently do not have a task assigned.",
-                "Warning",
-                JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    if (task instanceof ProcessShipmentTask) {
-        ProcessShipmentTask psTask = (ProcessShipmentTask) task;
-        ProcessShipmentJPanel psjp = new ProcessShipmentJPanel(
-                workArea, user, organization, business, psTask);
-        this.workArea.add(psjp, "ProcessShipment");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
-
-    } else if (task instanceof SendShipmentTask) {
-        SendShipmentTask ssTask = (SendShipmentTask) task;
-        SendShipmentJPanel ssjp = new SendShipmentJPanel(
-                workArea, user, organization, business, ssTask);
-        this.workArea.add(ssjp, "SendShipment");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
-
-    } else if (task instanceof VehicleDeliveryTask) {
-        VehicleDeliveryTask deliveryTask = (VehicleDeliveryTask) task;
-        completeVehicleDelivery(deliveryTask);
-    }
-    }//GEN-LAST:event_btnCurrentTaskActionPerformed
-    /**
-     * Completes delivery of a customer vehicle from Manufacturer Logistics
-     * to the requesting Dealership enterprise.
-     *
-     * @param deliveryTask assigned vehicle-delivery task
-     */
-    private void completeVehicleDelivery(
-            VehicleDeliveryTask deliveryTask) {
-
-        int choice = JOptionPane.showConfirmDialog(
-                this,
-                "Confirm delivery of "
-                        + deliveryTask.getCustomOrder().getVehicleDescription()
-                        + " to "
-                        + deliveryTask.getDestinationDealership().getName()
-                        + "?",
-                "Confirm Vehicle Delivery",
-                JOptionPane.YES_NO_OPTION);
-
-        if (choice != JOptionPane.YES_OPTION) {
+        // Load respective page to handle current task, notify and do nothing if user currently has no task assigned
+        
+        // Task check
+        WorkTask task = ((LogisticsCoordinator) user.getRole()).getCurrentTask();
+        if (task == null) {
+            JOptionPane.showMessageDialog(null, "You currently do not have a task assigned.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        
+        // Route to correct page
+        if (task instanceof ProcessShipmentTask psTask) {
+            ProcessShipmentJPanel psjp = new ProcessShipmentJPanel(workArea, user, organization, business, psTask);
+            this.workArea.add(psjp, "ProcessShipment");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        } else if (task instanceof SendShipmentTask ssTask) {
+            
+            // ===============================WIP===============================
+            
+            SendShipmentJPanel ssjp = new SendShipmentJPanel(workArea, user, organization, business, ssTask);
+            this.workArea.add(ssjp, "SendShipment");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        } else if (task instanceof VehicleDeliveryTask) {
+            VehicleDeliveryTask deliveryTask = (VehicleDeliveryTask) task;
+            if (completeVehicleDelivery(deliveryTask)) {
+                
+                    organization.getInTasks().popTask(deliveryTask);
+                    organization.getOutTasks().pushTask(deliveryTask);
 
-        organization.getInTasks().popTask(deliveryTask);
-        organization.getOutTasks().pushTask(deliveryTask);
+                    ((LogisticsCoordinator) user.getRole()).completeTask();
 
-        LogisticsCoordinator coordinator
-                = (LogisticsCoordinator) user.getRole();
-                coordinator.completeTask();
+                    for (SellVehicleTask salesTask
+                            : deliveryTask.getDestinationDealership().getSalesRecords()) {
 
-        for (SellVehicleTask salesTask
-                : deliveryTask.getDestinationDealership().getSalesRecords()) {
+                        if (salesTask.getCustomOrder() != null
+                                && salesTask.getCustomOrder().getOrderId().equals(
+                                        deliveryTask.getCustomOrder().getOrderId())) {
 
-            if (salesTask.getCustomOrder() != null
-                    && salesTask.getCustomOrder().getOrderId().equals(
-                            deliveryTask.getCustomOrder().getOrderId())) {
+                            salesTask.markDelivered();
+                            break;
+                        }
+                    }
 
-                salesTask.markDelivered();
-                break;
+                    JOptionPane.showMessageDialog(
+                            this,
+                            deliveryTask.getCustomOrder().getOrderId()
+                                    + " was delivered successfully to "
+                                    + deliveryTask.getDestinationDealership().getName()
+                                    + ".",
+                            "Vehicle Delivered",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             }
-        }
-
-        JOptionPane.showMessageDialog(
-                this,
-                deliveryTask.getCustomOrder().getOrderId()
-                        + " was delivered successfully to "
-                        + deliveryTask.getDestinationDealership().getName()
-                        + ".",
-                "Vehicle Delivered",
-                JOptionPane.INFORMATION_MESSAGE);
-    }
+    }                                              
+    private void doNothing(){
+    }//GEN-LAST:event_btnCurrentTaskActionPerformed
     private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
-        // TODO add your handling code here:
+        // Load completed work queue page
         DoneQueueJPanel dqjp = new DoneQueueJPanel(workArea, user, organization, business);
         this.workArea.add(dqjp, "DoneQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnFinishedActionPerformed
 
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
-        // TODO add your handling code here:
+        // Load my profile page
         MyProfileJPanel mpjp = new MyProfileJPanel(workArea, user, organization, business);
         this.workArea.add(mpjp, "MyProfile");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnMyProfileActionPerformed
 
     private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
-        // TODO add your handling code here:
+        // Load network view page
         ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
         this.workArea.add(vnjp, "ViewNetwork");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnNetworkActionPerformed
 
     private void btnRecallsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallsActionPerformed
-        // TODO add your handling code here:
+        // Load recalls page
         
         //===============================WIP===============================
         
@@ -270,27 +242,29 @@ WorkTask task = ((LogisticsCoordinator) user.getRole()).getCurrentTask();
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
 
-    private void DemoData() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Person p = new Person("Person" + i);
-                Employee emp = organization.getEmployees().createEmployee(p);
-                User newUser = organization.getUsers().createUser(emp, "temp", "temp", new WarehouseClerk());
-                Part part = new Part(i);
-                organization.getInTasks().createProcessShipmentTask(newUser, part);
+    /**
+     * Completes delivery of a customer vehicle from Manufacturer Logistics
+     * to the requesting Dealership enterprise.
+     *
+     * @param deliveryTask assigned vehicle-delivery task
+     */
+    private boolean completeVehicleDelivery(
+            VehicleDeliveryTask deliveryTask) {
 
-                DealershipEnterprise dealer = null;
-                for (Network n : business.getNetworks()) {
-                    for (Enterprise e : n.getEnterprises().getEnterprises()) {
-                        if (e instanceof DealershipEnterprise dealershipEnterprise) dealer = dealershipEnterprise;
-                    }
-                }
-                if (dealer == null) return;
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Confirm delivery of "
+                        + deliveryTask.getCustomOrder().getVehicleDescription()
+                        + " to "
+                        + deliveryTask.getDestinationDealership().getName()
+                        + "?",
+                "Confirm Vehicle Delivery",
+                JOptionPane.YES_NO_OPTION);
 
-                organization.getInTasks().createSendShipmentTask(newUser, dealer, part, i);
-            }
-        } catch (Exception e) {
-            
+        if (choice != JOptionPane.YES_OPTION) {
+            return true;
         }
+        return false;
     }
+        
 }

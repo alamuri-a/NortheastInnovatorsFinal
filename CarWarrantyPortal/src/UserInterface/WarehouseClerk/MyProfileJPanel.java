@@ -125,7 +125,7 @@ public class MyProfileJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // Add new stock to company database
+        // Update password
 
         // Field validation
         String password = txtPassword.getText();
@@ -168,6 +168,7 @@ public class MyProfileJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     
     private void refreshFields() {
+        // Load fields with necessary data
         txtCompany.setText(organization.getCompany().getName());
         txtName.setText(user.getEmployee().getPerson().getName());
         txtOrganization.setText(organization.getName());
