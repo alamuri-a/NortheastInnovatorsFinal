@@ -8,7 +8,6 @@ import Business.Enterprise.Enterprise;
 import Business.People.EmployeeDirectory;
 import Business.User.UserDirectory;
 import Business.WorkTaskQueue.WorkQueue;
-import Business.WorkTaskQueue.WorkTask;
 
 /**
  *
@@ -37,6 +36,11 @@ public abstract class Organization {
     }
     
     // METHODS
+    @Override
+    public String toString() {
+        return this.name;
+    }
+    
     public int getID() {
         return this.id;
     }

@@ -5,6 +5,7 @@
 package Business.Roles;
 
 import Business.Ecosystem.Ecosystem;
+import Business.Organization.AdminOrganization;
 import Business.Organization.Organization;
 import Business.User.User;
 import UserInterface.WorkAreas.AdminWorkAreaJPanel;
