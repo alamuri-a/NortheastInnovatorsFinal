@@ -44,9 +44,14 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
     // Stores the visible order table and its data model for status updates.
     private DefaultTableModel tableModel;
     private JTable orderTable;
-        // Stores the logged-in representative who creates dealership orders.
+    // Dashboard values that summarize Faker and user-created dealership orders.
+    private JLabel totalOrdersValueLabel;
+    private JLabel totalDepositsValueLabel;
+    private JLabel inProductionValueLabel;
+    private JLabel inTransitValueLabel;
+    private JLabel deliveredValueLabel;
+    // Stores the logged-in representative who creates dealership orders.
     private User salesRepresentative;
-
     // Stores custom-order form inputs.
     private JTextField customerNameField;
     private JTextField customerEmailField;
@@ -107,7 +112,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
         trackingPanel.setBackground(Color.WHITE);
         trackingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 "Toyota Dealership Order Tracker"));
-
+        trackingPanel.add(buildAnalyticsPanel(), BorderLayout.NORTH);
         tableModel = new DefaultTableModel(
                 new String[]{
                     "Order ID",
@@ -256,7 +261,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                 String.format("$%,.2f", order.getDepositPaid()),
                 salesTask.getStatus()
             });
-
+            refreshAnalytics();
             clearOrderForm();
 
             JOptionPane.showMessageDialog(this,
@@ -327,7 +332,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                         if (advanced) {
                             tableModel.setValueAt(
                                     salesTask.getStatus(), modelRow, 6);
-
+                            refreshAnalytics();
                             JOptionPane.showMessageDialog(this,
                                     orderId + " advanced to "
                                     + salesTask.getStatus() + "."
@@ -436,6 +441,104 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
         }
 
         return null;
+    }
+    /**
+     * Builds the dealership order metrics displayed above the tracker table.
+     *
+     * @return panel containing summarized order analytics
+     */
+    private JPanel buildAnalyticsPanel() {
+        JPanel analyticsPanel = new JPanel(new GridLayout(1, 5, 8, 0));
+        analyticsPanel.setBackground(new Color(245, 247, 250));
+        analyticsPanel.setBorder(new EmptyBorder(6, 6, 6, 6));
+
+        totalOrdersValueLabel = new JLabel("0", SwingConstants.CENTER);
+        totalDepositsValueLabel = new JLabel("$0.00", SwingConstants.CENTER);
+        inProductionValueLabel = new JLabel("0", SwingConstants.CENTER);
+        inTransitValueLabel = new JLabel("0", SwingConstants.CENTER);
+        deliveredValueLabel = new JLabel("0", SwingConstants.CENTER);
+
+        analyticsPanel.add(createMetricPanel(
+                "Total Orders", totalOrdersValueLabel));
+        analyticsPanel.add(createMetricPanel(
+                "Deposits Collected", totalDepositsValueLabel));
+        analyticsPanel.add(createMetricPanel(
+                "In Production", inProductionValueLabel));
+        analyticsPanel.add(createMetricPanel(
+                "In Transit", inTransitValueLabel));
+        analyticsPanel.add(createMetricPanel(
+                "Delivered", deliveredValueLabel));
+
+        refreshAnalytics();
+        return analyticsPanel;
+    }
+
+    /**
+     * Creates one labeled analytics metric for the dealership dashboard.
+     *
+     * @param title metric label
+     * @param valueLabel visible value for the metric
+     * @return formatted metric panel
+     */
+    private JPanel createMetricPanel(String title, JLabel valueLabel) {
+        JPanel metricPanel = new JPanel(new BorderLayout());
+        metricPanel.setBackground(Color.WHITE);
+        metricPanel.setBorder(new EmptyBorder(6, 6, 6, 6));
+
+        JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        valueLabel.setForeground(new Color(20, 80, 130));
+
+        metricPanel.add(titleLabel, BorderLayout.NORTH);
+        metricPanel.add(valueLabel, BorderLayout.CENTER);
+
+        return metricPanel;
+    }
+
+    /**
+     * Recalculates dealership order totals from the Sales Organization queue.
+     */
+    private void refreshAnalytics() {
+        int totalOrders = 0;
+        int inProductionOrders = 0;
+        int inTransitOrders = 0;
+        int deliveredOrders = 0;
+        double totalDeposits = 0.0;
+
+        for (WorkTask workTask : salesOrganization.getOutTasks().getTasks()) {
+            if (workTask instanceof SellVehicleTask) {
+                SellVehicleTask salesTask = (SellVehicleTask) workTask;
+                CustomVehicleOrder order = salesTask.getCustomOrder();
+
+                if (order != null) {
+                    totalOrders++;
+                    totalDeposits += order.getDepositPaid();
+
+                    if (salesTask.getStatus()
+                            == OrderStatus.IN_PRODUCTION) {
+                        inProductionOrders++;
+                    } else if (salesTask.getStatus()
+                            == OrderStatus.IN_TRANSIT) {
+                        inTransitOrders++;
+                    } else if (salesTask.getStatus()
+                            == OrderStatus.DELIVERED) {
+                        deliveredOrders++;
+                    }
+                }
+            }
+        }
+
+        totalOrdersValueLabel.setText(String.valueOf(totalOrders));
+        totalDepositsValueLabel.setText(
+                String.format("$%,.2f", totalDeposits));
+        inProductionValueLabel.setText(
+                String.valueOf(inProductionOrders));
+        inTransitValueLabel.setText(
+                String.valueOf(inTransitOrders));
+        deliveredValueLabel.setText(
+                String.valueOf(deliveredOrders));
     }
 
     @SuppressWarnings("unchecked")
