@@ -10,6 +10,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,7 +27,12 @@ import javax.swing.table.DefaultTableModel;
  * @author nicholaswoodward
  */
 public class SalesRepresentativeWorkAreaJPanel extends JPanel {
+    // Stores the sales organization whose orders appear in this dashboard.
+    private Organization salesOrganization;
 
+    // Stores the visible order table and its data model for status updates.
+    private DefaultTableModel tableModel;
+    private JTable orderTable;
     /**
      * Creates the Sales Representative dealership work area.
      *
@@ -39,7 +46,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
             User user,
             Organization organization,
             Ecosystem system) {
-
+        this.salesOrganization = organization;
         buildCustomOrderScreen(organization);
     }
 
@@ -76,7 +83,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
         trackingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 "Toyota Dealership Order Tracker"));
 
-        DefaultTableModel tableModel = new DefaultTableModel(
+        tableModel = new DefaultTableModel(
                 new String[]{
                     "Order ID",
                     "Customer",
@@ -111,17 +118,78 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
             }
         }
 
-        JTable orderTable = new JTable(tableModel);
+        orderTable = new JTable(tableModel);
         orderTable.setAutoCreateRowSorter(true);
 
         JLabel informationLabel = new JLabel(
                 "Six Faker-generated dealership orders are loaded for "
                 + "the project demonstration.");
 
-        trackingPanel.add(new JScrollPane(orderTable), BorderLayout.CENTER);
-        trackingPanel.add(informationLabel, BorderLayout.SOUTH);
+                JButton advanceStatusButton = new JButton("Advance Selected Order");
+                advanceStatusButton.addActionListener(event -> advanceSelectedOrder());
+
+                JPanel bottomPanel = new JPanel(new BorderLayout());
+                bottomPanel.setOpaque(false);
+                bottomPanel.add(informationLabel, BorderLayout.WEST);
+                bottomPanel.add(advanceStatusButton, BorderLayout.EAST);
+
+                trackingPanel.add(new JScrollPane(orderTable), BorderLayout.CENTER);
+                trackingPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         add(trackingPanel, BorderLayout.CENTER);
+    }    /**
+     * Advances the selected custom vehicle order by one approved workflow
+     * status and refreshes the visible tracker.
+     */
+    private void advanceSelectedOrder() {
+        int selectedRow = orderTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Select an order from the table first.",
+                    "No Order Selected",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modelRow = orderTable.convertRowIndexToModel(selectedRow);
+        String orderId = String.valueOf(tableModel.getValueAt(modelRow, 0));
+
+        for (WorkTask workTask : salesOrganization.getOutTasks().getTasks()) {
+            if (workTask instanceof SellVehicleTask) {
+                SellVehicleTask salesTask = (SellVehicleTask) workTask;
+                CustomVehicleOrder order = salesTask.getCustomOrder();
+
+                if (order != null && order.getOrderId().equals(orderId)) {
+                    try {
+                        boolean advanced = salesTask.advanceStatus();
+
+                        if (advanced) {
+                            tableModel.setValueAt(
+                                    salesTask.getStatus(), modelRow, 6);
+
+                            JOptionPane.showMessageDialog(this,
+                                    orderId + " advanced to "
+                                    + salesTask.getStatus() + ".",
+                                    "Order Updated",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                    orderId + " has already been delivered.",
+                                    "Order Complete",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (IllegalStateException exception) {
+                        JOptionPane.showMessageDialog(this,
+                                exception.getMessage(),
+                                "Order Cannot Advance",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    return;
+                }
+            }
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
