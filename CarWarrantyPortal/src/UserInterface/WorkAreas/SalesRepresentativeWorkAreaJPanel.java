@@ -9,8 +9,11 @@ import Business.WorkTaskQueue.WorkTask;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,6 +36,18 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
     // Stores the visible order table and its data model for status updates.
     private DefaultTableModel tableModel;
     private JTable orderTable;
+        // Stores the logged-in representative who creates dealership orders.
+    private User salesRepresentative;
+
+    // Stores custom-order form inputs.
+    private JTextField customerNameField;
+    private JTextField customerEmailField;
+    private JTextField priceField;
+    private JTextField depositField;
+    private JComboBox<String> modelComboBox;
+    private JComboBox<String> trimComboBox;
+    private JComboBox<String> colorComboBox;
+    private JComboBox<String> supplierComboBox;
     /**
      * Creates the Sales Representative dealership work area.
      *
@@ -47,6 +62,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
             Organization organization,
             Ecosystem system) {
         this.salesOrganization = organization;
+        this.salesRepresentative = user;
         buildCustomOrderScreen(organization);
     }
 
@@ -137,7 +153,137 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                 trackingPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         add(trackingPanel, BorderLayout.CENTER);
-    }    /**
+        add(buildOrderFormPanel(), BorderLayout.SOUTH);
+    }  
+        /**
+     * Builds the form a Sales Representative uses to create a dealership
+     * custom vehicle order.
+     *
+     * @return completed custom-order form panel
+     */
+    private JPanel buildOrderFormPanel() {
+        JPanel formPanel = new JPanel(new GridLayout(0, 4, 8, 6));
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                "Create New Toyota Custom Order"));
+
+        customerNameField = new JTextField();
+        customerEmailField = new JTextField();
+        priceField = new JTextField("42000");
+        depositField = new JTextField("5000");
+
+        modelComboBox = new JComboBox<>(new String[]{
+            "Camry", "RAV4", "Highlander", "Prius"
+        });
+        trimComboBox = new JComboBox<>(new String[]{
+            "LE", "XLE", "Limited", "Hybrid"
+        });
+        colorComboBox = new JComboBox<>(new String[]{
+            "Midnight Black", "Ice Cap", "Supersonic Red", "Celestial Silver"
+        });
+        supplierComboBox = new JComboBox<>(new String[]{
+            "Mexico", "Asia", "Mexico and Asia"
+        });
+
+        formPanel.add(new JLabel("Customer Name:"));
+        formPanel.add(customerNameField);
+        formPanel.add(new JLabel("Customer Email:"));
+        formPanel.add(customerEmailField);
+
+        formPanel.add(new JLabel("Toyota Model:"));
+        formPanel.add(modelComboBox);
+        formPanel.add(new JLabel("Trim:"));
+        formPanel.add(trimComboBox);
+
+        formPanel.add(new JLabel("Color:"));
+        formPanel.add(colorComboBox);
+        formPanel.add(new JLabel("Supplier Region:"));
+        formPanel.add(supplierComboBox);
+
+        formPanel.add(new JLabel("Vehicle Price:"));
+        formPanel.add(priceField);
+        formPanel.add(new JLabel("Deposit Paid:"));
+        formPanel.add(depositField);
+
+        JButton createOrderButton = new JButton("Create Draft Order");
+        createOrderButton.addActionListener(event -> createCustomOrder());
+        formPanel.add(createOrderButton);
+
+        return formPanel;
+    }
+        /**
+     * Validates form values, creates a DRAFT dealership order, and adds it
+     * to the Sales Organization tracker.
+     */
+    private void createCustomOrder() {
+        try {
+            double vehiclePrice = Double.parseDouble(
+                    priceField.getText().trim());
+            double depositPaid = Double.parseDouble(
+                    depositField.getText().trim());
+
+            CustomVehicleOrder order = new CustomVehicleOrder(
+                    customerNameField.getText(),
+                    customerEmailField.getText(),
+                    "Toyota",
+                    (String) modelComboBox.getSelectedItem(),
+                    (String) trimComboBox.getSelectedItem(),
+                    (String) colorComboBox.getSelectedItem(),
+                    (String) supplierComboBox.getSelectedItem(),
+                    vehiclePrice,
+                    depositPaid);
+
+            SellVehicleTask salesTask = new SellVehicleTask(
+                    salesRepresentative, order);
+
+            salesOrganization.getOutTasks().pushTask(salesTask);
+
+            tableModel.addRow(new Object[]{
+                order.getOrderId(),
+                order.getCustomerName(),
+                order.getVehicleDescription(),
+                order.getSupplierRegion(),
+                order.getManufacturerCountry(),
+                String.format("$%,.2f", order.getDepositPaid()),
+                salesTask.getStatus()
+            });
+
+            clearOrderForm();
+
+            JOptionPane.showMessageDialog(this,
+                    "Custom order " + order.getOrderId()
+                    + " was created with DRAFT status.",
+                    "Order Created",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException exception) {
+            JOptionPane.showMessageDialog(this,
+                    "Vehicle price and deposit must be valid numbers.",
+                    "Invalid Amount",
+                    JOptionPane.ERROR_MESSAGE);
+
+        } catch (IllegalArgumentException exception) {
+            JOptionPane.showMessageDialog(this,
+                    exception.getMessage(),
+                    "Invalid Order",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Clears form values after a new dealership order is created.
+     */
+    private void clearOrderForm() {
+        customerNameField.setText("");
+        customerEmailField.setText("");
+        priceField.setText("42000");
+        depositField.setText("5000");
+        modelComboBox.setSelectedIndex(0);
+        trimComboBox.setSelectedIndex(0);
+        colorComboBox.setSelectedIndex(0);
+        supplierComboBox.setSelectedIndex(0);
+    }
+    /**
      * Advances the selected custom vehicle order by one approved workflow
      * status and refreshes the visible tracker.
      */
