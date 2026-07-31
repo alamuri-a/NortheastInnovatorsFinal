@@ -125,7 +125,10 @@ public class MainJFrame extends javax.swing.JFrame {
         for (Network net : system.getNetworks()) {
             for (Enterprise ent : net.getEnterprises().getEnterprises()) {
                 for (User u : ent.getAdmins().getUsers().getUsers()) {
-                    if (u.authenticate(username, password)) this.loggedIn = u;
+                    if (u.authenticate(username, password)) {
+                        this.loggedIn = u;
+                        o = ent.getAdmins();
+                    }
                     if (this.loggedIn != null) break;
                 }
                 for (Organization org : ent.getOrganizations().getOrganizations()) {
