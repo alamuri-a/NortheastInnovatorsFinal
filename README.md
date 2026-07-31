@@ -6,7 +6,7 @@
 |-------------|------|-------------------|------------------|
 | Nicholas Woodward | 002478780 | Custom Vehicle Order and Global Supply Chain Fulfillment | README, sales-order workflow, global order tracking, documentation |
 | Meredith Molyneux | 003978998 | Cross-Border Regulatory Recall and Compliance Management | VIN recall workflow, compliance tracking, quality reporting |
-| Ajay Alamuri | 003915177 | Post-Warranty Lifecycle, Parts Replenishment, and Trade-In | Service lifecycle, parts replenishment, trade-in workflow, project integration |
+| Ajay Alamuri | 003915177 | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  |
 
 ## Project Overview
 
@@ -242,7 +242,7 @@ Ecosystem:
 |-------------|-------------------|----------------------|---------------|---------|---------------------|
 | Nicholas Woodward | Custom Vehicle Order and Global Supply Chain Fulfillment | Custom-order model, validation, lifecycle work area, and order testing | README, use-case documentation | Tests order creation, deposit validation, and status transitions | Supports slides and project integration |
 | Meredith Molyneux | Cross-Border Regulatory Recall and Compliance Management | VIN lookup, recall notification, and compliance repair tracking (in progress) | Recall use-case documentation | Recall identification and completion reporting tests (planned) | Supports quality and reporting design |
-| Ajay Alamuri | Post-Warranty Lifecycle, Parts Replenishment, and Trade-In | Service, replenishment, trade-in, and application integration work (in progress) | Lifecycle use-case documentation | Service and trade-in workflow tests (planned) | Supports overall model and GitHub integration |
+| Ajay Alamuri | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  | Functional Comments, UML Diagram | Admin, Logistics Coordinator, Warehouse Clerk | GitHub Integration, Business Model Implementation |
 
 Each team member contributes to planning, code review, integration testing,
 documentation, and the final presentation. Update this section as individual
