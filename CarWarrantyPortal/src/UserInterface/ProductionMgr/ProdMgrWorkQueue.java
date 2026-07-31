@@ -5,16 +5,9 @@
 package UserInterface.ProductionMgr;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Ecosystem.Network;
-import Business.Enterprise.DealershipEnterprise;
-import Business.Enterprise.Enterprise;
 import Business.Organization.ProductionOrganization;
-import Business.People.Employee;
-import Business.People.Person;
 import Business.Roles.ProductionManager;
-import Business.Roles.WarehouseClerk;
 import Business.User.User;
-import Business.Vehicle.Part;
 import Business.WorkTaskQueue.WorkTask;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -41,6 +34,7 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
         this.business = system;
         initComponents();
          lblTitle.setText(this.organization.getName() + " - Queue");
+         refreshTable();
     }
 
     /**
@@ -71,22 +65,22 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
                 btnBackActionPerformed(evt);
             }
         });
-        add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(22, 418, 130, -1));
+        add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 130, -1));
 
         tblTasks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Task", "Assigned By", "Assigned To", "Status"
+                "ID", "Task", "Assigned By", "Assigned To", "Status"
             }
         ));
         jScrollPane1.setViewportView(tblTasks);
 
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 610, 220));
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 610, 220));
 
         btnAssign.setText("Assign To Me");
         btnAssign.addActionListener(new java.awt.event.ActionListener() {
@@ -94,7 +88,7 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
                 btnAssignActionPerformed(evt);
             }
         });
-        add(btnAssign, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 300, 130, -1));
+        add(btnAssign, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 300, 130, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -136,45 +130,21 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
     private javax.swing.JTable tblTasks;
     // End of variables declaration//GEN-END:variables
 
- public void refreshTable() {
+    public void refreshTable() {
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
 
         model.setRowCount(0);
 
         for (WorkTask task : this.organization.getInTasks().getTasks()) {
-            Object[] row = new Object[4];
+            Object[] row = new Object[5];
 
             row[0] = task;
-            row[1] = task.getAssigner();
-            row[2] = (task.getAssignee() == null) ? null : task.getAssignee();
-            row[3] = task.isCompleted() ? "Complete" : task.getAssignee() == null ? "Waiting" : "In Progress";
+            row[1] = task.getClass().getSimpleName();
+            row[2] = task.getAssigner();
+            row[3] = task.getAssignee() == null ? null : task.getAssignee();
+            row[4] = task.getAssignee() == null ? "Waiting" : "In Progress";
 
             model.addRow(row);
         }
     }
-
-    private void DemoData() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Person p = new Person("Person" + i);
-                Employee emp = organization.getEmployees().createEmployee(p);
-                User newUser = organization.getUsers().createUser(emp, "temp", "temp", new WarehouseClerk());
-                Part part = new Part(i);
-                organization.getInTasks().createProcessShipmentTask(newUser, part);
-
-                DealershipEnterprise dealer = null;
-                for (Network n : business.getNetworks()) {
-                    for (Enterprise e : n.getEnterprises().getEnterprises()) {
-                        if (e instanceof DealershipEnterprise dealershipEnterprise) dealer = dealershipEnterprise;
-                    }
-                }
-                if (dealer == null) return;
-
-                organization.getInTasks().createSendShipmentTask(newUser, dealer, part, i);
-            }
-        } catch (Exception e) {
-
-        }
-    }
-
 }
