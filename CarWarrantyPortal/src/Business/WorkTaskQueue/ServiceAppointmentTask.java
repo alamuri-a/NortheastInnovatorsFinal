@@ -20,4 +20,22 @@ public class ServiceAppointmentTask extends WorkTask {
         super(assigner);
         this.VIN = vin;
     }
+    /**
+     * Returns the VIN of the vehicle scheduled for service.
+     *
+     * @return vehicle identification number
+     */
+    public int getVIN() {
+        return VIN;
+    }
+
+    /**
+     * Returns a readable appointment label for service-center work queues.
+     *
+     * @return appointment description containing the vehicle VIN
+     */
+    @Override
+    public String toString() {
+        return "Service Appointment - VIN " + VIN;
+    }
 }
