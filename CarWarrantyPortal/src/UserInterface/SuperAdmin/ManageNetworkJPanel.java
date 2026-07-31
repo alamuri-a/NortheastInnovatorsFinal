@@ -9,6 +9,7 @@ import Business.Ecosystem.Network;
 import UserInterface.WorkAreas.SuperAdminWorkAreaJPanel;
 import java.awt.CardLayout;
 import java.awt.Component;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -164,6 +165,11 @@ private void populateTable() {
 
         String name = txtNetworkName.getText();
 
+        if (name.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Network name cannot be empty.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         Network network = system.createNetwork(name);
         network.setName(name);
 
