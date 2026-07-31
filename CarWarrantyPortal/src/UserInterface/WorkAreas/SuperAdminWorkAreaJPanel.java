@@ -24,8 +24,9 @@ public class SuperAdminWorkAreaJPanel extends javax.swing.JPanel {
     /**
      * Creates new form SuperAdminWorkAreaJPanel
      */
-    public SuperAdminWorkAreaJPanel(JPanel csp, Ecosystem system) {
+    public SuperAdminWorkAreaJPanel(JPanel csp, User usr, Ecosystem system) {
         initComponents();
+        this.user = usr;
         this.workArea= csp;
         this.ecosystem = system;
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
