@@ -6,6 +6,13 @@ import Business.User.User;
 import Business.Vehicle.CustomVehicleOrder;
 import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.WorkTask;
+import Business.Ecosystem.Network;
+import Business.Enterprise.Enterprise;
+import Business.Organization.LogisticsOrganization;
+import Business.Organization.ProductionOrganization;
+import Business.Organization.WarehousingOrganization;
+import Business.WorkTaskQueue.FulfillmentRequestTask;
+import Business.WorkTaskQueue.OrderStatus;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -32,7 +39,8 @@ import javax.swing.table.DefaultTableModel;
 public class SalesRepresentativeWorkAreaJPanel extends JPanel {
     // Stores the sales organization whose orders appear in this dashboard.
     private Organization salesOrganization;
-
+    // Gives this dashboard access to supplier, production, and logistics teams.
+    private Ecosystem ecosystem;
     // Stores the visible order table and its data model for status updates.
     private DefaultTableModel tableModel;
     private JTable orderTable;
@@ -62,6 +70,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
             Organization organization,
             Ecosystem system) {
         this.salesOrganization = organization;
+        this.ecosystem = system;
         this.salesRepresentative = user;
         buildCustomOrderScreen(organization);
     }
@@ -308,7 +317,12 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
 
                 if (order != null && order.getOrderId().equals(orderId)) {
                     try {
+                        OrderStatus previousStatus = salesTask.getStatus();
                         boolean advanced = salesTask.advanceStatus();
+                        String handoffMessage = advanced
+                                ? createFulfillmentRequest(
+                                        salesTask, previousStatus)
+                                : "";
 
                         if (advanced) {
                             tableModel.setValueAt(
@@ -316,7 +330,8 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
 
                             JOptionPane.showMessageDialog(this,
                                     orderId + " advanced to "
-                                    + salesTask.getStatus() + ".",
+                                    + salesTask.getStatus() + "."
+                                    + handoffMessage,
                                     "Order Updated",
                                     JOptionPane.INFORMATION_MESSAGE);
                         } else {
@@ -337,6 +352,92 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
             }
         }
     }
+        /**
+     * Creates the next cross-organization fulfillment request after an order
+     * advances through the global supply-chain workflow.
+     *
+     * @param salesTask order whose workflow state changed
+     * @param previousStatus status held before the order advanced
+     * @return short message describing the created handoff, when applicable
+     */
+    private String createFulfillmentRequest(
+            SellVehicleTask salesTask,
+            OrderStatus previousStatus) {
+
+        Organization sourceOrganization = null;
+        Organization destinationOrganization = null;
+        String requestType = null;
+
+        switch (previousStatus) {
+            case DRAFT:
+                sourceOrganization = salesOrganization;
+                destinationOrganization = findOrganization(
+                        WarehousingOrganization.class);
+                requestType = "Source custom-order components";
+                break;
+
+            case SOURCING_PARTS:
+                sourceOrganization = findOrganization(
+                        WarehousingOrganization.class);
+                destinationOrganization = findOrganization(
+                        ProductionOrganization.class);
+                requestType = "Begin German vehicle production";
+                break;
+
+            case IN_PRODUCTION:
+                sourceOrganization = findOrganization(
+                        ProductionOrganization.class);
+                destinationOrganization = findOrganization(
+                        LogisticsOrganization.class);
+                requestType = "Arrange international delivery";
+                break;
+
+            default:
+                return "";
+        }
+
+        if (sourceOrganization == null || destinationOrganization == null) {
+            return "\nNo matching organization was found for this handoff.";
+        }
+
+        FulfillmentRequestTask request = new FulfillmentRequestTask(
+                salesRepresentative,
+                salesTask.getCustomOrder(),
+                requestType,
+                sourceOrganization.getName(),
+                destinationOrganization.getName());
+
+        sourceOrganization.getOutTasks().pushTask(request);
+        destinationOrganization.getInTasks().pushTask(request);
+
+        return "\nHandoff created: " + sourceOrganization.getName()
+                + " -> " + destinationOrganization.getName() + ".";
+    }
+
+    /**
+     * Locates the first organization of the requested type in the ecosystem.
+     *
+     * @param organizationType type of organization to locate
+     * @return matching organization, or null when unavailable
+     */
+    private Organization findOrganization(
+            Class<? extends Organization> organizationType) {
+
+        for (Network network : ecosystem.getNetworks()) {
+            for (Enterprise enterprise
+                    : network.getEnterprises().getEnterprises()) {
+                for (Organization organization
+                        : enterprise.getOrganizations().getOrganizations()) {
+                    if (organizationType.isInstance(organization)) {
+                        return organization;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
