@@ -8,7 +8,8 @@ import Business.Ecosystem.Ecosystem;
 import Business.Organization.AdminOrganization;
 import Business.Organization.Organization;
 import Business.User.User;
-import UserInterface.Admin.ManageOrganizations;
+import UserInterface.Admin.ManageEmployeesJPanel;
+import UserInterface.Admin.ManageOrganizationsJPanel;
 import UserInterface.Admin.MyProfileJPanel;
 import UserInterface.Admin.ViewNetworkJPanel;
 import java.awt.CardLayout;
@@ -115,6 +116,9 @@ public class AdminWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeesActionPerformed
         // TODO add your handling code here:
+        ManageEmployeesJPanel mejp = new ManageEmployeesJPanel(workArea, user, organization, business);
+        this.workArea.add(mejp, "ManageEmployees");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnEmployeesActionPerformed
 
     private void btnUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersActionPerformed
@@ -123,7 +127,7 @@ public class AdminWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnOrganizationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrganizationsActionPerformed
         // TODO add your handling code here:
-        ManageOrganizations mojp = new ManageOrganizations(workArea, user, organization, business);
+        ManageOrganizationsJPanel mojp = new ManageOrganizationsJPanel(workArea, user, organization, business);
         this.workArea.add(mojp, "ManageOrganizations");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnOrganizationsActionPerformed

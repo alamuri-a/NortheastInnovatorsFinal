@@ -8,8 +8,8 @@ import Business.Ecosystem.Ecosystem;
 import Business.Organization.Organization;
 import Business.People.Employee;
 import Business.User.User;
-import Business.WorkTaskQueue.WorkTask;
 import java.awt.CardLayout;
+import java.awt.Component;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Ajay Alamuri
  */
-public class UpdateOrganizations extends javax.swing.JPanel {
+public class UpdateOrganizationsJPanel extends javax.swing.JPanel {
 
     // ATTRIBUTES
     Organization organization;
@@ -29,7 +29,7 @@ public class UpdateOrganizations extends javax.swing.JPanel {
     /**
      * Creates new form UpdateOrganizations
      */
-    public UpdateOrganizations(JPanel csp, User usr, Organization org, Ecosystem system) {
+    public UpdateOrganizationsJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
         this.organization = org;
         this.workArea = csp;
         this.user = usr;
@@ -146,6 +146,12 @@ public class UpdateOrganizations extends javax.swing.JPanel {
         
         // Update in backend
         organization.setName(name);
+        
+        // Update previous page table
+        Component[] panelStack = workArea.getComponents();
+        JPanel lastPanel = (JPanel) panelStack[panelStack.length - 2];
+        ManageOrganizationsJPanel mojp = (ManageOrganizationsJPanel) lastPanel;
+        mojp.refreshTable(); // Update table
         
         // Notify and refresh
         JOptionPane.showMessageDialog(null, "Successfully updated organization name!", "Success", JOptionPane.INFORMATION_MESSAGE);

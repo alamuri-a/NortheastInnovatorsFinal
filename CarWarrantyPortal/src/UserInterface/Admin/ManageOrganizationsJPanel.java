@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Ajay Alamuri
  */
-public class ManageOrganizations extends javax.swing.JPanel {
+public class ManageOrganizationsJPanel extends javax.swing.JPanel {
 
     // ATTRIBUTES
     AdminOrganization organization;
@@ -30,7 +30,7 @@ public class ManageOrganizations extends javax.swing.JPanel {
     /**
      * Creates new form ManageOrganizations
      */
-    public ManageOrganizations(JPanel csp, User usr, AdminOrganization org, Ecosystem system) {
+    public ManageOrganizationsJPanel(JPanel csp, User usr, AdminOrganization org, Ecosystem system) {
         this.organization = org;
         this.workArea = csp;
         this.user = usr;
@@ -156,6 +156,7 @@ public class ManageOrganizations extends javax.swing.JPanel {
         
         // Remove in backend
         organization.getCompany().getOrganizations().removeOrganization(selectedOrganization);
+        JOptionPane.showMessageDialog(null, "Successfully deleted organization!", "Success", JOptionPane.INFORMATION_MESSAGE);
         
         refreshTable();
     }//GEN-LAST:event_btnDeleteActionPerformed
@@ -213,7 +214,7 @@ public class ManageOrganizations extends javax.swing.JPanel {
         }
         
         // Load organization update page
-        UpdateOrganizations uojp = new UpdateOrganizations(workArea, user, organization, business);
+        UpdateOrganizationsJPanel uojp = new UpdateOrganizationsJPanel(workArea, user, selectedOrganization, business);
         this.workArea.add(uojp, "UpdateOrganizations");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnViewActionPerformed

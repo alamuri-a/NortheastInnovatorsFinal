@@ -155,6 +155,8 @@ public class MainJFrame extends javax.swing.JFrame {
         // Login
         btnLogin.setVisible(false);
         btnLogout.setVisible(true);
+        txtUsername.setEditable(false);
+        txtPassword.setEditable(false);
         JOptionPane.showMessageDialog(this, "Successfully logged in!", "Success", JOptionPane.INFORMATION_MESSAGE);
         JPanel nextPage = this.loggedIn.getRole().createWorkArea(workAreaPanel, this.loggedIn, o, this.system);
         workAreaPanel.add(nextPage, "WorkArea");
@@ -177,6 +179,8 @@ public class MainJFrame extends javax.swing.JFrame {
                 
                 btnLogout.setVisible(false);
                 btnLogin.setVisible(true);
+                txtUsername.setEditable(true);
+                txtPassword.setEditable(true);
                 
                 JOptionPane.showMessageDialog(this, "Successfully logged out!", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
