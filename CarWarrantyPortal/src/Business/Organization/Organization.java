@@ -9,7 +9,6 @@ import Business.People.EmployeeDirectory;
 import Business.Roles.Role;
 import Business.User.UserDirectory;
 import Business.WorkTaskQueue.WorkQueue;
-import java.util.ArrayList;
 
 /**
  *
@@ -105,5 +104,5 @@ public abstract class Organization {
     public void setOutTasks(WorkQueue outTasks) {
         this.outTasks = outTasks;
     }
-     public abstract ArrayList<Role> getSupportedRole(); 
+   
 }
