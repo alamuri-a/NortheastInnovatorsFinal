@@ -31,6 +31,6 @@ public class SuperAdmin extends Role {
     
     @Override
     public JPanel createWorkArea(JPanel workAreaContainer, User user, Organization organization, Ecosystem system) {
-        return new SuperAdminWorkAreaJPanel(workAreaContainer, user, organization, system);
+        return new SuperAdminWorkAreaJPanel(workAreaContainer,system);
     }
 }

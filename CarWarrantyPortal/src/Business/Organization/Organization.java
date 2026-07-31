@@ -6,9 +6,10 @@ package Business.Organization;
 
 import Business.Enterprise.Enterprise;
 import Business.People.EmployeeDirectory;
+import Business.Roles.Role;
 import Business.User.UserDirectory;
 import Business.WorkTaskQueue.WorkQueue;
-import Business.WorkTaskQueue.WorkTask;
+import java.util.ArrayList;
 
 /**
  *
@@ -24,6 +25,9 @@ public abstract class Organization {
     Enterprise company;
     WorkQueue inTasks;
     WorkQueue outTasks;
+    Role role;
+    private int organizationID;
+    private static int counter=0;
     
     // CONSTRUCTORS
     public Organization(String n, int ID, Enterprise enterprise) {
@@ -35,7 +39,24 @@ public abstract class Organization {
         this.inTasks = new WorkQueue(this);
         this.outTasks = new WorkQueue(this);
     }
-    
+
+
+    public enum Type{
+        Admin("Admin Organization"),
+        Production("Production Organization"),
+        QA("Quality Assurance Organization"),
+        Sales("Sales Organization"),
+        ServiceCenter("Service Center Organization"),
+        Warehousing("Warehousing Organization"),
+        Logistics("Logistics/Shipping Organization");;
+        private String value;
+        private Type(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
     // METHODS
     public int getID() {
         return this.id;
@@ -84,4 +105,5 @@ public abstract class Organization {
     public void setOutTasks(WorkQueue outTasks) {
         this.outTasks = outTasks;
     }
+     public abstract ArrayList<Role> getSupportedRole(); 
 }

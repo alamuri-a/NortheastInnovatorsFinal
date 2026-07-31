@@ -17,8 +17,8 @@ public class SupplierEnterprise extends Enterprise {
     HashMap<Integer, Integer> partsStock;
     
     // CONSTRUCTORS
-    public SupplierEnterprise(String n) {
-        super(n);
+    public SupplierEnterprise(String name) {
+        super(name);
         this.partsStock = new HashMap();
     }
     
@@ -30,6 +30,11 @@ public class SupplierEnterprise extends Enterprise {
     
     public void setPartQuantity(Part part, int newQuantity) {
         this.partsStock.put(part.getId(), newQuantity);
+    }
+
+    @Override
+    public Type getEnterpriseType() {
+        return Type.Supplier; // Hardcoded return for this subclass
     }
     
 }
