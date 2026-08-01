@@ -213,7 +213,6 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         task.getDealership().addPartQuantity(
                 task.getPart(),
                 task.getPartCount());
-        task.Complete();
         organization.getInTasks().popTask(task);
         organization.getOutTasks().pushTask(task);
         ((LogisticsCoordinator) user.getRole()).completeTask();
