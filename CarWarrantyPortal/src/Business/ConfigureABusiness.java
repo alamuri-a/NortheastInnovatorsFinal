@@ -30,6 +30,7 @@ import Business.Roles.SuperAdmin;
 import Business.Roles.WarehouseClerk;
 import Business.User.User;
 import Business.Vehicle.CustomVehicleOrder;
+import Business.Vehicle.Part;
 import Business.WorkTaskQueue.SellVehicleTask;
 import com.github.javafaker.Faker;
 /**
@@ -146,6 +147,8 @@ public class ConfigureABusiness {
         Employee employee12 = saleOrg.getEmployees().createEmployee(person12);
         User sr = saleOrg.getUsers().createUser(employee12, "sales", "sales", new SalesRepresentative());
         seedDealershipCustomOrders(de, saleOrg, sr);
+        seedLogistics(lOrg, lc, de);
+        
         // Return demo ecosystem
         return system;
     }
@@ -200,6 +203,18 @@ public class ConfigureABusiness {
 
             salesOrganization.getOutTasks().pushTask(salesTask);
             dealership.addSalesRecord(salesTask);
+        }
+    }
+
+    private static void seedLogistics(LogisticsOrganization lOrg, User lc, DealershipEnterprise de) {
+        for (int i = 1; i < 11; i++) {
+            Part part = new Part(i);
+            try {
+                lOrg.getInTasks().createProcessShipmentTask(lc, part);
+                lOrg.getInTasks().createSendShipmentTask(lc, de, part, 5);
+            } catch (Exception e) {
+                System.out.println("Failed to create demo tasks for logistics.");
+            }
         }
     }
 }

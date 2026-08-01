@@ -28,7 +28,7 @@ public class WarehouseClerk extends Role {
     // METHODS
     @Override
     public String toString() {
-        return "Customer Service Representative";
+        return "Warehouse Clerk";
     }
     
     @Override

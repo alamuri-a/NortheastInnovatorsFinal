@@ -28,6 +28,8 @@ public abstract class WorkTask {
         this.completed = false;
         this.assigner = aser;
         this.assignee = null;
+        
+        aser.incrementTasksCreated();
     }
     
     // METHODS
