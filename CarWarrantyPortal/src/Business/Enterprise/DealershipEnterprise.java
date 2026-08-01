@@ -31,6 +31,9 @@ public class DealershipEnterprise extends Enterprise {
     private final ArrayList<WorkTask> serviceRecords;
     // Replacement-part inventory stored at this dealership service center.
     private final HashMap<Integer, Integer> partsInventory;
+
+    private Type enterpriseType;
+
     /**
      * Creates a dealership enterprise with empty business-record collections.
      *
@@ -174,4 +177,9 @@ public void addPartQuantity(Part part, int quantity) {
 
     setPartQuantity(part, getPartQuantity(part) + quantity);
 } 
+
+       @Override
+    public Type getEnterpriseType() {
+        return Type.Dealer; // Hardcoded return for this subclass
+    }
 }

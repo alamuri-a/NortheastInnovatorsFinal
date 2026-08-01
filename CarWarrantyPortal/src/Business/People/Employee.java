@@ -32,4 +32,9 @@ public class Employee {
     public void setPerson(Person person) {
         this.person = person;
     }
+    
+    @Override
+    public String toString() {
+        return this.person.getName();
+    }
 }
