@@ -25,8 +25,6 @@ public abstract class Organization {
     WorkQueue inTasks;
     WorkQueue outTasks;
     Role role;
-    private int organizationID;
-    private static int counter=0;
     
     // CONSTRUCTORS
     public Organization(String n, int ID, Enterprise enterprise) {
