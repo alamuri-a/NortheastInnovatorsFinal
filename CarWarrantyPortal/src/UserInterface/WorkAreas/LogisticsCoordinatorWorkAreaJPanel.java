@@ -5,17 +5,10 @@
 package UserInterface.WorkAreas;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Ecosystem.Network;
-import Business.Enterprise.DealershipEnterprise;
-import Business.Enterprise.Enterprise;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
-import Business.People.Employee;
-import Business.People.Person;
 import Business.Roles.LogisticsCoordinator;
-import Business.Roles.WarehouseClerk;
 import Business.User.User;
-import Business.Vehicle.Part;
 import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.SendShipmentTask;
@@ -256,7 +249,7 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
                 "Confirm Vehicle Delivery",
                 JOptionPane.YES_NO_OPTION);
 
-        if (choice != JOptionPane.YES_OPTION) {
+        if (choice == JOptionPane.YES_OPTION) {
             return true;
         }
         return false;
