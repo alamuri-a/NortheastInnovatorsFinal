@@ -167,6 +167,7 @@ public class MyProfileJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     
     private void refreshFields() {
+        // Fill fields with necessary info
         txtCompany.setText(organization.getCompany().getName());
         txtName.setText(user.getEmployee().getPerson().getName());
         txtOrganization.setText(organization.getName());

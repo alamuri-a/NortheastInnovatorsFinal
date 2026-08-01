@@ -159,9 +159,6 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
             this.workArea.add(psjp, "ProcessShipment");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
         } else if (task instanceof SendShipmentTask ssTask) {
-            
-            // ===============================WIP===============================
-            
             SendShipmentJPanel ssjp = new SendShipmentJPanel(workArea, user, organization, business, ssTask);
             this.workArea.add(ssjp, "SendShipment");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
@@ -194,10 +191,8 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
                                     + ".",
                             "Vehicle Delivered",
                             JOptionPane.INFORMATION_MESSAGE);
-                }
             }
-    }                                              
-    private void doNothing(){
+        }
     }//GEN-LAST:event_btnCurrentTaskActionPerformed
     private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
         // Load completed work queue page

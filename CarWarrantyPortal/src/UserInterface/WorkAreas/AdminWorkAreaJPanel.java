@@ -116,40 +116,39 @@ public class AdminWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeesActionPerformed
-        // TODO add your handling code here:
+        // Load employee management page
         ManageEmployeesJPanel mejp = new ManageEmployeesJPanel(workArea, user, organization, business);
         this.workArea.add(mejp, "ManageEmployees");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnEmployeesActionPerformed
 
     private void btnUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersActionPerformed
-        // TODO add your handling code here:
+        // Load user management page
         ManageUsersJPanel mujp = new ManageUsersJPanel(workArea, user, organization, business);
         this.workArea.add(mujp, "ManageUsers");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnUsersActionPerformed
 
     private void btnOrganizationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrganizationsActionPerformed
-        // TODO add your handling code here:
+        // Load organization management page
         ManageOrganizationsJPanel mojp = new ManageOrganizationsJPanel(workArea, user, organization, business);
         this.workArea.add(mojp, "ManageOrganizations");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnOrganizationsActionPerformed
 
     private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
-        // TODO add your handling code here:
+        // Load view network page
         ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
         this.workArea.add(vnjp, "ViewNetwork");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnNetworkActionPerformed
 
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
-        // TODO add your handling code here:
+        // Load profile management page
         MyProfileJPanel mpjp = new MyProfileJPanel(workArea, user, organization, business);
         this.workArea.add(mpjp, "MyProfile");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnMyProfileActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEmployees;
