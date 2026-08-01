@@ -13,10 +13,8 @@ import Business.Enterprise.DealershipEnterprise;
 import Business.Enterprise.Enterprise;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
-import Business.Organization.WarehousingOrganization;
-import Business.WorkTaskQueue.GetPartTask;
-import Business.WorkTaskQueue.WorkTask;
 import Business.WorkTaskQueue.VehicleDeliveryTask;
+import Business.WorkTaskQueue.SellVehicleTask;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 import Business.Roles.ProductionManager;
@@ -102,50 +100,6 @@ private void buildProductionOrderScreen() {
     repaint();
 }
 /**
- * Confirms that Supplier Warehouse completed the components request linked
- * to this customer vehicle order before Production finishes the build.
- *
- * @return true when required components are available for this build
- */
-private boolean componentsAreReady() {
-    if (task.getCustomOrder() == null) {
-        return true;
-    }
-
-    String orderId = task.getCustomOrder().getOrderId();
-
-    for (Network network : business.getNetworks()) {
-        for (Enterprise enterprise
-                : network.getEnterprises().getEnterprises()) {
-            for (Organization org
-                    : enterprise.getOrganizations().getOrganizations()) {
-
-                if (!(org instanceof WarehousingOrganization)) {
-                    continue;
-                }
-
-                for (WorkTask workTask
-                        : org.getOutTasks().getTasks()) {
-
-                    if (workTask instanceof GetPartTask) {
-                        GetPartTask partTask = (GetPartTask) workTask;
-
-                        if (partTask.getCustomOrder() != null
-                                && orderId.equals(
-                                        partTask.getCustomOrder()
-                                                .getOrderId())
-                                && partTask.isCompleted()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return false;
-}
-/**
  * Completes the Production build and sends the finished vehicle to
  * Manufacturer Logistics for cross-enterprise delivery to the dealership.
  */
@@ -156,16 +110,6 @@ private void completeVehicleBuild() {
                 "This vehicle build has already been completed.",
                 "Build Complete",
                 JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-        if (!componentsAreReady()) {
-        JOptionPane.showMessageDialog(
-                this,
-                "Supplier Warehouse must complete the required "
-                        + "components request before Production can "
-                        + "complete this vehicle.",
-                "Components Not Ready",
-                JOptionPane.WARNING_MESSAGE);
         return;
     }
     LogisticsOrganization logisticsOrganization = null;
@@ -204,7 +148,15 @@ private void completeVehicleBuild() {
 
     logisticsOrganization.getInTasks().pushTask(deliveryTask);
     organization.getOutTasks().pushTask(deliveryTask);
-
+// Update the matching dealership order when it enters Logistics transit.
+for (SellVehicleTask salesTask : dealership.getSalesRecords()) {
+    if (salesTask.getCustomOrder() != null
+            && salesTask.getCustomOrder().getOrderId().equals(
+                    task.getCustomOrder().getOrderId())) {
+        salesTask.markInTransit();
+        break;
+    }
+}
     task.Complete();
     organization.getInTasks().popTask(task);
     organization.getOutTasks().pushTask(task);
