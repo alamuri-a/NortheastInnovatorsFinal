@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import Business.Roles.ServiceTechnician;
 import Business.WorkTaskQueue.ServiceAppointmentTask;
 import Business.WorkTaskQueue.WorkTask;
+import Business.WorkTaskQueue.TradeInTask;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -77,9 +78,8 @@ private void buildServiceManagerScreen() {
     headerPanel.add(subtitleLabel, BorderLayout.SOUTH);
 
     tableModel = new DefaultTableModel(
-            new Object[]{"Task ID", "Vehicle VIN", "Requested By",
-                "Assigned Technician", "Status"}, 0) {
-        @Override
+            new Object[]{"Task ID", "Request Type", "Vehicle VIN",
+                "Requested By", "Assigned Technician", "Status"}, 0) {        @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
@@ -100,8 +100,14 @@ private void buildServiceManagerScreen() {
     JButton assignButton = new JButton("Assign Selected Appointment");
     assignButton.addActionListener(event -> assignSelectedAppointment());
 
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(assignButton);
+    JButton completeTradeInButton = new JButton(
+        "Complete Selected Trade-In");
+completeTradeInButton.addActionListener(
+        event -> completeSelectedTradeIn());
+
+JPanel buttonPanel = new JPanel();
+buttonPanel.add(assignButton);
+buttonPanel.add(completeTradeInButton);
 
     add(headerPanel, BorderLayout.NORTH);
     add(centerPanel, BorderLayout.CENTER);
@@ -113,34 +119,45 @@ private void buildServiceManagerScreen() {
 }
 
 /**
- * Loads incoming service appointments into the manager table.
+ * Loads incoming appointments and trade-in evaluations into the manager table.
  */
 private void populateAppointments() {
     tableModel.setRowCount(0);
 
     for (WorkTask workTask : serviceOrganization.getInTasks().getTasks()) {
+        String requestType;
+        int vin;
+
         if (workTask instanceof ServiceAppointmentTask) {
-            ServiceAppointmentTask appointment
-                    = (ServiceAppointmentTask) workTask;
+            requestType = "Service Appointment";
+            vin = ((ServiceAppointmentTask) workTask).getVIN();
 
-            String technicianName = appointment.getAssignee() == null
-                    ? "Unassigned"
-                    : appointment.getAssignee().toString();
+        } else if (workTask instanceof TradeInTask) {
+            requestType = "Trade-In Evaluation";
+            vin = ((TradeInTask) workTask).getVIN();
 
-            String status = appointment.isCompleted()
-                    ? "Completed"
-                    : appointment.getAssignee() == null
-                            ? "Awaiting Assignment"
-                            : "Assigned";
-
-            tableModel.addRow(new Object[]{
-                appointment.getID(),
-                appointment.getVIN(),
-                appointment.getAssigner(),
-                technicianName,
-                status
-            });
+        } else {
+            continue;
         }
+
+        String technicianName = workTask.getAssignee() == null
+                ? "Unassigned"
+                : workTask.getAssignee().toString();
+
+        String status = workTask.isCompleted()
+                ? "Completed"
+                : workTask.getAssignee() == null
+                        ? "Awaiting Assignment"
+                        : "Assigned";
+
+        tableModel.addRow(new Object[]{
+            workTask.getID(),
+            requestType,
+            vin,
+            workTask.getAssigner(),
+            technicianName,
+            status
+        });
     }
 }
 
@@ -149,7 +166,16 @@ private void populateAppointments() {
  */
 private void assignSelectedAppointment() {
     int selectedRow = appointmentsTable.getSelectedRow();
-
+    if (selectedRow >= 0
+            && "Trade-In Evaluation".equals(
+                    tableModel.getValueAt(selectedRow, 1))) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Trade-in evaluations are completed by the Service Manager.",
+                "Select a Service Appointment",
+                JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
     if (selectedRow < 0) {
         JOptionPane.showMessageDialog(
                 this,
@@ -194,7 +220,50 @@ private void assignSelectedAppointment() {
         }
     }
 }
+/**
+ * Completes the trade-in evaluation selected by the Service Manager.
+ */
+private void completeSelectedTradeIn() {
+    int selectedRow = appointmentsTable.getSelectedRow();
 
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Select a trade-in evaluation first.",
+                "No Request Selected",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    if (!"Trade-In Evaluation".equals(
+            tableModel.getValueAt(selectedRow, 1))) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Select a Trade-In Evaluation row.",
+                "Incorrect Request Type",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    int taskId = (Integer) tableModel.getValueAt(selectedRow, 0);
+
+    for (WorkTask workTask : serviceOrganization.getInTasks().getTasks()) {
+        if (workTask.getID() == taskId
+                && workTask instanceof TradeInTask) {
+
+            workTask.Complete();
+            serviceOrganization.getInTasks().popTask(workTask);
+            serviceOrganization.getOutTasks().pushTask(workTask);
+
+            populateAppointments();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Trade-in evaluation completed successfully.");
+            return;
+        }
+    }
+}
 /**
  * Finds the technician user within this Service Center.
  *

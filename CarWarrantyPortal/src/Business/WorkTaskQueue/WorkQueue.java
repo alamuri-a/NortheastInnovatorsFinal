@@ -14,11 +14,13 @@ import Business.Organization.ServiceOrganization;
 import Business.Organization.WarehousingOrganization;
 import Business.User.User;
 import Business.Vehicle.Part;
+import Business.Vehicle.CustomVehicleOrder;
 import java.util.ArrayList;
 
 /**
  *
  * @author Ajay Alamuri
+ * @author Nicholas Woodward
  */
 public class WorkQueue {
     
@@ -187,6 +189,32 @@ public class WorkQueue {
             return newTask;
         }
         throw new Exception("Get Part task can only be created for Warehousing organizations.");
+    }
+        /**
+     * Creates a Warehouse part request linked to a dealership custom order.
+     *
+     * @param assigner Sales Representative requesting components
+     * @param part component required for the custom vehicle
+     * @param quantity number of components requested
+     * @param customOrder customer order requiring the components
+     * @return created Warehouse retrieval task
+     * @throws Exception when the queue does not belong to a Warehouse
+     */
+    public GetPartTask createGetPartTask(
+            User assigner,
+            Part part,
+            int quantity,
+            CustomVehicleOrder customOrder) throws Exception {
+
+        if (this.organization instanceof WarehousingOrganization) {
+            GetPartTask newTask = new GetPartTask(
+                    assigner, part, quantity, customOrder);
+            this.tasks.add(newTask);
+            return newTask;
+        }
+
+        throw new Exception(
+                "Get Part task can only be created for Warehousing organizations.");
     }
     
     /**

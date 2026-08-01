@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 /**
  *
  * @author Ajay Alamuri
+ * @author Nicholas Woodward
  */
 public class SendShipmentJPanel extends javax.swing.JPanel {
 
@@ -208,10 +209,10 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         
         // Update task status
         
-        /*
-        * Remove task from inQueue
-        * Update stock for target dealership ===============================WIP===============================
-        */
+        // Add the delivered replacement parts to the receiving dealership.
+        task.getDealership().addPartQuantity(
+                task.getPart(),
+                task.getPartCount());
         organization.getInTasks().popTask(task);
         organization.getOutTasks().pushTask(task);
         ((LogisticsCoordinator) user.getRole()).completeTask();
