@@ -14,6 +14,9 @@ import Business.Ecosystem.Network;
 import Business.Enterprise.Enterprise;
 import Business.Organization.ServiceOrganization;
 import Business.WorkTaskQueue.ServiceAppointmentTask;
+import Business.Enterprise.DealershipEnterprise;
+import Business.WorkTaskQueue.TradeInTask;
+import java.awt.GridLayout;
 import javax.swing.JOptionPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -40,6 +43,8 @@ public class CustomerServiceRepresentativeWorkAreaJPanel extends javax.swing.JPa
     private Ecosystem ecosystem;
     private User customerServiceRepresentative;
     private JTextField serviceVinField;
+    // VIN field used when a customer requests a trade-in evaluation.
+    private JTextField tradeInVinField;    
     // Customer-support order table and its searchable data model.
     private DefaultTableModel tableModel;
     private JTable ordersTable;
@@ -204,17 +209,21 @@ supportPanel.add(bottomPanel, BorderLayout.SOUTH);
                 || salesTask.getStatus().toString()
                         .toLowerCase().contains(filter);
     }
-    /**
- * Builds the service-appointment entry area for dealership customers.
+/**
+ * Builds Customer Service actions for appointments and trade-in requests.
  *
- * @return panel used to book a service appointment by vehicle VIN
+ * @return panel containing dealership after-sales actions
  */
 private JPanel buildAppointmentPanel() {
+    JPanel afterSalesPanel = new JPanel(new GridLayout(2, 1, 0, 8));
+    afterSalesPanel.setOpaque(false);
+
     JPanel appointmentPanel = new JPanel(new BorderLayout(10, 0));
     appointmentPanel.setBackground(new Color(235, 242, 250));
     appointmentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-    JLabel appointmentLabel = new JLabel("Book Service Appointment — Vehicle VIN:");
+    JLabel appointmentLabel = new JLabel(
+            "Book Service Appointment — Vehicle VIN:");
     serviceVinField = new JTextField();
 
     JButton bookAppointmentButton = new JButton("Send to Service Center");
@@ -224,7 +233,25 @@ private JPanel buildAppointmentPanel() {
     appointmentPanel.add(serviceVinField, BorderLayout.CENTER);
     appointmentPanel.add(bookAppointmentButton, BorderLayout.EAST);
 
-    return appointmentPanel;
+    JPanel tradeInPanel = new JPanel(new BorderLayout(10, 0));
+    tradeInPanel.setBackground(new Color(245, 239, 222));
+    tradeInPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+    JLabel tradeInLabel = new JLabel(
+            "Request Trade-In Evaluation — Vehicle VIN:");
+    tradeInVinField = new JTextField();
+
+    JButton tradeInButton = new JButton("Send Trade-In to Service Center");
+    tradeInButton.addActionListener(event -> bookTradeInEvaluation());
+
+    tradeInPanel.add(tradeInLabel, BorderLayout.WEST);
+    tradeInPanel.add(tradeInVinField, BorderLayout.CENTER);
+    tradeInPanel.add(tradeInButton, BorderLayout.EAST);
+
+    afterSalesPanel.add(appointmentPanel);
+    afterSalesPanel.add(tradeInPanel);
+
+    return afterSalesPanel;
 }
 
 /**
@@ -262,7 +289,11 @@ private void bookServiceAppointment() {
                         customerServiceRepresentative, vin);
 
         serviceCenter.getInTasks().pushTask(appointment);
-
+        if (salesOrganization.getCompany() instanceof DealershipEnterprise) {
+            DealershipEnterprise dealership
+                    = (DealershipEnterprise) salesOrganization.getCompany();
+            dealership.addServiceRecord(appointment);
+        }
         JOptionPane.showMessageDialog(
                 this,
                 "Service appointment for VIN " + vin
@@ -283,6 +314,62 @@ private void bookServiceAppointment() {
  *
  * @return dealership service organization, or null when unavailable
  */
+/**
+ * Sends a customer trade-in evaluation request to the Service Center.
+ */
+private void bookTradeInEvaluation() {
+    String vinText = tradeInVinField.getText().trim();
+
+    if (!vinText.matches("\\d+")) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Enter a numeric VIN before requesting a trade-in evaluation.",
+                "Invalid VIN",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    ServiceOrganization serviceCenter = findServiceOrganization();
+
+    if (serviceCenter == null) {
+        JOptionPane.showMessageDialog(
+                this,
+                "The dealership Service Center could not be found.",
+                "Service Center Unavailable",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        int vin = Integer.parseInt(vinText);
+
+        TradeInTask tradeIn
+                = serviceCenter.getInTasks().createTradeInTask(
+                        customerServiceRepresentative, vin);
+
+        salesOrganization.getOutTasks().pushTask(tradeIn);
+
+        if (salesOrganization.getCompany() instanceof DealershipEnterprise) {
+            DealershipEnterprise dealership
+                    = (DealershipEnterprise) salesOrganization.getCompany();
+            dealership.addServiceRecord(tradeIn);
+        }
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Trade-in evaluation for VIN " + vin
+                + " was sent to " + serviceCenter.getName() + ".");
+
+        tradeInVinField.setText("");
+
+    } catch (Exception exception) {
+        JOptionPane.showMessageDialog(
+                this,
+                exception.getMessage(),
+                "Trade-In Not Created",
+                JOptionPane.ERROR_MESSAGE);
+    }
+}
 private ServiceOrganization findServiceOrganization() {
     for (Organization organization
             : salesOrganization.getCompany().getOrganizations().getOrganizations()) {

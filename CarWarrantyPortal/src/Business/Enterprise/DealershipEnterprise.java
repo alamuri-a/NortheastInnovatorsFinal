@@ -3,6 +3,8 @@ package Business.Enterprise;
 import Business.Vehicle.Automobile;
 import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.WorkTask;
+import Business.Vehicle.Part;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,8 @@ public class DealershipEnterprise extends Enterprise {
 
     // Service, appointment, recall, or trade-in tasks related to dealership vehicles.
     private final ArrayList<WorkTask> serviceRecords;
+    // Replacement-part inventory stored at this dealership service center.
+    private final HashMap<Integer, Integer> partsInventory;
 
     private Type enterpriseType;
 
@@ -40,6 +44,7 @@ public class DealershipEnterprise extends Enterprise {
         this.automobiles = new ArrayList<>();
         this.salesRecords = new ArrayList<>();
         this.serviceRecords = new ArrayList<>();
+        this.partsInventory = new HashMap<>();
     }
 
     /**
@@ -128,6 +133,50 @@ public class DealershipEnterprise extends Enterprise {
     public List<WorkTask> getServiceRecords() {
         return Collections.unmodifiableList(serviceRecords);
     }
+   /**
+ * Returns the current quantity of a replacement part stored at the dealership.
+ *
+ * @param part replacement part to look up
+ * @return stored quantity, or zero when the part has not been received
+ */
+public int getPartQuantity(Part part) {
+    if (part == null) {
+        throw new IllegalArgumentException("Part is required.");
+    }
+
+    Integer quantity = partsInventory.get(part.getId());
+    return quantity == null ? 0 : quantity;
+}
+
+/**
+ * Updates the stored quantity of a replacement part at the dealership.
+ *
+ * @param part replacement part being stored
+ * @param quantity non-negative replacement-part quantity
+ */
+public void setPartQuantity(Part part, int quantity) {
+    if (part == null || quantity < 0) {
+        throw new IllegalArgumentException(
+                "A part and non-negative quantity are required.");
+    }
+
+    partsInventory.put(part.getId(), quantity);
+}
+
+/**
+ * Adds received replacement parts to the dealership inventory.
+ *
+ * @param part replacement part received from Supplier Logistics
+ * @param quantity quantity received
+ */
+public void addPartQuantity(Part part, int quantity) {
+    if (part == null || quantity <= 0) {
+        throw new IllegalArgumentException(
+                "A part and positive quantity are required.");
+    }
+
+    setPartQuantity(part, getPartQuantity(part) + quantity);
+} 
 
        @Override
     public Type getEnterpriseType() {

@@ -13,6 +13,10 @@ import Business.Organization.ProductionOrganization;
 import Business.Organization.WarehousingOrganization;
 import Business.WorkTaskQueue.FulfillmentRequestTask;
 import Business.WorkTaskQueue.OrderStatus;
+import Business.Enterprise.DealershipEnterprise;
+import Business.Vehicle.Part;
+import Business.WorkTaskQueue.BuildCarTask;
+import Business.WorkTaskQueue.GetPartTask;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -251,6 +255,13 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                     salesRepresentative, order);
 
             salesOrganization.getOutTasks().pushTask(salesTask);
+            if (salesOrganization.getCompany() instanceof DealershipEnterprise) {
+                DealershipEnterprise dealership
+                    = (DealershipEnterprise) salesOrganization.getCompany();
+                dealership.addSalesRecord(salesTask);
+}
+
+String dispatchMessage = dispatchInitialOrderTasks(salesTask);
 
             tableModel.addRow(new Object[]{
                 order.getOrderId(),
@@ -266,7 +277,8 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
 
             JOptionPane.showMessageDialog(this,
                     "Custom order " + order.getOrderId()
-                    + " was created with DRAFT status.",
+                    + " was created with DRAFT status."
+                    + dispatchMessage,
                     "Order Created",
                     JOptionPane.INFORMATION_MESSAGE);
 
@@ -325,7 +337,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                         OrderStatus previousStatus = salesTask.getStatus();
                         boolean advanced = salesTask.advanceStatus();
                         String handoffMessage = advanced
-                                ? createFulfillmentRequest(
+                                ? describeWorkflowStep(
                                         salesTask, previousStatus)
                                 : "";
 
@@ -365,60 +377,96 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
      * @param previousStatus status held before the order advanced
      * @return short message describing the created handoff, when applicable
      */
-    private String createFulfillmentRequest(
-            SellVehicleTask salesTask,
-            OrderStatus previousStatus) {
+   /**
+ * Creates real cross-enterprise tasks when a dealership customer submits
+ * a custom vehicle order.
+ *
+ * @param salesTask newly created customer sales task
+ * @return summary of dispatched Warehouse and Production work
+ */
+private String dispatchInitialOrderTasks(SellVehicleTask salesTask) {
+    CustomVehicleOrder order = salesTask.getCustomOrder();
 
-        Organization sourceOrganization = null;
-        Organization destinationOrganization = null;
-        String requestType = null;
+    Organization warehouse = findOrganization(
+            WarehousingOrganization.class);
+    Organization production = findOrganization(
+            ProductionOrganization.class);
 
-        switch (previousStatus) {
-            case DRAFT:
-                sourceOrganization = salesOrganization;
-                destinationOrganization = findOrganization(
-                        WarehousingOrganization.class);
-                requestType = "Source custom-order components";
-                break;
-
-            case SOURCING_PARTS:
-                sourceOrganization = findOrganization(
-                        WarehousingOrganization.class);
-                destinationOrganization = findOrganization(
-                        ProductionOrganization.class);
-                requestType = "Begin German vehicle production";
-                break;
-
-            case IN_PRODUCTION:
-                sourceOrganization = findOrganization(
-                        ProductionOrganization.class);
-                destinationOrganization = findOrganization(
-                        LogisticsOrganization.class);
-                requestType = "Arrange international delivery";
-                break;
-
-            default:
-                return "";
-        }
-
-        if (sourceOrganization == null || destinationOrganization == null) {
-            return "\nNo matching organization was found for this handoff.";
-        }
-
-        FulfillmentRequestTask request = new FulfillmentRequestTask(
-                salesRepresentative,
-                salesTask.getCustomOrder(),
-                requestType,
-                sourceOrganization.getName(),
-                destinationOrganization.getName());
-
-        sourceOrganization.getOutTasks().pushTask(request);
-        destinationOrganization.getInTasks().pushTask(request);
-
-        return "\nHandoff created: " + sourceOrganization.getName()
-                + " -> " + destinationOrganization.getName() + ".";
+    if (order == null || warehouse == null || production == null) {
+        throw new IllegalStateException(
+                "Warehouse and Production organizations are required "
+                + "to dispatch a custom order.");
     }
 
+    try {
+        int partNumber = 1000
+                + Math.abs(order.getOrderId().hashCode() % 9000);
+
+        Part componentKit = new Part(partNumber);
+
+        GetPartTask partsRequest
+                = warehouse.getInTasks().createGetPartTask(
+                        salesRepresentative,
+                        componentKit,
+                        4,
+                        order);
+
+        BuildCarTask productionRequest
+                = new BuildCarTask(salesRepresentative, order);
+
+        production.getInTasks().pushTask(productionRequest);
+
+        // Sales keeps outbound references for reporting and traceability.
+        salesOrganization.getOutTasks().pushTask(partsRequest);
+        salesOrganization.getOutTasks().pushTask(productionRequest);
+
+        return "\nParts request sent to " + warehouse.getName()
+                + " and vehicle build sent to "
+                + production.getName() + ".";
+
+    } catch (Exception exception) {
+        throw new IllegalStateException(
+                "The custom order could not be dispatched.", exception);
+    }
+}
+
+/**
+ * Explains the next lifecycle stage without sending incompatible generic
+ * tasks into role-specific queues.
+ *
+ * @param salesTask customer sales task being advanced
+ * @param previousStatus status held before the advance
+ * @return short explanation for the Sales Representative
+ */
+private String describeWorkflowStep(
+        SellVehicleTask salesTask,
+        OrderStatus previousStatus) {
+
+    switch (previousStatus) {
+        case DRAFT:
+            return "\nThe order is validated. Warehouse and Production "
+                    + "tasks were created when the order was submitted.";
+
+        case VALIDATED:
+            return "\nSupplier Warehouse is sourcing the required components.";
+
+        case SOURCING_PARTS:
+            return "\nComponents are ready for German Production.";
+
+        case READY_FOR_PRODUCTION:
+            return "\nGerman Production is building the vehicle.";
+
+        case IN_PRODUCTION:
+            return "\nProduction is complete and the vehicle is ready "
+                    + "for international delivery.";
+
+        case IN_TRANSIT:
+            return "\nVehicle delivered to the dealership.";
+
+        default:
+            return "";
+    }
+} 
     /**
      * Locates the first organization of the requested type in the ecosystem.
      *

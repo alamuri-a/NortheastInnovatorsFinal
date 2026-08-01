@@ -122,7 +122,18 @@ public class SellVehicleTask extends WorkTask {
                 throw new IllegalStateException("Unknown order status.");
         }
     }
+    /**
+     * Marks this customer order delivered after Manufacturer Logistics confirms
+     * receipt at the destination dealership.
+     */
+    public void markDelivered() {
+        if (customOrder == null) {
+            throw new IllegalStateException(
+                    "Only a detailed custom order can be marked delivered.");
+        }
 
+        status = OrderStatus.DELIVERED;
+    }
     /**
      * Checks whether German production is complete.
      * Production is complete once the vehicle enters transit.

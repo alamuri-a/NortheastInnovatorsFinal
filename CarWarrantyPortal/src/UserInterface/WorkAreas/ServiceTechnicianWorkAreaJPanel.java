@@ -10,6 +10,13 @@ import Business.User.User;
 import javax.swing.JPanel;
 import Business.WorkTaskQueue.ServiceAppointmentTask;
 import Business.WorkTaskQueue.WorkTask;
+import Business.Ecosystem.Network;
+import Business.Enterprise.DealershipEnterprise;
+import Business.Enterprise.Enterprise;
+import Business.Enterprise.SupplierEnterprise;
+import Business.Organization.LogisticsOrganization;
+import Business.Vehicle.Part;
+import Business.WorkTaskQueue.SendShipmentTask;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -32,6 +39,8 @@ public class ServiceTechnicianWorkAreaJPanel extends javax.swing.JPanel {
 
     // Signed-in technician who completes assigned service work.
     private User serviceTechnician;
+    // Ecosystem used to route replacement-part orders to Supplier Logistics.
+    private Ecosystem ecosystem;
 
     // Table showing this technician's assigned service appointments.
     private DefaultTableModel tableModel;
@@ -43,6 +52,7 @@ public class ServiceTechnicianWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         this.serviceOrganization = org;
         this.serviceTechnician = usr;
+        this.ecosystem = system;
         buildTechnicianScreen();
     }
 
@@ -98,8 +108,12 @@ private void buildTechnicianScreen() {
     JButton completeButton = new JButton("Complete Selected Service");
     completeButton.addActionListener(event -> completeSelectedAppointment());
 
+    JButton orderPartButton = new JButton("Order Replacement Part");
+    orderPartButton.addActionListener(event -> orderReplacementPart());
+
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(completeButton);
+    buttonPanel.add(orderPartButton);
 
     add(headerPanel, BorderLayout.NORTH);
     add(centerPanel, BorderLayout.CENTER);
@@ -169,6 +183,9 @@ private void completeSelectedAppointment() {
             }
 
             workTask.Complete();
+            serviceOrganization.getInTasks().popTask(workTask);
+            serviceOrganization.getOutTasks().pushTask(workTask);
+
             populateAssignedAppointments();
 
             JOptionPane.showMessageDialog(
@@ -178,6 +195,128 @@ private void completeSelectedAppointment() {
         }
     }
 }
+        /**
+ * Creates a Supplier Logistics shipment request for a replacement part needed
+ * during the selected dealership service appointment.
+ */
+private void orderReplacementPart() {
+    int selectedRow = appointmentsTable.getSelectedRow();
+
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Select a service appointment before ordering a part.",
+                "No Appointment Selected",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    String partIdText = JOptionPane.showInputDialog(
+            this,
+            "Enter the replacement part ID:",
+            "Order Replacement Part",
+            JOptionPane.QUESTION_MESSAGE);
+
+    if (partIdText == null) {
+        return;
+    }
+
+    String quantityText = JOptionPane.showInputDialog(
+            this,
+            "Enter the quantity to order:",
+            "Order Replacement Part",
+            JOptionPane.QUESTION_MESSAGE);
+
+    if (quantityText == null) {
+        return;
+    }
+
+    int partId;
+    int quantity;
+
+    try {
+        partId = Integer.parseInt(partIdText.trim());
+        quantity = Integer.parseInt(quantityText.trim());
+
+        if (partId < 0 || quantity <= 0) {
+            throw new NumberFormatException();
+        }
+    } catch (NumberFormatException exception) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Enter a non-negative part ID and a positive quantity.",
+                "Invalid Part Request",
+                JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    if (!(serviceOrganization.getCompany() instanceof DealershipEnterprise)) {
+        JOptionPane.showMessageDialog(
+                this,
+                "The Service Center is not connected to a Dealership.",
+                "Routing Error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    DealershipEnterprise dealership
+            = (DealershipEnterprise) serviceOrganization.getCompany();
+
+    LogisticsOrganization supplierLogistics = null;
+
+    for (Network network : ecosystem.getNetworks()) {
+        for (Enterprise enterprise
+                : network.getEnterprises().getEnterprises()) {
+
+            if (enterprise instanceof SupplierEnterprise) {
+                for (Organization org
+                        : enterprise.getOrganizations().getOrganizations()) {
+                    if (org instanceof LogisticsOrganization) {
+                        supplierLogistics = (LogisticsOrganization) org;
+                    }
+                }
+            }
+        }
+    }
+
+    if (supplierLogistics == null) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Supplier Logistics could not be located.",
+                "Routing Error",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    try {
+        Part requestedPart = new Part(partId);
+
+        SendShipmentTask shipment
+                = supplierLogistics.getInTasks().createSendShipmentTask(
+                        serviceTechnician,
+                        dealership,
+                        requestedPart,
+                        quantity);
+
+        serviceOrganization.getOutTasks().pushTask(shipment);
+        dealership.addServiceRecord(shipment);
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Replacement-part order sent to Supplier Logistics. "
+                        + "Part " + partId + ", quantity " + quantity + ".",
+                "Part Order Created",
+                JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (Exception exception) {
+        JOptionPane.showMessageDialog(
+                this,
+                "The replacement-part order could not be created.",
+                "Ordering Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
+}
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
