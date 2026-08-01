@@ -162,7 +162,6 @@ public class GetPartJPanel extends javax.swing.JPanel {
         Part part = task.getPart();
         int oldQuantity = company.getPartQuantity(part);
         company.setPartQuantity(part, oldQuantity - quantity);
-        task.Complete();
         // Update task status
         organization.getInTasks().popTask(task);
         organization.getOutTasks().pushTask(task);
