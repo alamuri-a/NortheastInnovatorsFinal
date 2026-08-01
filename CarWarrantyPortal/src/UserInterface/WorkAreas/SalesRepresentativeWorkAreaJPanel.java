@@ -8,15 +8,10 @@ import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.WorkTask;
 import Business.Ecosystem.Network;
 import Business.Enterprise.Enterprise;
-import Business.Organization.LogisticsOrganization;
 import Business.Organization.ProductionOrganization;
-import Business.Organization.WarehousingOrganization;
-import Business.WorkTaskQueue.FulfillmentRequestTask;
 import Business.WorkTaskQueue.OrderStatus;
 import Business.Enterprise.DealershipEnterprise;
-import Business.Vehicle.Part;
 import Business.WorkTaskQueue.BuildCarTask;
-import Business.WorkTaskQueue.GetPartTask;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -159,13 +154,9 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                 "Six Faker-generated dealership orders are loaded for "
                 + "the project demonstration.");
 
-                JButton advanceStatusButton = new JButton("Advance Selected Order");
-                advanceStatusButton.addActionListener(event -> advanceSelectedOrder());
-
                 JPanel bottomPanel = new JPanel(new BorderLayout());
                 bottomPanel.setOpaque(false);
                 bottomPanel.add(informationLabel, BorderLayout.WEST);
-                bottomPanel.add(advanceStatusButton, BorderLayout.EAST);
 
                 trackingPanel.add(new JScrollPane(orderTable), BorderLayout.CENTER);
                 trackingPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -253,7 +244,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
 
             SellVehicleTask salesTask = new SellVehicleTask(
                     salesRepresentative, order);
-
+                 salesTask.advanceStatus();
             salesOrganization.getOutTasks().pushTask(salesTask);
             if (salesOrganization.getCompany() instanceof DealershipEnterprise) {
                 DealershipEnterprise dealership
@@ -277,7 +268,7 @@ String dispatchMessage = dispatchInitialOrderTasks(salesTask);
 
             JOptionPane.showMessageDialog(this,
                     "Custom order " + order.getOrderId()
-                    + " was created with DRAFT status."
+                    + " was validated and sent to Production."
                     + dispatchMessage,
                     "Order Created",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -309,164 +300,38 @@ String dispatchMessage = dispatchInitialOrderTasks(salesTask);
         colorComboBox.setSelectedIndex(0);
         supplierComboBox.setSelectedIndex(0);
     }
-    /**
-     * Advances the selected custom vehicle order by one approved workflow
-     * status and refreshes the visible tracker.
-     */
-    private void advanceSelectedOrder() {
-        int selectedRow = orderTable.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this,
-                    "Select an order from the table first.",
-                    "No Order Selected",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int modelRow = orderTable.convertRowIndexToModel(selectedRow);
-        String orderId = String.valueOf(tableModel.getValueAt(modelRow, 0));
-
-        for (WorkTask workTask : salesOrganization.getOutTasks().getTasks()) {
-            if (workTask instanceof SellVehicleTask) {
-                SellVehicleTask salesTask = (SellVehicleTask) workTask;
-                CustomVehicleOrder order = salesTask.getCustomOrder();
-
-                if (order != null && order.getOrderId().equals(orderId)) {
-                    try {
-                        OrderStatus previousStatus = salesTask.getStatus();
-                        boolean advanced = salesTask.advanceStatus();
-                        String handoffMessage = advanced
-                                ? describeWorkflowStep(
-                                        salesTask, previousStatus)
-                                : "";
-
-                        if (advanced) {
-                            tableModel.setValueAt(
-                                    salesTask.getStatus(), modelRow, 6);
-                            refreshAnalytics();
-                            JOptionPane.showMessageDialog(this,
-                                    orderId + " advanced to "
-                                    + salesTask.getStatus() + "."
-                                    + handoffMessage,
-                                    "Order Updated",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                        } else {
-                            JOptionPane.showMessageDialog(this,
-                                    orderId + " has already been delivered.",
-                                    "Order Complete",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    } catch (IllegalStateException exception) {
-                        JOptionPane.showMessageDialog(this,
-                                exception.getMessage(),
-                                "Order Cannot Advance",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-
-                    return;
-                }
-            }
-        }
-    }
-        /**
-     * Creates the next cross-organization fulfillment request after an order
-     * advances through the global supply-chain workflow.
-     *
-     * @param salesTask order whose workflow state changed
-     * @param previousStatus status held before the order advanced
-     * @return short message describing the created handoff, when applicable
-     */
-   /**
- * Creates real cross-enterprise tasks when a dealership customer submits
- * a custom vehicle order.
+ /**
+ * Sends a new dealership custom order directly to Manufacturer Production.
  *
- * @param salesTask newly created customer sales task
- * @return summary of dispatched Warehouse and Production work
+ * Supplier Warehouse is reserved for post-warranty replacement-part
+ * replenishment and is not part of the new-vehicle production route.
+ *
+ * @param salesTask dealership order submitted by the Sales Representative
+ * @return message confirming the Production handoff
  */
 private String dispatchInitialOrderTasks(SellVehicleTask salesTask) {
     CustomVehicleOrder order = salesTask.getCustomOrder();
 
-    Organization warehouse = findOrganization(
-            WarehousingOrganization.class);
     Organization production = findOrganization(
             ProductionOrganization.class);
 
-    if (order == null || warehouse == null || production == null) {
+    if (order == null || production == null) {
         throw new IllegalStateException(
-                "Warehouse and Production organizations are required "
-                + "to dispatch a custom order.");
+                "Manufacturer Production is required to dispatch "
+                + "a custom vehicle order.");
     }
 
-    try {
-        int partNumber = 1000
-                + Math.abs(order.getOrderId().hashCode() % 9000);
+    BuildCarTask productionRequest = new BuildCarTask(
+            salesRepresentative, order);
 
-        Part componentKit = new Part(partNumber);
+    production.getInTasks().pushTask(productionRequest);
 
-        GetPartTask partsRequest
-                = warehouse.getInTasks().createGetPartTask(
-                        salesRepresentative,
-                        componentKit,
-                        4,
-                        order);
-
-        BuildCarTask productionRequest
-                = new BuildCarTask(salesRepresentative, order);
-
-        production.getInTasks().pushTask(productionRequest);
-
-        // Sales keeps outbound references for reporting and traceability.
-        salesOrganization.getOutTasks().pushTask(partsRequest);
-        salesOrganization.getOutTasks().pushTask(productionRequest);
-
-        return "\nParts request sent to " + warehouse.getName()
-                + " and vehicle build sent to "
-                + production.getName() + ".";
-
-    } catch (Exception exception) {
-        throw new IllegalStateException(
-                "The custom order could not be dispatched.", exception);
-    }
+    // Sales retains the outbound task for order reporting and traceability.
+    salesOrganization.getOutTasks().pushTask(productionRequest);
+    salesTask.markInProduction();
+    return "\nVehicle build request sent to "
+            + production.getName() + ".";
 }
-
-/**
- * Explains the next lifecycle stage without sending incompatible generic
- * tasks into role-specific queues.
- *
- * @param salesTask customer sales task being advanced
- * @param previousStatus status held before the advance
- * @return short explanation for the Sales Representative
- */
-private String describeWorkflowStep(
-        SellVehicleTask salesTask,
-        OrderStatus previousStatus) {
-
-    switch (previousStatus) {
-        case DRAFT:
-            return "\nThe order is validated. Warehouse and Production "
-                    + "tasks were created when the order was submitted.";
-
-        case VALIDATED:
-            return "\nSupplier Warehouse is sourcing the required components.";
-
-        case SOURCING_PARTS:
-            return "\nComponents are ready for German Production.";
-
-        case READY_FOR_PRODUCTION:
-            return "\nGerman Production is building the vehicle.";
-
-        case IN_PRODUCTION:
-            return "\nProduction is complete and the vehicle is ready "
-                    + "for international delivery.";
-
-        case IN_TRANSIT:
-            return "\nVehicle delivered to the dealership.";
-
-        default:
-            return "";
-    }
-} 
     /**
      * Locates the first organization of the requested type in the ecosystem.
      *

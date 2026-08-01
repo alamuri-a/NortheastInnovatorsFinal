@@ -122,6 +122,29 @@ public class SellVehicleTask extends WorkTask {
                 throw new IllegalStateException("Unknown order status.");
         }
     }
+/**
+ * Marks a validated custom order as actively being built by Production.
+ */
+public void markInProduction() {
+    if (customOrder == null) {
+        throw new IllegalStateException(
+                "Only a detailed custom order can enter Production.");
+    }
+
+    status = OrderStatus.IN_PRODUCTION;
+}
+
+/**
+ * Marks a completed vehicle as in transit with Manufacturer Logistics.
+ */
+public void markInTransit() {
+    if (customOrder == null) {
+        throw new IllegalStateException(
+                "Only a detailed custom order can enter transit.");
+    }
+
+    status = OrderStatus.IN_TRANSIT;
+}    
     /**
      * Marks this customer order delivered after Manufacturer Logistics confirms
      * receipt at the destination dealership.
