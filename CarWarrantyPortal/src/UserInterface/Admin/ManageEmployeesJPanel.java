@@ -143,15 +143,15 @@ public class ManageEmployeesJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        // Remove selected employee from directory
 
-        // Validate selected organization
+        // Validate selected employee
         int selectedRow = tblEmployees.getSelectedRow();
         if (selectedRow < 0 || selectedRow > tblEmployees.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Please select an employee from the top table first.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -170,13 +170,14 @@ public class ManageEmployeesJPanel extends javax.swing.JPanel {
 
         // Remove in backend
         selectedOrganization.getEmployees().removeEmployee(selectedEmployee);
-        JOptionPane.showMessageDialog(null, "Successfully deleted employee!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
+        // Notify + refresh
+        JOptionPane.showMessageDialog(null, "Successfully deleted employee!", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshTables();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
+        // Create new employee for organization
 
         // Validate organization type + name
         String name = txtName.getText();
@@ -207,9 +208,9 @@ public class ManageEmployeesJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
-        // TODO add your handling code here:
+        // View employee details for updating
 
-        // Validate selected organization
+        // Validate selected employee
         int selectedRow = tblEmployees.getSelectedRow();
         if (selectedRow < 0 || selectedRow > tblEmployees.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Please select an employee from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -223,7 +224,7 @@ public class ManageEmployeesJPanel extends javax.swing.JPanel {
             return;
         }
 
-        // Load organization update page
+        // Load employee update page
         UpdateEmployeesJPanel uejp = new UpdateEmployeesJPanel(workArea, user, organization, business, selectedEmployee, selectedOrganization);
         this.workArea.add(uejp, "UpdateEmployees");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
@@ -246,6 +247,7 @@ public class ManageEmployeesJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTables() {
+        // Fill respective tables with necessary data
         refreshEmployees();
         refreshOrganizations();
     }

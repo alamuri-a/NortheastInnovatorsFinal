@@ -31,6 +31,7 @@ public class BackOrderJPanel extends javax.swing.JPanel {
     User user;
     Ecosystem business;
     GetPartTask task;
+    ManufacturerEnterprise mfe;
     
     /**
      * Creates new form BackOrderJPanel
@@ -46,6 +47,7 @@ public class BackOrderJPanel extends javax.swing.JPanel {
         lblTitle.setText(organization.getName() + " Back Order Manufacturers");
         
         refreshManufacturers();
+        refreshOrganizations();
     }
 
     /**
@@ -62,6 +64,8 @@ public class BackOrderJPanel extends javax.swing.JPanel {
         lblTitle = new javax.swing.JLabel();
         btnBack = new javax.swing.JButton();
         btnBackOrder = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblOrganizations = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(204, 255, 153));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -77,9 +81,14 @@ public class BackOrderJPanel extends javax.swing.JPanel {
                 "Manufacturers"
             }
         ));
+        tblManufacturers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblManufacturersMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblManufacturers);
 
-        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 610, -1));
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 300, -1));
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         lblTitle.setText("<Org Name>  Back Order Manufacturers");
@@ -102,6 +111,21 @@ public class BackOrderJPanel extends javax.swing.JPanel {
             }
         });
         add(btnBackOrder, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 530, 140, -1));
+
+        tblOrganizations.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null},
+                {null},
+                {null},
+                {null}
+            },
+            new String [] {
+                "Organizations"
+            }
+        ));
+        jScrollPane2.setViewportView(tblOrganizations);
+
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 70, 300, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -118,29 +142,29 @@ public class BackOrderJPanel extends javax.swing.JPanel {
             return;
         }
         
-        int selectedRow = tblManufacturers.getSelectedRow();
-        if (selectedRow < 0 || selectedRow > tblManufacturers.getRowCount()) {
-            JOptionPane.showMessageDialog(null, "Please select a manufacturer from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        ManufacturerEnterprise selectedMfe = (ManufacturerEnterprise) tblManufacturers.getValueAt(selectedRow, 0);
-        if (selectedMfe == null) {
-            JOptionPane.showMessageDialog(null, "Failed to back order from selected manufacturer.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        } else if (task.isBackordered()) {
+        if (task.isBackordered()) {
             JOptionPane.showMessageDialog(null, "Backorder already requested for this task.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
-        for (Organization o : selectedMfe.getOrganizations().getOrganizations()) {
-            if (o instanceof ProductionOrganization po) {
-                if (task.BackOrder(po)) JOptionPane.showMessageDialog(null, "Backorder successfully requested!", "Warning", JOptionPane.WARNING_MESSAGE);
-                else JOptionPane.showMessageDialog(null, "Failed to requrest backorder", "Warning", JOptionPane.WARNING_MESSAGE);
-                break;
-            }
+        // Selection validation
+        int selectedRow = tblOrganizations.getSelectedRow();
+        if (selectedRow < 0 || selectedRow > tblOrganizations.getRowCount()) {
+            JOptionPane.showMessageDialog(null, "Please select an organization from the top table first.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
         }
         
+        ProductionOrganization selectedOrg = (ProductionOrganization) tblOrganizations.getValueAt(selectedRow, 0);
+        if (selectedOrg == null) {
+            JOptionPane.showMessageDialog(null, "Failed to back order from selected organization.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Update in backend + notify
+        task.BackOrder(selectedOrg);
+        JOptionPane.showMessageDialog(null, "Backorder successfully requested!", "Warning", JOptionPane.WARNING_MESSAGE);
+        
+        // Refresh and return to previous page
         workArea.remove(this);
         
         Component[] panelStack = workArea.getComponents();
@@ -151,16 +175,39 @@ public class BackOrderJPanel extends javax.swing.JPanel {
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackOrderActionPerformed
 
+    private void tblManufacturersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblManufacturersMouseClicked
+        // Set selected manufacturer
+        
+        // Selection validation
+        int selectedRow = tblManufacturers.getSelectedRow();
+        if (selectedRow < 0 || selectedRow > tblManufacturers.getRowCount()) {
+            JOptionPane.showMessageDialog(null, "Please select a manufacturer from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        ManufacturerEnterprise selectedMfe = (ManufacturerEnterprise) tblManufacturers.getValueAt(selectedRow, 0);
+        if (selectedMfe == null) {
+            JOptionPane.showMessageDialog(null, "Failed to back order from selected manufacturer.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        this.mfe = selectedMfe;
+        refreshOrganizations();
+    }//GEN-LAST:event_tblManufacturersMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnBackOrder;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JTable tblManufacturers;
+    private javax.swing.JTable tblOrganizations;
     // End of variables declaration//GEN-END:variables
     
     private void refreshManufacturers() {
+        // Fill table with necessary information
         DefaultTableModel model = (DefaultTableModel) tblManufacturers.getModel();
         
         model.setRowCount(0);
@@ -173,6 +220,25 @@ public class BackOrderJPanel extends javax.swing.JPanel {
                     
                     row[0] = me;
                     
+                    model.addRow(row);
+                }
+            }
+        }
+    }
+
+    private void refreshOrganizations() {
+        // Fill table with necessary data
+        DefaultTableModel model = (DefaultTableModel) tblOrganizations.getModel();
+        
+        model.setRowCount(0);
+        
+        if (mfe != null) {
+            for (Organization org : mfe.getOrganizations().getOrganizations()) {
+                if (org instanceof ProductionOrganization po) {
+                    Object[] row = new Object[1];
+
+                    row[0] = po;
+
                     model.addRow(row);
                 }
             }

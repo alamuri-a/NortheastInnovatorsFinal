@@ -125,13 +125,13 @@ public class UpdateUsersJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
+        // Update name, username, and password then refresh previous page table
 
         // Field validation
         String name = txtName.getText();
@@ -178,6 +178,7 @@ public class UpdateUsersJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshFields() {
+        // Fill fields with necessary data
         txtOrganization.setText(selectedOrganization.getName());
         txtID.setText(String.valueOf(selectedUser.getID()));
         txtRole.setText(selectedUser.getRole().toString());

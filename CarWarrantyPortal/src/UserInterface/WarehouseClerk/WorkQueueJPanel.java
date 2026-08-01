@@ -99,14 +99,15 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
-        // TODO add your handling code here:
+        // Assign user to handle task and task as user's current task
         
+        // Selection validation
         int selectedRow = tblTasks.getSelectedRow();
         if (selectedRow < 0 || selectedRow > tblTasks.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Please select a task from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -125,6 +126,8 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
         ((WarehouseClerk) user.getRole()).setCurrentTask(selectedTask);
         selectedTask.setAssignee(user);
         
+        // Notify + refresh
+        JOptionPane.showMessageDialog(null, "Successfully assigned task!", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshTable();
     }//GEN-LAST:event_btnAssignActionPerformed
 
@@ -138,6 +141,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTable() {
+        // Fill table with necessary data
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         
         model.setRowCount(0);

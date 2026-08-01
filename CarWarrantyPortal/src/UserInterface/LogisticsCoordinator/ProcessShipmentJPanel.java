@@ -171,6 +171,7 @@ public class ProcessShipmentJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshFields() {
+        // Fill fields with necessary data
         txtPart.setText(task.getPart().toString());
         txtStock.setText(String.valueOf(((SupplierEnterprise) organization.getCompany()).getPartQuantity(task.getPart())));
         txtQuantity.setText("");

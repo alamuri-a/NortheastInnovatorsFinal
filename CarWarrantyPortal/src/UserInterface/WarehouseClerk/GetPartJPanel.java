@@ -174,14 +174,19 @@ public class GetPartJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCompleteActionPerformed
 
     private void btnBackOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackOrderActionPerformed
-        // Create build order for specified part
+        // Back order requested product if stock is low
         
         // Validate if task still needs to be complete
         if (task.isCompleted()) {
             JOptionPane.showMessageDialog(null, "Task has already been completed.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        if (task.isBackordered()) {
+            JOptionPane.showMessageDialog(null, "Back order already requested for this task.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         
+        // Load back order selection page
         BackOrderJPanel bojp = new BackOrderJPanel(workArea, user, organization, business, task);
         this.workArea.add(bojp, "BackOrders");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
@@ -220,6 +225,7 @@ public class GetPartJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshFields() {
+        // Fill fields with necessary info
         int stock = ((SupplierEnterprise) organization.getCompany()).getPartQuantity(task.getPart());
         int quantity = task.getQuantity();
         

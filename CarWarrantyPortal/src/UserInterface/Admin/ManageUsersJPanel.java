@@ -114,13 +114,13 @@ public class ManageUsersJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        // Delete selected user
 
         // Validate selected organization
         int selectedRow = tblUsers.getSelectedRow();
@@ -141,8 +141,9 @@ public class ManageUsersJPanel extends javax.swing.JPanel {
 
         // Remove in backend
         selectedOrganization.getUsers().removeUser(selectedUser);
+        
+        // Notify + refresh
         JOptionPane.showMessageDialog(null, "Successfully deleted user!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
         refreshTable();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -154,7 +155,7 @@ public class ManageUsersJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
-        // TODO add your handling code here:
+        // Load user detailed view page
 
         // Validate selected user
         int selectedRow = tblUsers.getSelectedRow();
@@ -188,6 +189,7 @@ public class ManageUsersJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTable() {
+        // Fill table with necessary info
         DefaultTableModel model = (DefaultTableModel) tblUsers.getModel();
         
         model.setRowCount(0);

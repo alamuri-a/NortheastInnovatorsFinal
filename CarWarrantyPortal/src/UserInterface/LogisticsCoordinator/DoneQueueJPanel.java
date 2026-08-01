@@ -54,6 +54,8 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         tblTasks = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(153, 153, 255));
+        setMinimumSize(new java.awt.Dimension(650, 600));
+        setPreferredSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTitle.setBackground(new java.awt.Color(204, 255, 153));
@@ -86,7 +88,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
@@ -98,8 +100,9 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JTable tblTasks;
     // End of variables declaration//GEN-END:variables
-    
+
     public void refreshTable() {
+        // Fill tasks table with data
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         
         model.setRowCount(0);

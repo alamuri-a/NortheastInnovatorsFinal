@@ -18,4 +18,10 @@ public class ProductionOrganization extends Organization {
     public ProductionOrganization(String n, int id, Enterprise company) {
         super(n, id, company);
     }
+    
+    // METHODS
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

@@ -130,13 +130,13 @@ public class ManageOrganizationsJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        // Delete selected organization
 
         // Validate selected organization
         int selectedRow = tblOrganizations.getSelectedRow();
@@ -156,13 +156,14 @@ public class ManageOrganizationsJPanel extends javax.swing.JPanel {
         
         // Remove in backend
         organization.getCompany().getOrganizations().removeOrganization(selectedOrganization);
-        JOptionPane.showMessageDialog(null, "Successfully deleted organization!", "Success", JOptionPane.INFORMATION_MESSAGE);
         
+        // Notify + refresh
+        JOptionPane.showMessageDialog(null, "Successfully deleted organization!", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshTable();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
+        // Create organization with specified name and type
         
         // Validate organization type + name
         String name = txtName.getText();
@@ -198,7 +199,7 @@ public class ManageOrganizationsJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
-        // TODO add your handling code here:
+        // Load page for detailed view of organization
         
         // Validate selected organization
         int selectedRow = tblOrganizations.getSelectedRow();
@@ -235,6 +236,7 @@ public class ManageOrganizationsJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTable() {
+        // Fill table with necessary data
         DefaultTableModel model = (DefaultTableModel) tblOrganizations.getModel();
         
         model.setRowCount(0);
@@ -262,6 +264,7 @@ public class ManageOrganizationsJPanel extends javax.swing.JPanel {
     }
 
     private void populateCombo() {
+        // Fill combo box with organization types
         DefaultComboBoxModel model = (DefaultComboBoxModel) cmbOrganization.getModel();
         
         model.removeAllElements();

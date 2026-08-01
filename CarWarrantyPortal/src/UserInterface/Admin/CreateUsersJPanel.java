@@ -165,13 +165,14 @@ public class CreateUsersJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
+        // Create new user for specified organization with specified role, then refresh previous page table + fields
+        
         // Validate organization, employee, username, password, role
         if (selectedOrganization == null) {
             JOptionPane.showMessageDialog(null, "Please select an organization from the left table first.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -226,6 +227,9 @@ public class CreateUsersJPanel extends javax.swing.JPanel {
         JPanel lastPanel = (JPanel) panelStack[panelStack.length - 2];
         ManageUsersJPanel mujp = (ManageUsersJPanel) lastPanel;
         mujp.refreshTable(); // Update table
+        
+        txtUsername.setText("");
+        txtPassword.setText("");
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void tblOrganizationsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOrganizationsMouseClicked
@@ -283,6 +287,7 @@ public class CreateUsersJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshOrganizations() {
+        // Fill organizations table with necessary info
         DefaultTableModel model = (DefaultTableModel) tblOrganizations.getModel();
         
         model.setRowCount(0);
@@ -303,6 +308,7 @@ public class CreateUsersJPanel extends javax.swing.JPanel {
     }
     
     private void refreshEmployees() {
+        // Fill employees table with necessary info
         DefaultTableModel model = (DefaultTableModel) tblEmployees.getModel();
         
         model.setRowCount(0);
@@ -317,6 +323,7 @@ public class CreateUsersJPanel extends javax.swing.JPanel {
     }
 
     private void refreshCombo() {
+        // Fill combo box with roles associated with selected organization
         DefaultComboBoxModel model = (DefaultComboBoxModel) cmbRole.getModel();
         
         model.removeAllElements();
