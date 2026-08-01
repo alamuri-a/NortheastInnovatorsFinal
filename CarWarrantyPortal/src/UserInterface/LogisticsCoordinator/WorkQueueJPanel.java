@@ -8,6 +8,7 @@ import Business.Ecosystem.Ecosystem;
 import Business.Organization.LogisticsOrganization;
 import Business.Roles.LogisticsCoordinator;
 import Business.User.User;
+import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.WorkTask;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -152,7 +153,9 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
             row[0] = task;
             row[1] = task.getAssigner();
             row[2] = task.getAssignee() == null ? null : task.getAssignee();
-            row[3] = task.getAssignee() == null ? "Waiting" : "In Progress";
+            if (task instanceof GetPartTask gptask) {
+                row[3] = gptask.isBackordered() ? "Backordered" : task.getAssignee() == null ? "Waiting" : "In Progress";
+            } else row[3] = task.getAssignee() == null ? "Waiting" : "In Progress";
             
             model.addRow(row);
         }
