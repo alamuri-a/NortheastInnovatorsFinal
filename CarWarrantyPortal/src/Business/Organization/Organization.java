@@ -24,7 +24,6 @@ public abstract class Organization {
     Enterprise company;
     WorkQueue inTasks;
     WorkQueue outTasks;
-    Role role;
     
     // CONSTRUCTORS
     public Organization(String n, int ID, Enterprise enterprise) {
