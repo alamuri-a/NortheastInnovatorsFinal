@@ -55,7 +55,6 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
         lblTitle = new javax.swing.JLabel();
         btnCurrentTask2 = new javax.swing.JButton();
         btnQueue = new javax.swing.JButton();
-        btnRecalls = new javax.swing.JButton();
         btnFinished = new javax.swing.JButton();
         btnNetwork = new javax.swing.JButton();
         btnMyProfile = new javax.swing.JButton();
@@ -89,21 +88,13 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
         });
         add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 80));
 
-        btnRecalls.setText("Recalls");
-        btnRecalls.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRecallsActionPerformed(evt);
-            }
-        });
-        add(btnRecalls, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 80));
-
         btnFinished.setText("View Completed Tasks");
         btnFinished.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFinishedActionPerformed(evt);
             }
         });
-        add(btnFinished, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
+        add(btnFinished, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 160, 80));
 
         btnNetwork.setText("View Network");
         btnNetwork.addActionListener(new java.awt.event.ActionListener() {
@@ -142,16 +133,6 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnQueueActionPerformed
 
-    private void btnRecallsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallsActionPerformed
-        // Load recalls page
-
-        //===============================WIP===============================
-
-        RecallsJPanel rjp = new RecallsJPanel(workArea, user, organization, business);
-        this.workArea.add(rjp, "Recalls");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
-    }//GEN-LAST:event_btnRecallsActionPerformed
-
     private void btnFinishedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishedActionPerformed
         // Load finished task queue page
         DoneQueueJPanel dqjp = new DoneQueueJPanel(workArea, user, organization, business);
@@ -180,7 +161,6 @@ public class WarehouseClerkWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnMyProfile;
     private javax.swing.JButton btnNetwork;
     private javax.swing.JButton btnQueue;
-    private javax.swing.JButton btnRecalls;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
