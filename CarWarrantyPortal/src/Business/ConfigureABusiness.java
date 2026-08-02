@@ -34,6 +34,7 @@ import Business.Vehicle.CustomVehicleOrder;
 import Business.Vehicle.Part;
 import Business.Vehicle.Automobile;
 import Business.WorkTaskQueue.BuildCarTask;
+import Business.WorkTaskQueue.ServiceAppointmentTask;
 import Business.WorkTaskQueue.VehicleDeliveryTask;
 import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.ProcessShipmentTask;
@@ -156,9 +157,75 @@ public class ConfigureABusiness {
         seedDealershipCustomOrders(de, saleOrg, sr, pOrg, lOrg, pm);
         seedSupplier(se, de);
         
+        Faker dealershipFaker = new Faker();
+
+        // Add one more Sales Representative for a total of two.
+        for (int i = 2; i <= 2; i++) {
+        String firstName = dealershipFaker.name().firstName();
+        String lastName = dealershipFaker.name().lastName();
+
+        Person person = new Person(firstName + " " + lastName);
+        Employee employee = saleOrg.getEmployees().createEmployee(person);
+
+        saleOrg.getUsers().createUser(
+            employee,
+            "sales" + i,
+            firstName.toUpperCase(),
+            new SalesRepresentative()
+    );
+}
+
+    // Add one more Customer Service Representative for a total of two.
+    for (int i = 2; i <= 2; i++) {
+    String firstName = dealershipFaker.name().firstName();
+    String lastName = dealershipFaker.name().lastName();
+
+    Person person = new Person(firstName + " " + lastName);
+    Employee employee = saleOrg.getEmployees().createEmployee(person);
+
+    saleOrg.getUsers().createUser(
+            employee,
+            "customer" + i,
+            firstName.toUpperCase(),
+            new CustomerServiceRepresentative()
+    );
+}
+
+    // Add one more Service Manager for a total of two.
+    for (int i = 2; i <= 2; i++) {
+    String firstName = dealershipFaker.name().firstName();
+    String lastName = dealershipFaker.name().lastName();
+
+    Person person = new Person(firstName + " " + lastName);
+    Employee employee = servOrg.getEmployees().createEmployee(person);
+
+    servOrg.getUsers().createUser(
+            employee,
+            "manager" + i,
+            firstName.toUpperCase(),
+            new ServiceManager()
+    );
+}
+
+    // Add three more Service Technicians for a total of four.
+    for (int i = 2; i <= 4; i++) {
+    String firstName = dealershipFaker.name().firstName();
+    String lastName = dealershipFaker.name().lastName();
+
+    Person person = new Person(firstName + " " + lastName);
+    Employee employee = servOrg.getEmployees().createEmployee(person);
+
+    servOrg.getUsers().createUser(
+            employee,
+            "technician" + i,
+            firstName.toUpperCase(),
+            new ServiceTechnician()
+    );
+}
         // Return demo ecosystem
         return system;
     }
+    
 /**
  * Creates Faker dealership orders with workflow records matching each
  * displayed lifecycle stage.
