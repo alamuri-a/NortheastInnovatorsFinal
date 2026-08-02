@@ -7,8 +7,11 @@ package UserInterface.WorkAreas;
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.Organization;
 import Business.Organization.ProductionOrganization;
+import Business.People.Employee;
+import Business.People.Person;
 import Business.Roles.ProductionManager;
 import Business.User.User;
+import Business.Vehicle.Part;
 import Business.WorkTaskQueue.BuildCarTask;
 import Business.WorkTaskQueue.BuildPartTask;
 import Business.WorkTaskQueue.WorkTask;
@@ -45,6 +48,7 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
+        DemoData();
     }
 
     /**
@@ -56,26 +60,27 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnQueue = new javax.swing.JButton();
+        btnProdStatus = new javax.swing.JButton();
         btnMyRequest = new javax.swing.JButton();
         btnClosedRequests = new javax.swing.JButton();
         btnMyProfile = new javax.swing.JButton();
         btnRecallTracking = new javax.swing.JButton();
         lblWelcome = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
+        btnQueue1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 153, 255));
         setMinimumSize(new java.awt.Dimension(700, 600));
         setPreferredSize(new java.awt.Dimension(680, 500));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnQueue.setText("Check Queue");
-        btnQueue.addActionListener(new java.awt.event.ActionListener() {
+        btnProdStatus.setText("View Production Status");
+        btnProdStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnQueueActionPerformed(evt);
+                btnProdStatusActionPerformed(evt);
             }
         });
-        add(btnQueue, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 70));
+        add(btnProdStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 410, 160, 70));
 
         btnMyRequest.setText("My Requests");
         btnMyRequest.addActionListener(new java.awt.event.ActionListener() {
@@ -120,13 +125,21 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
         lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 660, -1));
+
+        btnQueue1.setText("Check Queue");
+        btnQueue1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueue1ActionPerformed(evt);
+            }
+        });
+        add(btnQueue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 70));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnQueueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueueActionPerformed
+    private void btnProdStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdStatusActionPerformed
           ProdMgrWorkQueue pmwq = new ProdMgrWorkQueue(workArea, user, organization, business);
         this.workArea.add(pmwq, "ProdMgrWorkQueue");
         ((CardLayout) this.workArea.getLayout()).next(workArea);
-    }//GEN-LAST:event_btnQueueActionPerformed
+    }//GEN-LAST:event_btnProdStatusActionPerformed
 
     private void btnRecallTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallTrackingActionPerformed
        RecallComplianceTracking rctp = new RecallComplianceTracking(workArea, user, organization, business);
@@ -165,14 +178,35 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnMyRequestActionPerformed
 
+    private void btnQueue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueue1ActionPerformed
+            ProdMgrWorkQueue pmwq = new ProdMgrWorkQueue(workArea, user, organization, business);
+            this.workArea.add(pmwq, "ProdMgrWorkQueue");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnQueue1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClosedRequests;
     private javax.swing.JButton btnMyProfile;
     private javax.swing.JButton btnMyRequest;
-    private javax.swing.JButton btnQueue;
+    private javax.swing.JButton btnProdStatus;
+    private javax.swing.JButton btnQueue1;
     private javax.swing.JButton btnRecallTracking;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
+    private void DemoData() {
+        try {
+            for (int i = 0; i < 10; i++) {
+                Person p = new Person("Person" + i);
+                Employee emp = organization.getEmployees().createEmployee(p);
+                User newUser = organization.getUsers().createUser(emp, "prodmgr", "temp", new ProductionManager());
+                Part part = new Part(i);
+                organization.getInTasks().createBuildCarTask(newUser, "Toyota", "Camry");
+                organization.getInTasks().createBuildPartTask(newUser, part);
+            }
+        } catch (Exception e) {
+
+        }
+    }
 }

@@ -6,9 +6,9 @@ package Business.Organization;
 
 import Business.Enterprise.Enterprise;
 import Business.People.EmployeeDirectory;
+import Business.Roles.Role;
 import Business.User.UserDirectory;
 import Business.WorkTaskQueue.WorkQueue;
-import Business.WorkTaskQueue.WorkTask;
 
 /**
  *
@@ -35,8 +35,30 @@ public abstract class Organization {
         this.inTasks = new WorkQueue(this);
         this.outTasks = new WorkQueue(this);
     }
-    
+
+
+    public enum Type{
+        Admin("Admin Organization"),
+        Production("Production Organization"),
+        QA("Quality Assurance Organization"),
+        Sales("Sales Organization"),
+        ServiceCenter("Service Center Organization"),
+        Warehousing("Warehousing Organization"),
+        Logistics("Logistics/Shipping Organization");;
+        private String value;
+        private Type(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
     // METHODS
+    @Override
+    public String toString() {
+        return this.name;
+    }
+    
     public int getID() {
         return this.id;
     }
@@ -84,4 +106,5 @@ public abstract class Organization {
     public void setOutTasks(WorkQueue outTasks) {
         this.outTasks = outTasks;
     }
+   
 }

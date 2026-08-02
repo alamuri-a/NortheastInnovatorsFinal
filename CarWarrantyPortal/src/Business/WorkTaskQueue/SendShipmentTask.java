@@ -18,6 +18,7 @@ public class SendShipmentTask extends WorkTask {
     Part part;
     int partCount;
     DealershipEnterprise dealership;
+    GetPartTask retrieval;
     
     // CONSTRUCTORS
     public SendShipmentTask(User assigner, DealershipEnterprise dealer, Part pt, int quantity) {
@@ -25,6 +26,7 @@ public class SendShipmentTask extends WorkTask {
         this.dealership = dealer;
         this.part = pt;
         this.partCount = quantity;
+        this.retrieval = null;
     }
     
     // METHODS
@@ -41,6 +43,14 @@ public class SendShipmentTask extends WorkTask {
         return partCount;
     }
 
+    public GetPartTask getRetrieval() {
+        return retrieval;
+    }
+
+    public void setRetrieval(GetPartTask retrieval) {
+        this.retrieval = retrieval;
+    }
+    
     public DealershipEnterprise getDealership() {
         return dealership;
     }

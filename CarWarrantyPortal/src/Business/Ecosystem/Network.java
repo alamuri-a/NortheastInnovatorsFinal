@@ -46,4 +46,9 @@ public class Network {
     public void setEnterprises(EnterpriseDirectory enterprises) {
         this.enterprises = enterprises;
     }
+  @Override
+    public String toString() {
+        return this.name;
+    }
 }
+

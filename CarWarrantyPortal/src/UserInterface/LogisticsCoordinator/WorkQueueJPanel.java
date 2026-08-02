@@ -5,16 +5,10 @@
 package UserInterface.LogisticsCoordinator;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Ecosystem.Network;
-import Business.Enterprise.DealershipEnterprise;
-import Business.Enterprise.Enterprise;
 import Business.Organization.LogisticsOrganization;
-import Business.People.Employee;
-import Business.People.Person;
 import Business.Roles.LogisticsCoordinator;
-import Business.Roles.WarehouseClerk;
 import Business.User.User;
-import Business.Vehicle.Part;
+import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.WorkTask;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -44,8 +38,6 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
         
         initComponents();
         lblTitle.setText(this.organization.getName() + " Queue");
-        
-        DemoData();
         
         refreshTable();
     }
@@ -107,14 +99,15 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
-        // TODO add your handling code here:
+        // Assign user to handle task and task as user's current task
         
+        // Selection validation
         int selectedRow = tblTasks.getSelectedRow();
         if (selectedRow < 0 || selectedRow > tblTasks.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Please select a task from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -130,9 +123,12 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
             return;
         }
         
+        // Assign task
         ((LogisticsCoordinator) user.getRole()).setCurrentTask(selectedTask);
         selectedTask.setAssignee(user);
         
+        // Notify + refresh
+        JOptionPane.showMessageDialog(null, "Successfully assigned task!", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshTable();
     }//GEN-LAST:event_btnAssignActionPerformed
 
@@ -146,6 +142,7 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTable() {
+        // Fill table with necessary data
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         
         model.setRowCount(0);
@@ -155,34 +152,12 @@ public class WorkQueueJPanel extends javax.swing.JPanel {
             
             row[0] = task;
             row[1] = task.getAssigner();
-            row[2] = (task.getAssignee() == null) ? null : task.getAssignee();
-            row[3] = task.isCompleted() ? "Complete" : task.getAssignee() == null ? "Waiting" : "In Progress";
+            row[2] = task.getAssignee() == null ? null : task.getAssignee();
+            if (task instanceof GetPartTask gptask) {
+                row[3] = gptask.isBackordered() ? "Backordered" : task.getAssignee() == null ? "Waiting" : "In Progress";
+            } else row[3] = task.getAssignee() == null ? "Waiting" : "In Progress";
             
             model.addRow(row);
-        }
-    }
-
-    private void DemoData() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Person p = new Person("Person" + i);
-                Employee emp = organization.getEmployees().createEmployee(p);
-                User newUser = organization.getUsers().createUser(emp, "temp", "temp", new WarehouseClerk());
-                Part part = new Part(i);
-                organization.getInTasks().createProcessShipmentTask(newUser, part);
-
-                DealershipEnterprise dealer = null;
-                for (Network n : business.getNetworks()) {
-                    for (Enterprise e : n.getEnterprises().getEnterprises()) {
-                        if (e instanceof DealershipEnterprise dealershipEnterprise) dealer = dealershipEnterprise;
-                    }
-                }
-                if (dealer == null) return;
-
-                organization.getInTasks().createSendShipmentTask(newUser, dealer, part, i);
-            }
-        } catch (Exception e) {
-            
         }
     }
 }

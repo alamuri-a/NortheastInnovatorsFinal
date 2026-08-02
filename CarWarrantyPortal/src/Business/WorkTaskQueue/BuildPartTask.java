@@ -10,6 +10,7 @@ import Business.Vehicle.Part;
 /**
  *
  * @author Ajay Alamuri
+ * @author Nicholas Woodward
  */
 public class BuildPartTask extends WorkTask {
     
@@ -20,5 +21,23 @@ public class BuildPartTask extends WorkTask {
     public BuildPartTask(User assigner, Part pt) {
         super(assigner);
         this.part = pt;
+    }
+        /**
+     * Returns the component being built by Production.
+     *
+     * @return requested part
+     */
+    public Part getPart() {
+        return part;
+    }
+
+    /**
+     * Returns a readable Production queue label.
+     *
+     * @return part-build description
+     */
+    @Override
+    public String toString() {
+        return "Build " + part;
     }
 }

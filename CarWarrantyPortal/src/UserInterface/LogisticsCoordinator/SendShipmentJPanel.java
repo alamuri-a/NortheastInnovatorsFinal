@@ -7,9 +7,12 @@ package UserInterface.LogisticsCoordinator;
 import Business.Ecosystem.Ecosystem;
 import Business.Enterprise.SupplierEnterprise;
 import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
+import Business.Organization.WarehousingOrganization;
 import Business.Roles.LogisticsCoordinator;
 import Business.User.User;
 import Business.Vehicle.Part;
+import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.SendShipmentTask;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
@@ -18,6 +21,7 @@ import javax.swing.JPanel;
 /**
  *
  * @author Ajay Alamuri
+ * @author Nicholas Woodward
  */
 public class SendShipmentJPanel extends javax.swing.JPanel {
 
@@ -60,11 +64,12 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         txtOrderQuantity = new javax.swing.JTextField();
         lblDealership = new javax.swing.JLabel();
         txtDealership = new javax.swing.JTextField();
-        btnComplete = new javax.swing.JButton();
+        btnDispatch = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         lblStock = new javax.swing.JLabel();
         txtStock = new javax.swing.JTextField();
         btnDefer = new javax.swing.JButton();
+        btnComplete = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(153, 153, 255));
         setMinimumSize(new java.awt.Dimension(650, 600));
@@ -94,14 +99,13 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         txtDealership.setEditable(false);
         add(txtDealership, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 130, 160, -1));
 
-        btnComplete.setText("Complete");
-        btnComplete.setEnabled(false);
-        btnComplete.addActionListener(new java.awt.event.ActionListener() {
+        btnDispatch.setText("Dispatch For Retrieval");
+        btnDispatch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCompleteActionPerformed(evt);
+                btnDispatchActionPerformed(evt);
             }
         });
-        add(btnComplete, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 360, 90, -1));
+        add(btnDispatch, new org.netbeans.lib.awtextra.AbsoluteConstraints(254, 320, 150, -1));
 
         btnBack.setText("<<< Back");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -112,10 +116,10 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 510, 130, -1));
 
         lblStock.setText("Current Stock:");
-        add(lblStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 280, 90, -1));
+        add(lblStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 260, 90, -1));
 
         txtStock.setEditable(false);
-        add(txtStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 280, 160, -1));
+        add(txtStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 260, 160, -1));
 
         btnDefer.setText("Defer Shipment");
         btnDefer.addActionListener(new java.awt.event.ActionListener() {
@@ -124,10 +128,19 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
             }
         });
         add(btnDefer, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 400, 130, -1));
+
+        btnComplete.setText("Complete");
+        btnComplete.setEnabled(false);
+        btnComplete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompleteActionPerformed(evt);
+            }
+        });
+        add(btnComplete, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 360, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompleteActionPerformed
-        // Add new stock to company database
+    private void btnDispatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDispatchActionPerformed
+        // Dispatch subtask for Warehouse Organization
 
         // Validate if task still needs to be complete
         if (task.isCompleted()) {
@@ -135,28 +148,26 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
             return;
         }
 
-        // Update in backend
+        // Create task for Warehouse Org
         SupplierEnterprise company = (SupplierEnterprise) organization.getCompany();
         Part part = task.getPart();
-        int oldQuantity = company.getPartQuantity(part);
-        company.setPartQuantity(part, oldQuantity - task.getPartCount());
-
-        // Update task status ===============================WIP===============================
-        
-        /*
-        * Remove task from inQueue
-        * Update stock for target dealership
-        */
-        
-        
-        organization.getInTasks().popTask(task);
-        organization.getOutTasks().pushTask(task);
-        ((LogisticsCoordinator) user.getRole()).completeTask();
+        int count = task.getPartCount();
+        try {
+            for (Organization org : company.getOrganizations().getOrganizations()) {
+                if (org instanceof WarehousingOrganization warehouse) {
+                    GetPartTask subtask = warehouse.getInTasks().createGetPartTask(user, part, count);
+                    task.setRetrieval(subtask);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Failed to dispatch task, please try again.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         // Notify and refresh
-        JOptionPane.showMessageDialog(null, "Shipment successfully sent, please return and track a new task.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Retrieval task successfully dispatched, please wait for Warehouse Clerk to acquire the parts.", "Success", JOptionPane.INFORMATION_MESSAGE);
         refreshFields();
-    }//GEN-LAST:event_btnCompleteActionPerformed
+    }//GEN-LAST:event_btnDispatchActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // Return to previous page
@@ -181,11 +192,42 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnDeferActionPerformed
 
+    private void btnCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompleteActionPerformed
+        // Send out shipment (only once subtask is complete)
+        
+        // Validate if task still needs to be complete
+        if (task.isCompleted()) {
+            JOptionPane.showMessageDialog(null, "Task has already been completed.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Do not continue if subtask is incomplete
+        if (!task.getRetrieval().isCompleted()) {
+            JOptionPane.showMessageDialog(null, "Parts have not been acquired yet.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Update task status
+        
+        // Add the delivered replacement parts to the receiving dealership.
+        task.getDealership().addPartQuantity(
+                task.getPart(),
+                task.getPartCount());
+        organization.getInTasks().popTask(task);
+        organization.getOutTasks().pushTask(task);
+        ((LogisticsCoordinator) user.getRole()).completeTask();
+        
+        // Notify and refresh
+        JOptionPane.showMessageDialog(null, "Shipment successfully sent, please return and track a new task.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        refreshFields();
+    }//GEN-LAST:event_btnCompleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnComplete;
     private javax.swing.JButton btnDefer;
+    private javax.swing.JButton btnDispatch;
     private javax.swing.JLabel lblDealership;
     private javax.swing.JLabel lblOrderQuantity;
     private javax.swing.JLabel lblPart;
@@ -198,6 +240,7 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshFields() {
+        // Fill fields with necessary data
         int required = task.getPartCount();
         int stock = ((SupplierEnterprise) organization.getCompany()).getPartQuantity(task.getPart());
         
@@ -206,7 +249,10 @@ public class SendShipmentJPanel extends javax.swing.JPanel {
         txtOrderQuantity.setText(String.valueOf(required));
         txtStock.setText(String.valueOf(stock));
         
-        if (stock >= required) btnComplete.setEnabled(true);
+        if (task.getRetrieval() == null) btnDispatch.setEnabled(true);
+        else btnDispatch.setEnabled(false);
+        
+        if (task.getRetrieval() != null && task.getRetrieval().isCompleted()) btnComplete.setEnabled(true);
         else btnComplete.setEnabled(false);
     }
 }

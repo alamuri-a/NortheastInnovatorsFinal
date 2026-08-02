@@ -34,7 +34,28 @@ public class EnterpriseDirectory {
         }
         return null;
     }
-    
+    public Enterprise createEnterprise(String name, Enterprise.Type type) {
+        Enterprise enterprise = null;
+
+        // 1. Dynamic check against the Enum type
+        if (type.equals(Enterprise.Type.Manu)) {
+            enterprise = new ManufacturerEnterprise(name);
+        }
+        else if (type.equals(Enterprise.Type.Dealer)) {
+            enterprise = new DealershipEnterprise(name);
+        }
+        else if (type.equals(Enterprise.Type.Supplier)) {
+            enterprise = new SupplierEnterprise(name);
+        }
+
+        // 2. Cache it inside the directory list if valid
+        if (enterprise != null) {
+            enterprises.add(enterprise);
+        }
+
+        return enterprise;
+    }
+
     /**
     * Create a new ManufacturerEnterprise, add to internal list of enterprises, then return enterprise for modification
     * 

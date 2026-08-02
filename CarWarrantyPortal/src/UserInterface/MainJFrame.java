@@ -54,7 +54,7 @@ public class MainJFrame extends javax.swing.JFrame {
         workAreaPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(400, 300));
+        setMinimumSize(new java.awt.Dimension(805, 600));
 
         homeSplitPane.setDividerLocation(150);
         homeSplitPane.setMinimumSize(new java.awt.Dimension(100, 600));
@@ -125,7 +125,10 @@ public class MainJFrame extends javax.swing.JFrame {
         for (Network net : system.getNetworks()) {
             for (Enterprise ent : net.getEnterprises().getEnterprises()) {
                 for (User u : ent.getAdmins().getUsers().getUsers()) {
-                    if (u.authenticate(username, password)) this.loggedIn = u;
+                    if (u.authenticate(username, password)) {
+                        this.loggedIn = u;
+                        o = ent.getAdmins();
+                    }
                     if (this.loggedIn != null) break;
                 }
                 for (Organization org : ent.getOrganizations().getOrganizations()) {
@@ -152,6 +155,8 @@ public class MainJFrame extends javax.swing.JFrame {
         // Login
         btnLogin.setVisible(false);
         btnLogout.setVisible(true);
+        txtUsername.setEditable(false);
+        txtPassword.setEditable(false);
         JOptionPane.showMessageDialog(this, "Successfully logged in!", "Success", JOptionPane.INFORMATION_MESSAGE);
         JPanel nextPage = this.loggedIn.getRole().createWorkArea(workAreaPanel, this.loggedIn, o, this.system);
         workAreaPanel.add(nextPage, "WorkArea");
@@ -174,6 +179,8 @@ public class MainJFrame extends javax.swing.JFrame {
                 
                 btnLogout.setVisible(false);
                 btnLogin.setVisible(true);
+                txtUsername.setEditable(true);
+                txtPassword.setEditable(true);
                 
                 JOptionPane.showMessageDialog(this, "Successfully logged out!", "Success", JOptionPane.INFORMATION_MESSAGE);
             }

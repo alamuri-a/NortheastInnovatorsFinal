@@ -19,6 +19,7 @@ public class User {
     String username;
     String password;
     Role role;
+    int tasksCreated;
     
     static int instances = 0;
     
@@ -29,6 +30,7 @@ public class User {
         this.username = usrnm;
         this.password = pswd;
         this.role = rol;
+        this.tasksCreated = 0;
     }
     
     // METHODS
@@ -67,6 +69,14 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+    
+    public int getTasksCreated() {
+        return this.tasksCreated;
+    }
+    
+    public void incrementTasksCreated() {
+        this.tasksCreated++;
     }
     
     /**

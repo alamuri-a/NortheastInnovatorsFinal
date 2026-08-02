@@ -6,22 +6,49 @@ package UserInterface.WorkAreas;
 
 import Business.Ecosystem.Ecosystem;
 import Business.Organization.Organization;
+import Business.Organization.QualityAssuranceOrganization;
+import Business.People.Employee;
+import Business.People.Person;
+import Business.Roles.QualityInspector;
 import Business.User.User;
+import Business.Vehicle.Part;
+import Business.WorkTaskQueue.InspectPartTask;
+import Business.WorkTaskQueue.IssueRecallTask;
+import Business.WorkTaskQueue.WorkTask;
+import UserInterface.QualityAssurance.InspectPartJPanel;
+import UserInterface.QualityAssurance.IssueRecallJPanel;
+import UserInterface.QualityAssurance.QADoneQueue;
+import UserInterface.QualityAssurance.QAProfile;
+import UserInterface.QualityAssurance.QARequestQueue;
+import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  *
  * @author Ajay Alamuri
+ * @author Meredith Molyneux
  */
 public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
-
+        QualityAssuranceOrganization organization;
+        JPanel workArea;
+        User user;
+        Ecosystem business;
     /**
      * Creates new form QualityInspectorWorkAreaJPanel
      */
     public QualityInspectorWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
-        initComponents();
-    }
+            this.organization = (QualityAssuranceOrganization)org;
+            this.workArea = csp;
+            this.user = usr;
+            this.business = system;
 
+
+        initComponents();
+        lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
+        lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
+        DemoData();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,21 +58,148 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(255, 153, 255));
+        btnRequestStatus = new javax.swing.JButton();
+        btnMyRequest = new javax.swing.JButton();
+        btnClosedRequests = new javax.swing.JButton();
+        btnMyProfile = new javax.swing.JButton();
+        btnRecallTracking = new javax.swing.JButton();
+        lblWelcome = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
+        btnQueue1 = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBackground(new java.awt.Color(255, 153, 255));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnRequestStatus.setText("View QA Request");
+        btnRequestStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRequestStatusActionPerformed(evt);
+            }
+        });
+        add(btnRequestStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 360, 160, 70));
+
+        btnMyRequest.setText("My Requests");
+        btnMyRequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyRequestActionPerformed(evt);
+            }
+        });
+        add(btnMyRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 110, 160, 70));
+
+        btnClosedRequests.setText("Closed Requests");
+        btnClosedRequests.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClosedRequestsActionPerformed(evt);
+            }
+        });
+        add(btnClosedRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 160, 70));
+
+        btnMyProfile.setText("My Profile");
+        btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyProfileActionPerformed(evt);
+            }
+        });
+        add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 240, 160, 70));
+
+        btnRecallTracking.setText("Recall Tracking");
+        btnRecallTracking.setMinimumSize(new java.awt.Dimension(700, 600));
+        btnRecallTracking.setPreferredSize(new java.awt.Dimension(680, 500));
+        btnRecallTracking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecallTrackingActionPerformed(evt);
+            }
+        });
+        add(btnRecallTracking, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 360, 160, 70));
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblWelcome.setText("Welcome <User>");
+        add(lblWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 460, -1));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTitle.setText("<Company Name> <Org Name>");
+        lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
+        lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
+        add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 660, -1));
+
+        btnQueue1.setText("Check Queue");
+        btnQueue1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueue1ActionPerformed(evt);
+            }
+        });
+        add(btnQueue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 110, 160, 70));
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRequestStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestStatusActionPerformed
+
+    }//GEN-LAST:event_btnRequestStatusActionPerformed
+
+    private void btnMyRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyRequestActionPerformed
+        WorkTask task = ((QualityInspector) user.getRole()).getCurrentTask();
+        if (task == null) {
+            JOptionPane.showMessageDialog(null, "You currently do not have a task assigned.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (task instanceof InspectPartTask ipTask) {
+            InspectPartJPanel ipjp = new InspectPartJPanel(workArea, user, organization, business, ipTask);
+            this.workArea.add(ipjp, "Inspect Part Panel");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        } else if (task instanceof IssueRecallTask irTask) {
+
+            IssueRecallJPanel irjp = new IssueRecallJPanel(workArea, user, organization, business, irTask);
+            this.workArea.add(irjp, "Issue Recall");
+            ((CardLayout) this.workArea.getLayout()).next(workArea);
+        }
+    }//GEN-LAST:event_btnMyRequestActionPerformed
+
+    private void btnClosedRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosedRequestsActionPerformed
+        QADoneQueue qadq = new QADoneQueue(workArea, user, organization, business);
+        this.workArea.add(qadq, "QA Done Queue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnClosedRequestsActionPerformed
+
+    private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
+        QAProfile pmp = new QAProfile(workArea, user, organization, business);
+        this.workArea.add(pmp, "ProdMgrWorkQueue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnMyProfileActionPerformed
+
+    private void btnRecallTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallTrackingActionPerformed
+
+    }//GEN-LAST:event_btnRecallTrackingActionPerformed
+
+    private void btnQueue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueue1ActionPerformed
+           QARequestQueue qarq = new QARequestQueue(workArea, user, organization, business);
+        this.workArea.add(qarq, "QA Request Queue");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnQueue1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClosedRequests;
+    private javax.swing.JButton btnMyProfile;
+    private javax.swing.JButton btnMyRequest;
+    private javax.swing.JButton btnQueue1;
+    private javax.swing.JButton btnRecallTracking;
+    private javax.swing.JButton btnRequestStatus;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
+    private void DemoData() {
+        try {
+            for (int i = 0; i < 10; i++) {
+                Person p = new Person("Person" + i);
+                Employee emp = organization.getEmployees().createEmployee(p);
+                User newUser = organization.getUsers().createUser(emp, "QA", "temp", new QualityInspector());
+                Part part = new Part(i);
+                organization.getInTasks().createInspectPartTask(newUser, part);
+                organization.getInTasks().createIssueRecallTask(newUser, part);
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+
 }

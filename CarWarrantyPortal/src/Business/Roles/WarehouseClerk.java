@@ -28,7 +28,7 @@ public class WarehouseClerk extends Role {
     // METHODS
     @Override
     public String toString() {
-        return "Customer Service Representative";
+        return "Warehouse Clerk";
     }
     
     @Override
@@ -42,5 +42,11 @@ public class WarehouseClerk extends Role {
 
     public void setCurrentTask(WorkTask currentTask) {
         this.currentTask = currentTask;
+    }
+    
+    public void completeTask() {
+        if (this.currentTask == null) return;
+        this.currentTask.Complete();
+        this.currentTask = null;
     }
 }

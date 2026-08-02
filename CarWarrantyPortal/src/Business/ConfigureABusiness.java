@@ -29,11 +29,15 @@ import Business.Roles.ServiceTechnician;
 import Business.Roles.SuperAdmin;
 import Business.Roles.WarehouseClerk;
 import Business.User.User;
-
+import Business.Vehicle.CustomVehicleOrder;
+import Business.Vehicle.Part;
+import Business.WorkTaskQueue.SellVehicleTask;
+import com.github.javafaker.Faker;
 /**
  *
  * @author Ajay Alamuri
  * @author Meredith Molyneux
+ * @author Nicholas Woodward
  */
 public class ConfigureABusiness {
     
@@ -142,8 +146,75 @@ public class ConfigureABusiness {
         Person person12 = new Person("Sales Representative");
         Employee employee12 = saleOrg.getEmployees().createEmployee(person12);
         User sr = saleOrg.getUsers().createUser(employee12, "sales", "sales", new SalesRepresentative());
+        seedDealershipCustomOrders(de, saleOrg, sr);
+        seedLogistics(lOrg, lc, de);
         
         // Return demo ecosystem
         return system;
+    }
+        /**
+     * Creates pre-populated dealership orders for the sales demonstration and
+     * analytics requirement. Faker provides realistic customer names, emails,
+     * and colors while the workflow supplies varied order statuses.
+     *
+     * @param dealership Toyota Dealership enterprise that owns sales records
+     * @param salesOrganization Toyota Sales organization creating the orders
+     * @param salesRepresentative seeded Sales Representative user
+     * @author nicholaswoodward
+     */
+    private static void seedDealershipCustomOrders(
+            DealershipEnterprise dealership,
+            SalesOrganization salesOrganization,
+            User salesRepresentative) {
+
+        Faker faker = new Faker();
+
+        String[] models = {"Camry", "RAV4", "Highlander", "Prius"};
+        String[] trims = {"LE", "XLE", "SE", "Limited"};
+        String[] supplierRegions = {
+            "Mexico",
+            "Asia",
+            "Mexico and Asia"
+        };
+
+        for (int orderIndex = 0; orderIndex < 6; orderIndex++) {
+            double totalPrice = faker.number().numberBetween(45000, 85001);
+            double depositPaid = totalPrice * 0.15;
+
+            CustomVehicleOrder customOrder = new CustomVehicleOrder(
+                    faker.name().fullName(),
+                    faker.internet().emailAddress(),
+                    "Toyota",
+                    models[orderIndex % models.length],
+                    trims[orderIndex % trims.length],
+                    faker.color().name(),
+                    supplierRegions[orderIndex % supplierRegions.length],
+                    totalPrice,
+                    depositPaid);
+
+            SellVehicleTask salesTask = new SellVehicleTask(
+                    salesRepresentative,
+                    customOrder);
+
+            // Creates a different visible lifecycle stage for each demo order.
+            for (int statusStep = 0; statusStep < orderIndex; statusStep++) {
+                salesTask.advanceStatus();
+            }
+
+            salesOrganization.getOutTasks().pushTask(salesTask);
+            dealership.addSalesRecord(salesTask);
+        }
+    }
+
+    private static void seedLogistics(LogisticsOrganization lOrg, User lc, DealershipEnterprise de) {
+        for (int i = 1; i < 11; i++) {
+            Part part = new Part(i);
+            try {
+                lOrg.getInTasks().createProcessShipmentTask(lc, part);
+                lOrg.getInTasks().createSendShipmentTask(lc, de, part, 5);
+            } catch (Exception e) {
+                System.out.println("Failed to create demo tasks for logistics.");
+            }
+        }
     }
 }

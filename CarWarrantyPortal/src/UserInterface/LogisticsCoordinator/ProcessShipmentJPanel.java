@@ -146,7 +146,6 @@ public class ProcessShipmentJPanel extends javax.swing.JPanel {
         Part part = task.getPart();
         int oldQuantity = company.getPartQuantity(part);
         company.setPartQuantity(part, oldQuantity + quantity);
-        
         // Update task status
         organization.getInTasks().popTask(task);
         organization.getOutTasks().pushTask(task);
@@ -171,6 +170,7 @@ public class ProcessShipmentJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refreshFields() {
+        // Fill fields with necessary data
         txtPart.setText(task.getPart().toString());
         txtStock.setText(String.valueOf(((SupplierEnterprise) organization.getCompany()).getPartQuantity(task.getPart())));
         txtQuantity.setText("");

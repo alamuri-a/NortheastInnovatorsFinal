@@ -5,8 +5,16 @@
 package UserInterface.WorkAreas;
 
 import Business.Ecosystem.Ecosystem;
+import Business.Organization.AdminOrganization;
 import Business.Organization.Organization;
 import Business.User.User;
+import UserInterface.Admin.ManageEmployeesJPanel;
+import UserInterface.Admin.ManageOrganizationsJPanel;
+import UserInterface.Admin.ManageUsersJPanel;
+import UserInterface.Admin.MyProfileJPanel;
+import UserInterface.Admin.ViewNetworkJPanel;
+import UserInterface.Admin.ViewReportsJPanel;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
@@ -15,11 +23,24 @@ import javax.swing.JPanel;
  */
 public class AdminWorkAreaJPanel extends javax.swing.JPanel {
 
+    // ATTRIBUTES
+    AdminOrganization organization;
+    JPanel workArea;
+    User user;
+    Ecosystem business;
+    
     /**
      * Creates new form AdminWorkAreaJPanel
      */
     public AdminWorkAreaJPanel(JPanel csp, User usr, Organization org, Ecosystem system) {
+        this.organization = (AdminOrganization) org;
+        this.workArea = csp;
+        this.user = usr;
+        this.business = system;
+        
         initComponents();
+        lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
+        lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
     }
 
     /**
@@ -31,21 +52,129 @@ public class AdminWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setBackground(new java.awt.Color(153, 255, 255));
+        lblWelcome = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
+        btnEmployees = new javax.swing.JButton();
+        btnUsers = new javax.swing.JButton();
+        btnOrganizations = new javax.swing.JButton();
+        btnNetwork = new javax.swing.JButton();
+        btnMyProfile = new javax.swing.JButton();
+        btnReports = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setBackground(new java.awt.Color(153, 255, 255));
+        setMinimumSize(new java.awt.Dimension(650, 600));
+        setPreferredSize(new java.awt.Dimension(650, 600));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblWelcome.setText("Welcome <User>");
+        add(lblWelcome, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 460, -1));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTitle.setText("<Company Name> <Org Name>");
+        lblTitle.setMaximumSize(new java.awt.Dimension(650, 600));
+        lblTitle.setMinimumSize(new java.awt.Dimension(650, 600));
+        add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
+
+        btnEmployees.setText("Manage Employees");
+        btnEmployees.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmployeesActionPerformed(evt);
+            }
+        });
+        add(btnEmployees, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 160, 160, 80));
+
+        btnUsers.setText("Manage User Accounts");
+        btnUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsersActionPerformed(evt);
+            }
+        });
+        add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 80));
+
+        btnOrganizations.setText("Manage Organizations");
+        btnOrganizations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrganizationsActionPerformed(evt);
+            }
+        });
+        add(btnOrganizations, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 160, 80));
+
+        btnNetwork.setText("View Network");
+        btnNetwork.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNetworkActionPerformed(evt);
+            }
+        });
+        add(btnNetwork, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 160, 80));
+
+        btnMyProfile.setText("My Profile");
+        btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyProfileActionPerformed(evt);
+            }
+        });
+        add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 160, 80));
+
+        btnReports.setText("Reports");
+        btnReports.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportsActionPerformed(evt);
+            }
+        });
+        add(btnReports, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 80));
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeesActionPerformed
+        // Load employee management page
+        ManageEmployeesJPanel mejp = new ManageEmployeesJPanel(workArea, user, organization, business);
+        this.workArea.add(mejp, "ManageEmployees");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnEmployeesActionPerformed
+
+    private void btnUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersActionPerformed
+        // Load user management page
+        ManageUsersJPanel mujp = new ManageUsersJPanel(workArea, user, organization, business);
+        this.workArea.add(mujp, "ManageUsers");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnUsersActionPerformed
+
+    private void btnOrganizationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrganizationsActionPerformed
+        // Load organization management page
+        ManageOrganizationsJPanel mojp = new ManageOrganizationsJPanel(workArea, user, organization, business);
+        this.workArea.add(mojp, "ManageOrganizations");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnOrganizationsActionPerformed
+
+    private void btnNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNetworkActionPerformed
+        // Load view network page
+        ViewNetworkJPanel vnjp = new ViewNetworkJPanel(workArea, user, organization, business);
+        this.workArea.add(vnjp, "ViewNetwork");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnNetworkActionPerformed
+
+    private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
+        // Load profile management page
+        MyProfileJPanel mpjp = new MyProfileJPanel(workArea, user, organization, business);
+        this.workArea.add(mpjp, "MyProfile");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnMyProfileActionPerformed
+
+    private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
+        // Load reports page
+        ViewReportsJPanel vrjp = new ViewReportsJPanel(workArea, user, organization, business, organization.getCompany());
+        this.workArea.add(vrjp, "ViewReports");
+        ((CardLayout) this.workArea.getLayout()).next(workArea);
+    }//GEN-LAST:event_btnReportsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEmployees;
+    private javax.swing.JButton btnMyProfile;
+    private javax.swing.JButton btnNetwork;
+    private javax.swing.JButton btnOrganizations;
+    private javax.swing.JButton btnReports;
+    private javax.swing.JButton btnUsers;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
 }

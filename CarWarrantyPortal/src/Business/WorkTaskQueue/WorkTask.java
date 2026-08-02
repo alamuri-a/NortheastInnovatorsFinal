@@ -9,23 +9,27 @@ import Business.User.User;
 /**
  *
  * @author Ajay Alamuri
+ * @author Meredith Molyneux
  */
 public abstract class WorkTask {
     
     // ATTRIBUTES
+
     int id;
     User assigner;
     User assignee;
     boolean completed;
     
     static int instances = 0;
-    
+
     // CONSTRUCTORS
     public WorkTask(User aser) {
         this.id = ++instances;
         this.completed = false;
         this.assigner = aser;
         this.assignee = null;
+        
+        aser.incrementTasksCreated();
     }
     
     // METHODS
@@ -51,5 +55,9 @@ public abstract class WorkTask {
     
     public void Complete() {
         this.completed = true;
+    }
+ @Override
+    public String toString() {
+        return String.valueOf(this.id);
     }
 }

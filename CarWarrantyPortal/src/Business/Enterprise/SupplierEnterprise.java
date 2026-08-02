@@ -14,22 +14,27 @@ import java.util.HashMap;
 public class SupplierEnterprise extends Enterprise {
     
     // ATTRIBUTES
-    HashMap<Part, Integer> partsStock;
+    HashMap<Integer, Integer> partsStock;
     
     // CONSTRUCTORS
-    public SupplierEnterprise(String n) {
-        super(n);
+    public SupplierEnterprise(String name) {
+        super(name);
         this.partsStock = new HashMap();
     }
     
     // METHODS
     public int getPartQuantity(Part part) {
-        Integer quantity = this.partsStock.get(part);
+        Integer quantity = this.partsStock.get(part.getId());
         return (quantity == null) ? 0 : (int) quantity;
     }
     
     public void setPartQuantity(Part part, int newQuantity) {
-        this.partsStock.put(part, newQuantity);
+        this.partsStock.put(part.getId(), newQuantity);
+    }
+
+    @Override
+    public Type getEnterpriseType() {
+        return Type.Supplier; // Hardcoded return for this subclass
     }
     
 }

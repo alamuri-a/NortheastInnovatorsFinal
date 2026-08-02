@@ -34,7 +34,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
         this.business = system;
         
         initComponents();
-        lblTitle.setText(this.organization.getName() + " Queue");
+        lblTitle.setText(this.organization.getName() + " Completed Tasks");
         
         refreshTable();
     }
@@ -55,10 +55,12 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(153, 153, 255));
         setMinimumSize(new java.awt.Dimension(650, 600));
+        setPreferredSize(new java.awt.Dimension(650, 600));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        lblTitle.setBackground(new java.awt.Color(204, 255, 153));
         lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        lblTitle.setText("<Org Name> Queue");
+        lblTitle.setText("<Org Name> Completed Tasks");
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 660, -1));
 
         btnBack.setText("<<< Back");
@@ -86,7 +88,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        // TODO add your handling code here:
+        // Return to previous page
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
     }//GEN-LAST:event_btnBackActionPerformed
@@ -100,6 +102,7 @@ public class DoneQueueJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void refreshTable() {
+        // Fill tasks table with data
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         
         model.setRowCount(0);
