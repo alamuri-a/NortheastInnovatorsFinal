@@ -17,6 +17,7 @@ import Business.Enterprise.SupplierEnterprise;
 import Business.Organization.LogisticsOrganization;
 import Business.Vehicle.Part;
 import Business.WorkTaskQueue.SendShipmentTask;
+import Business.Roles.ServiceTechnician;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -72,13 +73,18 @@ private void buildTechnicianScreen() {
     headerPanel.setBackground(new Color(112, 72, 45));
     headerPanel.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-    JLabel titleLabel = new JLabel("Service Technician Work Queue");
+    JLabel titleLabel = new JLabel(
+        serviceOrganization.getCompany().getName()
+        + " - "
+        + serviceOrganization.getName());
     titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
     titleLabel.setForeground(Color.WHITE);
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     JLabel subtitleLabel = new JLabel(
-            "Complete dealership service appointments assigned by the Service Manager.");
+        "Welcome "
+        + serviceTechnician.getEmployee().getPerson().getName()
+        + " | Complete assigned service work and request replacement parts");
     subtitleLabel.setForeground(new Color(245, 230, 215));
     subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -183,6 +189,7 @@ private void completeSelectedAppointment() {
             }
 
             workTask.Complete();
+            ((ServiceTechnician) serviceTechnician.getRole()).setCurrentTask(null);
             serviceOrganization.getInTasks().popTask(workTask);
             serviceOrganization.getOutTasks().pushTask(workTask);
 
