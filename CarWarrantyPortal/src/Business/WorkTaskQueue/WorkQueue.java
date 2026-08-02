@@ -13,8 +13,8 @@ import Business.Organization.SalesOrganization;
 import Business.Organization.ServiceOrganization;
 import Business.Organization.WarehousingOrganization;
 import Business.User.User;
-import Business.Vehicle.Part;
 import Business.Vehicle.CustomVehicleOrder;
+import Business.Vehicle.Part;
 import java.util.ArrayList;
 
 /**
@@ -114,22 +114,22 @@ public class WorkQueue {
     }
     
     /**
-    * Create a new IssueRecallTask, add to internal list of tasks, then return task for modification
+    * Create a new InspectCarBuildTask, add to internal list of tasks, then return task for modification
     * 
     * @param assigner the user creating request
-    * @param part the part being recalled
+    * @param car is being build 
     * 
-    * @return {@link IssueRecallTask} the new IssueRecallTask object created
+    * @return {@link InspectCarBuildTask} the new InspectCarBuildTask object created
     * 
     * @throws Exception If attempted to be instantiated for organization other than QA organization
     */
-    public IssueRecallTask createIssueRecallTask(User assigner, Part part) throws Exception {
-        if (this.organization instanceof QualityAssuranceOrganization) {
-            IssueRecallTask newTask = new IssueRecallTask(assigner, part);
-            this.tasks.add(newTask);
-            return newTask;
+   public InspectCarBuildTask createInspectCarBuildTask(User assigner, String make, String model) throws Exception {
+    if (this.organization instanceof QualityAssuranceOrganization) {
+        InspectCarBuildTask newTask = new InspectCarBuildTask(assigner, make, model);
+        this.tasks.add(newTask);
+        return newTask;
         }
-        throw new Exception("Issue Recall task can only be created for QA organizations.");
+        throw new Exception("Inspect Car task can only be created for QA organizations.");
     }
     
     /**

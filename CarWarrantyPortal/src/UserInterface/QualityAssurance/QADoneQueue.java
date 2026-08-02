@@ -31,7 +31,8 @@ public class QADoneQueue extends javax.swing.JPanel {
         this.user = usr;
         this.business = system;
         initComponents();
-         lblTitle.setText(this.organization.getName() + " - Queue");
+        lblTitle.setText(this.organization.getName() + " - Queue");
+         refreshCompletedTable();
     }
 
     /**
@@ -93,24 +94,34 @@ public class QADoneQueue extends javax.swing.JPanel {
     private javax.swing.JTable tblTasks;
     // End of variables declaration//GEN-END:variables
 
- public void refreshTable() {
-      DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
-
+    public void refreshCompletedTable() {
+        DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
         model.setRowCount(0);
 
-        for (WorkTask task : this.organization.getOutTasks().getTasks()) {
-            Object[] row = new Object[4];
+        for (WorkTask task : this.organization.getInTasks().getTasks()) {
+            if (task.isCompleted()) {
+                // FIX: Add the size block [4] here
+                Object[] row = new Object[4];
 
-            row[0] = task.toString();
-            row[1] = task.getAssigner();
-            row[2] = (task.getAssignee() == null) ? null : task.getAssignee();
-            row[3] = task.isCompleted() ? "Complete" : "Error";
+                row[0] = task;
+                row[1] = task.getAssigner();
+                row[2] = (task.getAssignee() == null) ? "System" : task.getAssignee();
 
-            model.addRow(row);
+                if (task instanceof Business.WorkTaskQueue.InspectPartTask) {
+                    String res = ((Business.WorkTaskQueue.InspectPartTask) task).getResult();
+                    row[3] = "Pass".equalsIgnoreCase(res) ? "Approved" : "Rejected";
+                }
+                else if (task instanceof Business.WorkTaskQueue.InspectCarBuildTask) {
+                    String res = ((Business.WorkTaskQueue.InspectCarBuildTask) task).getResult();
+                    row[3] = "Pass".equalsIgnoreCase(res) ? "Approved" : "Rejected";
+                } 
+                else {
+                    row[3] = "Complete";
+                }
+
+                model.addRow(row);
+            }
         }
     }
-    }
-
-   
-
+}
 

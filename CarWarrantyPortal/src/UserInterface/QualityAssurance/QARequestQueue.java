@@ -98,27 +98,61 @@ public class QARequestQueue extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
-        // TODO add your handling code here:
+int selectedRow = tblTasks.getSelectedRow();
 
-        int selectedRow = tblTasks.getSelectedRow();
-        if (selectedRow < 0 || selectedRow > tblTasks.getRowCount()) {
-            JOptionPane.showMessageDialog(null, "Please select a task from the table first.", "Warning", JOptionPane.WARNING_MESSAGE);
+    // Fix boundary safety checks to prevent IndexOutOfBounds exceptions
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Please select an unassigned task line from the table.", "Selection Warning", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Safely extract the raw cell value
+    Object cellObject = tblTasks.getValueAt(selectedRow, 0);
+    WorkTask selectedTask = null;
+
+    // TYPE-SAFETY CHECK: Ensure the table cell actually holds the WorkTask object
+    if (cellObject instanceof WorkTask) {
+        selectedTask = (WorkTask) cellObject;
+    } else {
+        // Fallback recovery if column 0 only contains an Integer/String primitive ID
+        int taskId = Integer.parseInt(cellObject.toString());
+        for (WorkTask t : this.organization.getInTasks().getTasks()) {
+            if (t.getID() == taskId) {
+                selectedTask = t;
+                break;
+            }
+        }
+    }
+    // Structural validation guard checks
+    if (selectedTask == null) {
+        JOptionPane.showMessageDialog(this, "The system could not resolve the selected task reference identity.", "System Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (selectedTask.getAssignee() != null) {
+        JOptionPane.showMessageDialog(this, "An employee is already handling this task. Please choose an open request.", "Assignment Conflict", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Safety cast for your user's specific workflow role properties
+    if (user != null && user.getRole() instanceof QualityInspector) {
+        QualityInspector inspectorRole = (QualityInspector) user.getRole();
+
+        if (inspectorRole.getCurrentTask() != null) {
+            JOptionPane.showMessageDialog(this, "You cannot assign a new task while your current assignment is still open.", "Workload Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        WorkTask selectedTask = (WorkTask) tblTasks.getValueAt(selectedRow, 0);
-        if (selectedTask.getAssignee() != null) {
-            JOptionPane.showMessageDialog(null, "An employee is already working on this task, please select another task.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        } else if (((QualityInspector) user.getRole()).getCurrentTask() != null) {
-            JOptionPane.showMessageDialog(null, "Cannot select another task while currently assigned one.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        ((QualityInspector) user.getRole()).setCurrentTask(selectedTask);
+        // Commit mutations to tracking variables across structural references
+        inspectorRole.setCurrentTask(selectedTask);
         selectedTask.setAssignee(user);
 
+        JOptionPane.showMessageDialog(this, "Task securely assigned! Proceed to the inspection panel.", "Assignment Confirmed", JOptionPane.INFORMATION_MESSAGE);
         refreshTable();
+
+    } else {
+        JOptionPane.showMessageDialog(this, "Your user profile does not possess valid QualityInspector structural authorization clearances.", "Access Denied", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnAssignActionPerformed
 
 
@@ -132,22 +166,19 @@ public class QARequestQueue extends javax.swing.JPanel {
 
     public void refreshTable() {
         DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
-
         model.setRowCount(0);
 
+        // Grabs remaining active and unassigned work lines
         for (WorkTask task : this.organization.getInTasks().getTasks()) {
+             if (!task.isCompleted()) {
             Object[] row = new Object[5];
-
-            row[0] = task;
+            row[0] = task; // Keeps object baseline for the row select action
             row[1] = task.getClass().getSimpleName();
             row[2] = task.getAssigner();
             row[3] = task.getAssignee() == null ? null : task.getAssignee();
             row[4] = task.getAssignee() == null ? "Waiting" : "In Progress";
-
             model.addRow(row);
         }
     }
-
-
-
+    }
 }
