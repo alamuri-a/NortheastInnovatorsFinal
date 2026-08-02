@@ -11,6 +11,7 @@ import Business.Enterprise.ManufacturerEnterprise;
 import Business.Enterprise.SupplierEnterprise;
 import Business.Organization.AdminOrganization;
 import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
 import Business.Organization.ProductionOrganization;
 import Business.Organization.QualityAssuranceOrganization;
 import Business.Organization.SalesOrganization;
@@ -31,7 +32,10 @@ import Business.Roles.WarehouseClerk;
 import Business.User.User;
 import Business.Vehicle.CustomVehicleOrder;
 import Business.Vehicle.Part;
+import Business.WorkTaskQueue.GetPartTask;
+import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SellVehicleTask;
+import Business.WorkTaskQueue.SendShipmentTask;
 import com.github.javafaker.Faker;
 /**
  *
@@ -147,7 +151,7 @@ public class ConfigureABusiness {
         Employee employee12 = saleOrg.getEmployees().createEmployee(person12);
         User sr = saleOrg.getUsers().createUser(employee12, "sales", "sales", new SalesRepresentative());
         seedDealershipCustomOrders(de, saleOrg, sr);
-        seedLogistics(lOrg, lc, de);
+        seedSupplier(se, de);
         
         // Return demo ecosystem
         return system;
@@ -205,15 +209,79 @@ public class ConfigureABusiness {
             dealership.addSalesRecord(salesTask);
         }
     }
-
-    private static void seedLogistics(LogisticsOrganization lOrg, User lc, DealershipEnterprise de) {
+    
+    private static void seedSupplier(SupplierEnterprise se, DealershipEnterprise de) {
+        LogisticsOrganization lOrg = null;
+        WarehousingOrganization wOrg = null;
+        for (Organization o : se.getOrganizations().getOrganizations()) {
+            if (o instanceof LogisticsOrganization l) lOrg = l;
+            if (o instanceof WarehousingOrganization w) wOrg = w;
+        }
+        
+        if (lOrg == null || wOrg == null) return;
+        
+        Faker faker = new Faker();
         for (int i = 1; i < 11; i++) {
-            Part part = new Part(i);
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            Person p = new Person(firstName + " " + lastName);
+            Employee emp = lOrg.getEmployees().createEmployee(p);
+            User user = lOrg.getUsers().createUser(emp, lastName.toLowerCase() + firstName.toLowerCase(), firstName.toUpperCase(), new LogisticsCoordinator());
+        }
+        for (int i = 1; i < 11; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            Person p = new Person(firstName + " " + lastName);
+            Employee emp = wOrg.getEmployees().createEmployee(p);
+            User user = wOrg.getUsers().createUser(emp, lastName.toLowerCase() + firstName.toLowerCase(), firstName.toUpperCase(), new WarehouseClerk());
+        }
+        for (User u : lOrg.getUsers().getUsers()) {
+            seedSendShipmentTasks(de, lOrg, u);
+            seedProcessShipmentTasks(se, lOrg, u);
+            seedGetPartTasks(wOrg, u);
+        }
+    }
+    
+    private static void seedSendShipmentTasks(DealershipEnterprise de, LogisticsOrganization lOrg, User lc) {
+        Faker faker = new Faker();
+        for (int i = 1; i < 2; i++) {
+            Part part = new Part(faker.number().numberBetween(10000000, 10000010));
             try {
-                lOrg.getInTasks().createProcessShipmentTask(lc, part);
-                lOrg.getInTasks().createSendShipmentTask(lc, de, part, 5);
+                SendShipmentTask sstask = lOrg.getInTasks().createSendShipmentTask(lc, de, part, faker.number().numberBetween(1, 20));
             } catch (Exception e) {
-                System.out.println("Failed to create demo tasks for logistics.");
+                System.out.println("Failed to create SendShipment tasks for logistics.");
+            }
+        }
+    }
+    
+    private static void seedProcessShipmentTasks(SupplierEnterprise se, LogisticsOrganization lOrg, User lc) {
+        Faker faker = new Faker();
+        for (int i = 1; i < 5; i++) {
+            Part part = new Part(faker.number().numberBetween(10000000, 10000010));
+            try {
+                ProcessShipmentTask pstask = lOrg.getInTasks().createProcessShipmentTask(lc, part);
+                if (faker.random().nextInt(0, 10) < 3) {
+                    pstask.setAssignee(lc);
+                    ((LogisticsCoordinator) lc.getRole()).completeTask();
+                    
+                    lOrg.getOutTasks().pushTask(lOrg.getInTasks().popTask(pstask));
+                    
+                    se.setPartQuantity(part, faker.number().numberBetween(5, 20));
+                }
+            } catch (Exception e) {
+                System.out.println("Failed to create ProcessShipment tasks for logistics.");
+            }
+        }
+    }
+    
+    private static void seedGetPartTasks(WarehousingOrganization wOrg, User lc) {
+        Faker faker = new Faker();
+        for (int i = 1; i < 2; i++) {
+            Part part = new Part(faker.number().numberBetween(10000000, 10000010));
+            try {
+                GetPartTask gptask = wOrg.getInTasks().createGetPartTask(lc, part, faker.number().numberBetween(1, 20));
+            } catch (Exception e) {
+                System.out.println("Failed to create SendShipment tasks for logistics.");
             }
         }
     }
