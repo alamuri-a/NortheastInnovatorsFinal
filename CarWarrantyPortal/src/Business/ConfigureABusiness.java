@@ -11,6 +11,7 @@ import Business.Enterprise.ManufacturerEnterprise;
 import Business.Enterprise.SupplierEnterprise;
 import Business.Organization.AdminOrganization;
 import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
 import Business.Organization.ProductionOrganization;
 import Business.Organization.QualityAssuranceOrganization;
 import Business.Organization.SalesOrganization;
@@ -31,7 +32,13 @@ import Business.Roles.WarehouseClerk;
 import Business.User.User;
 import Business.Vehicle.CustomVehicleOrder;
 import Business.Vehicle.Part;
+import Business.Vehicle.Automobile;
+import Business.WorkTaskQueue.BuildCarTask;
+import Business.WorkTaskQueue.VehicleDeliveryTask;
+import Business.WorkTaskQueue.GetPartTask;
+import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SellVehicleTask;
+import Business.WorkTaskQueue.SendShipmentTask;
 import com.github.javafaker.Faker;
 /**
  *
@@ -146,74 +153,204 @@ public class ConfigureABusiness {
         Person person12 = new Person("Sales Representative");
         Employee employee12 = saleOrg.getEmployees().createEmployee(person12);
         User sr = saleOrg.getUsers().createUser(employee12, "sales", "sales", new SalesRepresentative());
-        seedDealershipCustomOrders(de, saleOrg, sr);
-        seedLogistics(lOrg, lc, de);
+        seedDealershipCustomOrders(de, saleOrg, sr, pOrg, lOrg, pm);
+        seedSupplier(se, de);
         
         // Return demo ecosystem
         return system;
     }
-        /**
-     * Creates pre-populated dealership orders for the sales demonstration and
-     * analytics requirement. Faker provides realistic customer names, emails,
-     * and colors while the workflow supplies varied order statuses.
-     *
-     * @param dealership Toyota Dealership enterprise that owns sales records
-     * @param salesOrganization Toyota Sales organization creating the orders
-     * @param salesRepresentative seeded Sales Representative user
-     * @author nicholaswoodward
-     */
-    private static void seedDealershipCustomOrders(
-            DealershipEnterprise dealership,
-            SalesOrganization salesOrganization,
-            User salesRepresentative) {
+/**
+ * Creates Faker dealership orders with workflow records matching each
+ * displayed lifecycle stage.
+ *
+ * New-vehicle workflow:
+ * Sales -> Production -> Logistics -> Dealership
+ *
+ * @param dealership dealership receiving completed vehicles
+ * @param salesOrganization organization that creates vehicle orders
+ * @param salesRepresentative user creating the sales requests
+ * @param productionOrganization organization building vehicles
+ * @param logisticsOrganization organization delivering completed vehicles
+ * @param productionManager user releasing completed vehicles
+ */
+private static void seedDealershipCustomOrders(
+        DealershipEnterprise dealership,
+        SalesOrganization salesOrganization,
+        User salesRepresentative,
+        ProductionOrganization productionOrganization,
+        LogisticsOrganization logisticsOrganization,
+        User productionManager) {
 
-        Faker faker = new Faker();
+    Faker faker = new Faker();
 
-        String[] models = {"Camry", "RAV4", "Highlander", "Prius"};
-        String[] trims = {"LE", "XLE", "SE", "Limited"};
-        String[] supplierRegions = {
-            "Mexico",
-            "Asia",
-            "Mexico and Asia"
-        };
+    String[] models = {"Camry", "RAV4", "Highlander", "Prius"};
+    String[] trims = {"LE", "XLE", "SE", "Limited"};
+    String[] supplierRegions = {
+        "Mexico",
+        "Asia",
+        "Mexico and Asia"
+    };
 
-        for (int orderIndex = 0; orderIndex < 6; orderIndex++) {
-            double totalPrice = faker.number().numberBetween(45000, 85001);
-            double depositPaid = totalPrice * 0.15;
+    for (int orderIndex = 0; orderIndex < 6; orderIndex++) {
+        double totalPrice =
+                faker.number().numberBetween(45000, 85001);
+        double depositPaid = totalPrice * 0.15;
 
-            CustomVehicleOrder customOrder = new CustomVehicleOrder(
-                    faker.name().fullName(),
-                    faker.internet().emailAddress(),
-                    "Toyota",
-                    models[orderIndex % models.length],
-                    trims[orderIndex % trims.length],
-                    faker.color().name(),
-                    supplierRegions[orderIndex % supplierRegions.length],
-                    totalPrice,
-                    depositPaid);
+        CustomVehicleOrder customOrder = new CustomVehicleOrder(
+                faker.name().fullName(),
+                faker.internet().emailAddress(),
+                "Toyota",
+                models[orderIndex % models.length],
+                trims[orderIndex % trims.length],
+                faker.color().name(),
+                supplierRegions[orderIndex % supplierRegions.length],
+                totalPrice,
+                depositPaid);
 
-            SellVehicleTask salesTask = new SellVehicleTask(
+        SellVehicleTask salesTask = new SellVehicleTask(
+                salesRepresentative,
+                customOrder);
+
+        salesOrganization.getOutTasks().pushTask(salesTask);
+        dealership.addSalesRecord(salesTask);
+
+        if (orderIndex == 1) {
+            // A validated order has not yet been sent to Production.
+            salesTask.advanceStatus();
+
+        } else if (orderIndex == 2 || orderIndex == 5) {
+            // An active Production order has a real incoming build task.
+            salesTask.advanceStatus();
+            salesTask.markInProduction();
+
+            BuildCarTask buildTask = new BuildCarTask(
                     salesRepresentative,
                     customOrder);
 
-            // Creates a different visible lifecycle stage for each demo order.
-            for (int statusStep = 0; statusStep < orderIndex; statusStep++) {
-                salesTask.advanceStatus();
-            }
+            productionOrganization.getInTasks().pushTask(buildTask);
+            salesOrganization.getOutTasks().pushTask(buildTask);
 
-            salesOrganization.getOutTasks().pushTask(salesTask);
-            dealership.addSalesRecord(salesTask);
+        } else if (orderIndex == 3) {
+            // The completed build is retained in Production history.
+            salesTask.advanceStatus();
+            salesTask.markInTransit();
+
+            BuildCarTask buildTask = new BuildCarTask(
+                    salesRepresentative,
+                    customOrder);
+            buildTask.Complete();
+            productionOrganization.getOutTasks().pushTask(buildTask);
+
+            VehicleDeliveryTask deliveryTask = new VehicleDeliveryTask(
+                    productionManager,
+                    customOrder,
+                    dealership);
+
+            productionOrganization.getOutTasks().pushTask(deliveryTask);
+            logisticsOrganization.getInTasks().pushTask(deliveryTask);
+
+        } else if (orderIndex == 4) {
+            // A delivered order retains completed Production and Logistics
+            // records and creates the actual dealership vehicle.
+            salesTask.advanceStatus();
+            salesTask.markDelivered();
+
+            BuildCarTask buildTask = new BuildCarTask(
+                    salesRepresentative,
+                    customOrder);
+            buildTask.Complete();
+            productionOrganization.getOutTasks().pushTask(buildTask);
+
+            VehicleDeliveryTask deliveryTask = new VehicleDeliveryTask(
+                    productionManager,
+                    customOrder,
+                    dealership);
+            deliveryTask.Complete();
+
+            productionOrganization.getOutTasks().pushTask(deliveryTask);
+            logisticsOrganization.getOutTasks().pushTask(deliveryTask);
+
+            dealership.addAutomobile(new Automobile(
+                    customOrder.getVehicleVin(),
+                    customOrder.getMake(),
+                    customOrder.getModel(),
+                    null));
         }
     }
-
-    private static void seedLogistics(LogisticsOrganization lOrg, User lc, DealershipEnterprise de) {
+}
+    
+    private static void seedSupplier(SupplierEnterprise se, DealershipEnterprise de) {
+        LogisticsOrganization lOrg = null;
+        WarehousingOrganization wOrg = null;
+        for (Organization o : se.getOrganizations().getOrganizations()) {
+            if (o instanceof LogisticsOrganization l) lOrg = l;
+            if (o instanceof WarehousingOrganization w) wOrg = w;
+        }
+        
+        if (lOrg == null || wOrg == null) return;
+        
+        Faker faker = new Faker();
         for (int i = 1; i < 11; i++) {
-            Part part = new Part(i);
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            Person p = new Person(firstName + " " + lastName);
+            Employee emp = lOrg.getEmployees().createEmployee(p);
+            User user = lOrg.getUsers().createUser(emp, lastName.toLowerCase() + firstName.toLowerCase(), firstName.toUpperCase(), new LogisticsCoordinator());
+        }
+        for (int i = 1; i < 11; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            Person p = new Person(firstName + " " + lastName);
+            Employee emp = wOrg.getEmployees().createEmployee(p);
+            User user = wOrg.getUsers().createUser(emp, lastName.toLowerCase() + firstName.toLowerCase(), firstName.toUpperCase(), new WarehouseClerk());
+        }
+        for (User u : lOrg.getUsers().getUsers()) {
+            seedSendShipmentTasks(de, lOrg, u);
+            seedProcessShipmentTasks(se, lOrg, u);
+            seedGetPartTasks(wOrg, u);
+        }
+    }
+    
+    private static void seedSendShipmentTasks(DealershipEnterprise de, LogisticsOrganization lOrg, User lc) {
+        Faker faker = new Faker();
+        for (int i = 1; i < 2; i++) {
+            Part part = new Part(faker.number().numberBetween(10000000, 10000010));
             try {
-                lOrg.getInTasks().createProcessShipmentTask(lc, part);
-                lOrg.getInTasks().createSendShipmentTask(lc, de, part, 5);
+                SendShipmentTask sstask = lOrg.getInTasks().createSendShipmentTask(lc, de, part, faker.number().numberBetween(1, 20));
             } catch (Exception e) {
-                System.out.println("Failed to create demo tasks for logistics.");
+                System.out.println("Failed to create SendShipment tasks for logistics.");
+            }
+        }
+    }
+    
+    private static void seedProcessShipmentTasks(SupplierEnterprise se, LogisticsOrganization lOrg, User lc) {
+        Faker faker = new Faker();
+        for (int i = 1; i < 5; i++) {
+            Part part = new Part(faker.number().numberBetween(10000000, 10000010));
+            try {
+                ProcessShipmentTask pstask = lOrg.getInTasks().createProcessShipmentTask(lc, part);
+                if (faker.random().nextInt(0, 10) < 3) {
+                    pstask.setAssignee(lc);
+                    ((LogisticsCoordinator) lc.getRole()).completeTask();
+                    
+                    lOrg.getOutTasks().pushTask(lOrg.getInTasks().popTask(pstask));
+                    
+                    se.setPartQuantity(part, faker.number().numberBetween(5, 20));
+                }
+            } catch (Exception e) {
+                System.out.println("Failed to create ProcessShipment tasks for logistics.");
+            }
+        }
+    }
+    
+    private static void seedGetPartTasks(WarehousingOrganization wOrg, User lc) {
+        Faker faker = new Faker();
+        for (int i = 1; i < 2; i++) {
+            Part part = new Part(faker.number().numberBetween(10000000, 10000010));
+            try {
+                GetPartTask gptask = wOrg.getInTasks().createGetPartTask(lc, part, faker.number().numberBetween(1, 20));
+            } catch (Exception e) {
+                System.out.println("Failed to create SendShipment tasks for logistics.");
             }
         }
     }

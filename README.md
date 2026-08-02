@@ -6,7 +6,7 @@
 |-------------|------|-------------------|------------------|
 | Nicholas Woodward | 002478780 | Custom Vehicle Order and Global Supply Chain Fulfillment | README, sales-order workflow, global order tracking, documentation |
 | Meredith Molyneux | 003978998 | Cross-Border Regulatory Recall and Compliance Management | VIN recall workflow, compliance tracking, quality reporting |
-| Ajay Alamuri | 003915177 | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  |
+| Ajay Alamuri | 003915177 | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting, Application Testing |
 
 ## Project Overview
 
@@ -80,8 +80,8 @@ The operating roles in the ecosystem are:
 - Service Manager
 - Service Technician
 
-System, network, enterprise, and organization administrators are responsible
-for managing users, enterprises, and organizations. Their administrative roles
+Ecosystem and enterprise administrators are responsible
+for managing networks and enterprises, and enterprise administrative duties respectively. Their administrative roles
 are separate from the eight operating roles required by the project rubric.
 
 > **Current status:** the custom-order work area and workflow validation are
@@ -242,7 +242,7 @@ Ecosystem:
 |-------------|-------------------|----------------------|---------------|---------|---------------------|
 | Nicholas Woodward | Custom Vehicle Order and Global Supply Chain Fulfillment | Custom-order model, validation, lifecycle work area, and order testing | README, use-case documentation | Tests order creation, deposit validation, and status transitions | Supports slides and project integration |
 | Meredith Molyneux | Cross-Border Regulatory Recall and Compliance Management | VIN lookup, recall notification, and compliance repair tracking (in progress) | Recall use-case documentation | Recall identification and completion reporting tests (planned) | Supports quality and reporting design |
-| Ajay Alamuri | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  | Functional Comments, UML Diagram | Admin, Logistics Coordinator, Warehouse Clerk | GitHub Integration, Business Model Implementation |
+| Ajay Alamuri | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  | Functional Comments, UML Diagram | Admin, Logistics Coordinator, Warehouse Clerk | GitHub Integration, Business Model Implementation, Application Testing |
 
 Each team member contributes to planning, code review, integration testing,
 documentation, and the final presentation. Update this section as individual
