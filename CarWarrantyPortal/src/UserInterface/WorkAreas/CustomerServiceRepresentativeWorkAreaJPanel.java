@@ -82,13 +82,19 @@ public class CustomerServiceRepresentativeWorkAreaJPanel extends javax.swing.JPa
         headerPanel.setBackground(new Color(20, 80, 130));
         headerPanel.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        JLabel titleLabel = new JLabel("Customer Service Portal");
+        JLabel titleLabel = new JLabel(
+        organization.getCompany().getName()
+        + " - "
+        + organization.getName());
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JLabel subtitleLabel = new JLabel(
-                "Search custom orders and provide dealership support");
+        "Welcome "
+        + customerServiceRepresentative.getEmployee()
+                .getPerson().getName()
+        + " | Customer orders, service appointments, and trade-ins");
         subtitleLabel.setForeground(new Color(220, 235, 250));
         subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 

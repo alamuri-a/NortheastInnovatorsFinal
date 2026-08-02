@@ -38,6 +38,8 @@ public class ServiceManagerWorkAreaJPanel extends javax.swing.JPanel {
     // Table showing appointments awaiting technician assignment.
     private DefaultTableModel tableModel;
     private JTable appointmentsTable;
+    // Rotates assignment across available technicians.
+    private int nextTechnicianIndex = 0;
     /**
      * Creates new form ServiceManagerWorkAreaJPanel
      */
@@ -64,13 +66,18 @@ private void buildServiceManagerScreen() {
     headerPanel.setBackground(new Color(45, 84, 105));
     headerPanel.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-    JLabel titleLabel = new JLabel("Dealership Service Center");
+    JLabel titleLabel = new JLabel(
+        serviceOrganization.getCompany().getName()
+        + " - "
+        + serviceOrganization.getName());
     titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
     titleLabel.setForeground(Color.WHITE);
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     JLabel subtitleLabel = new JLabel(
-            "Review customer appointments and assign them to a service technician.");
+        "Welcome "
+        + serviceManager.getEmployee().getPerson().getName()
+        + " | Review appointments and assign available technicians");
     subtitleLabel.setForeground(new Color(220, 235, 245));
     subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -186,12 +193,12 @@ private void assignSelectedAppointment() {
     }
 
     int taskId = (Integer) tableModel.getValueAt(selectedRow, 0);
-    User technician = findServiceTechnician();
+    User technician = findAvailableServiceTechnician();
 
     if (technician == null) {
         JOptionPane.showMessageDialog(
                 this,
-                "No Service Technician account is available.",
+                "No Service Technician is currently available.",
                 "Technician Unavailable",
                 JOptionPane.ERROR_MESSAGE);
         return;
@@ -265,19 +272,58 @@ private void completeSelectedTradeIn() {
     }
 }
 /**
- * Finds the technician user within this Service Center.
+ * Selects an available technician using round-robin assignment.
  *
- * @return technician user, or null when one is not available
+ * @return an available technician, or null when every technician is busy
  */
-private User findServiceTechnician() {
+private User findAvailableServiceTechnician() {
+    java.util.ArrayList<User> technicians = new java.util.ArrayList<>();
+
     for (User user : serviceOrganization.getUsers().getUsers()) {
         if (user.getRole() instanceof ServiceTechnician) {
-            return user;
+            technicians.add(user);
+        }
+    }
+
+    if (technicians.isEmpty()) {
+        return null;
+    }
+
+    int startingIndex = nextTechnicianIndex % technicians.size();
+
+    for (int offset = 0; offset < technicians.size(); offset++) {
+        int technicianIndex =
+                (startingIndex + offset) % technicians.size();
+        User technician = technicians.get(technicianIndex);
+
+        if (!isTechnicianBusy(technician)) {
+            nextTechnicianIndex =
+                    (technicianIndex + 1) % technicians.size();
+            return technician;
         }
     }
 
     return null;
-}    
+}
+/**
+ * Checks whether a technician owns an incomplete service appointment.
+ *
+ * @param technician technician whose workload is being checked
+ * @return true when the technician already has active work
+ */
+private boolean isTechnicianBusy(User technician) {
+    for (WorkTask workTask
+            : serviceOrganization.getInTasks().getTasks()) {
+
+        if (workTask instanceof ServiceAppointmentTask
+                && !workTask.isCompleted()
+                && workTask.getAssignee() == technician) {
+            return true;
+        }
+    }
+
+    return false;
+}
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

@@ -76,6 +76,8 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
         this.salesOrganization = organization;
         this.ecosystem = system;
         this.salesRepresentative = user;
+
+        initComponents();
         buildCustomOrderScreen(organization);
     }
 
@@ -85,6 +87,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
      * @param salesOrganization Toyota Sales organization containing orders
      */
     private void buildCustomOrderScreen(Organization salesOrganization) {
+        removeAll();
         setLayout(new BorderLayout(10, 10));
         setBorder(new EmptyBorder(14, 14, 14, 14));
         setBackground(new Color(245, 247, 250));
@@ -93,13 +96,18 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
         headerPanel.setBackground(new Color(20, 36, 58));
         headerPanel.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        JLabel titleLabel = new JLabel("Custom Vehicle Orders");
+        JLabel titleLabel = new JLabel(
+        salesOrganization.getCompany().getName()
+        + " - "
+        + salesOrganization.getName());
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JLabel subtitleLabel = new JLabel(
-                "US Sales -> Mexico / Asia Suppliers -> German Production");
+        "Welcome "
+        + salesRepresentative.getEmployee().getPerson().getName()
+        + " | Sales -> Production -> Logistics -> Dealership");
         subtitleLabel.setForeground(new Color(210, 225, 240));
         subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -163,6 +171,8 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
 
         add(trackingPanel, BorderLayout.CENTER);
         add(buildOrderFormPanel(), BorderLayout.SOUTH);
+        revalidate();
+        repaint();
     }  
         /**
      * Builds the form a Sales Representative uses to create a dealership
@@ -214,7 +224,7 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
         formPanel.add(new JLabel("Deposit Paid:"));
         formPanel.add(depositField);
 
-        JButton createOrderButton = new JButton("Create Draft Order");
+        JButton createOrderButton = new JButton("Submit Custom Order");
         createOrderButton.addActionListener(event -> createCustomOrder());
         formPanel.add(createOrderButton);
 
@@ -243,16 +253,19 @@ public class SalesRepresentativeWorkAreaJPanel extends JPanel {
                     depositPaid);
 
             SellVehicleTask salesTask = new SellVehicleTask(
-                    salesRepresentative, order);
-                 salesTask.advanceStatus();
-            salesOrganization.getOutTasks().pushTask(salesTask);
-            if (salesOrganization.getCompany() instanceof DealershipEnterprise) {
-                DealershipEnterprise dealership
-                    = (DealershipEnterprise) salesOrganization.getCompany();
-                dealership.addSalesRecord(salesTask);
-}
+        salesRepresentative, order);
 
-String dispatchMessage = dispatchInitialOrderTasks(salesTask);
+            salesTask.advanceStatus();
+            String dispatchMessage = dispatchInitialOrderTasks(salesTask);
+
+// Record the sale only after the Production handoff succeeds.
+            salesOrganization.getOutTasks().pushTask(salesTask);
+
+            if (salesOrganization.getCompany() instanceof DealershipEnterprise) {
+            DealershipEnterprise dealership
+            = (DealershipEnterprise) salesOrganization.getCompany();
+            dealership.addSalesRecord(salesTask);
+}
 
             tableModel.addRow(new Object[]{
                 order.getOrderId(),
@@ -284,7 +297,13 @@ String dispatchMessage = dispatchInitialOrderTasks(salesTask);
                     exception.getMessage(),
                     "Invalid Order",
                     JOptionPane.ERROR_MESSAGE);
-        }
+        } catch (IllegalStateException exception) {
+            JOptionPane.showMessageDialog(
+            this,
+            exception.getMessage(),
+            "Order Could Not Be Submitted",
+            JOptionPane.ERROR_MESSAGE);
+}
     }
 
     /**
