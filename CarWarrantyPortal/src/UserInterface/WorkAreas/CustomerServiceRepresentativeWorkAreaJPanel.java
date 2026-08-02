@@ -127,6 +127,7 @@ public class CustomerServiceRepresentativeWorkAreaJPanel extends javax.swing.JPa
                     "Customer",
                     "Email",
                     "Vehicle",
+                    "VIN",
                     "Deposit",
                     "Current Status"
                 }, 0) {
@@ -138,7 +139,11 @@ public class CustomerServiceRepresentativeWorkAreaJPanel extends javax.swing.JPa
 
         ordersTable = new JTable(tableModel);
         ordersTable.setAutoCreateRowSorter(true);
-
+        ordersTable.getSelectionModel().addListSelectionListener(event -> {
+        if (!event.getValueIsAdjusting()) {
+        copySelectedVinToAfterSalesFields();
+    }
+});
         JLabel supportMessage = new JLabel(
                 "Customer Service can search order records and provide "
                 + "accurate international fulfillment updates.");
@@ -182,6 +187,7 @@ supportPanel.add(bottomPanel, BorderLayout.SOUTH);
                         order.getCustomerName(),
                         order.getCustomerEmail(),
                         order.getVehicleDescription(),
+                        order.getVehicleVin(),
                         String.format("$%,.2f", order.getDepositPaid()),
                         salesTask.getStatus()
                     });
@@ -206,9 +212,53 @@ supportPanel.add(bottomPanel, BorderLayout.SOUTH);
         return filter.isEmpty()
                 || order.getOrderId().toLowerCase().contains(filter)
                 || order.getCustomerName().toLowerCase().contains(filter)
+                || String.valueOf(order.getVehicleVin()).contains(filter)
                 || salesTask.getStatus().toString()
                         .toLowerCase().contains(filter);
     }
+/**
+ * Copies the VIN from a selected delivered order into both after-sales forms.
+ * Vehicles that are still in production or transit cannot be serviced yet.
+ */
+private void copySelectedVinToAfterSalesFields() {
+    int selectedRow = ordersTable.getSelectedRow();
+
+    if (selectedRow < 0
+            || serviceVinField == null
+            || tradeInVinField == null) {
+        return;
+    }
+
+    int modelRow = ordersTable.convertRowIndexToModel(selectedRow);
+    String status = String.valueOf(tableModel.getValueAt(modelRow, 6));
+
+    if (!"DELIVERED".equals(status)) {
+        serviceVinField.setText("");
+        tradeInVinField.setText("");
+        return;
+    }
+
+    String vin = String.valueOf(tableModel.getValueAt(modelRow, 4));
+    serviceVinField.setText(vin);
+    tradeInVinField.setText(vin);
+}    
+/**
+ * Confirms that a VIN belongs to a vehicle already delivered to this
+ * dealership before Customer Service creates an after-sales request.
+ *
+ * @param vin VIN requested for service or trade-in
+ * @return true when the delivered vehicle exists in dealership records
+ */
+private boolean isDeliveredDealershipVehicle(int vin) {
+    if (!(salesOrganization.getCompany() instanceof DealershipEnterprise)) {
+        return false;
+    }
+
+    DealershipEnterprise dealership
+            = (DealershipEnterprise) salesOrganization.getCompany();
+
+    return dealership.findAutomobileByVin(vin) != null;
+}
 /**
  * Builds Customer Service actions for appointments and trade-in requests.
  *
@@ -283,7 +333,14 @@ private void bookServiceAppointment() {
 
     try {
         int vin = Integer.parseInt(vinText);
-
+if (!isDeliveredDealershipVehicle(vin)) {
+    JOptionPane.showMessageDialog(
+            this,
+            "Select a vehicle that has been delivered to the dealership.",
+            "Vehicle Not Available for Service",
+            JOptionPane.WARNING_MESSAGE);
+    return;
+}
         ServiceAppointmentTask appointment
                 = salesOrganization.getOutTasks().createServiceAppointmentTask(
                         customerServiceRepresentative, vin);
@@ -342,7 +399,14 @@ private void bookTradeInEvaluation() {
 
     try {
         int vin = Integer.parseInt(vinText);
-
+if (!isDeliveredDealershipVehicle(vin)) {
+    JOptionPane.showMessageDialog(
+            this,
+            "Select a vehicle that has been delivered to the dealership.",
+            "Vehicle Not Available for Trade-In",
+            JOptionPane.WARNING_MESSAGE);
+    return;
+}
         TradeInTask tradeIn
                 = serviceCenter.getInTasks().createTradeInTask(
                         customerServiceRepresentative, vin);

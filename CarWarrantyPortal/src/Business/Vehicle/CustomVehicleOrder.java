@@ -18,8 +18,11 @@ package Business.Vehicle;
 public class CustomVehicleOrder {
     // Generates a unique human-readable ID for each custom vehicle order.
     private static int orderCount = 1000;
-
+// Generates a unique numeric VIN for each custom vehicle in this demo.
+    private static int nextVehicleVin = 700000;
     private final String orderId;
+    // VIN assigned to the vehicle produced for this custom order.
+    private final int vehicleVin;
     private final String customerName;
     private final String customerEmail;
     private final String make;
@@ -75,6 +78,7 @@ public class CustomVehicleOrder {
         }
 
         this.orderId = "CVO-" + (++orderCount);
+        this.vehicleVin = ++nextVehicleVin;
         this.customerName = customerName.trim();
         this.customerEmail = customerEmail.trim();
         this.make = make.trim();
@@ -103,6 +107,14 @@ public class CustomVehicleOrder {
     public String getOrderId() {
         return orderId;
     }
+    /**
+ * Returns the VIN assigned to this custom-built vehicle.
+ *
+ * @return numeric vehicle identification number
+ */
+public int getVehicleVin() {
+    return vehicleVin;
+}
 
     public String getCustomerName() {
         return customerName;

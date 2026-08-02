@@ -9,6 +9,7 @@ import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
 import Business.Roles.LogisticsCoordinator;
 import Business.User.User;
+import Business.Vehicle.Automobile;
 import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.SendShipmentTask;
@@ -158,7 +159,22 @@ public class LogisticsCoordinatorWorkAreaJPanel extends javax.swing.JPanel {
         } else if (task instanceof VehicleDeliveryTask) {
             VehicleDeliveryTask deliveryTask = (VehicleDeliveryTask) task;
             if (completeVehicleDelivery(deliveryTask)) {
-                
+                // Register the completed custom vehicle with the destination dealership
+// so Customer Service can use its VIN after delivery.
+int vehicleVin = deliveryTask.getCustomOrder().getVehicleVin();
+
+if (deliveryTask.getDestinationDealership()
+        .findAutomobileByVin(vehicleVin) == null) {
+
+    Automobile deliveredVehicle = new Automobile(
+            vehicleVin,
+            deliveryTask.getCustomOrder().getMake(),
+            deliveryTask.getCustomOrder().getModel(),
+            null);
+
+    deliveryTask.getDestinationDealership()
+            .addAutomobile(deliveredVehicle);
+}
                     organization.getInTasks().popTask(deliveryTask);
                     organization.getOutTasks().pushTask(deliveryTask);
 
