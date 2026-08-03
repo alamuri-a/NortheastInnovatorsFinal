@@ -14,7 +14,7 @@ import Business.Vehicle.Part;
 public class ProcessShipmentTask extends WorkTask {
     
     // ATTRIBUTES
-    Part part;
+    private Part part;
     
     // CONSTRUCTORS
     public ProcessShipmentTask(User assigner, Part pt) {

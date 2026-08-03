@@ -11,8 +11,8 @@ package Business.People;
 public class Employee {
     
     // ATTRIBUTES
-    int id;
-    Person person;
+    private int id;
+    private Person person;
     
     static int instances = 0;
     

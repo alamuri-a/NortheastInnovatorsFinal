@@ -276,7 +276,9 @@ public class ViewReportsJPanel extends javax.swing.JPanel {
             // Get currently completed tasks
             int completed = 0;
             for (WorkTask task : selectedOrg.getOutTasks().getTasks()) {
-                if (task.getAssignee().getID() == selectedUser.getID()) completed++;
+                if (task.getAssignee() != null) {
+                    if (task.getAssignee().getID() == selectedUser.getID()) completed++;
+                }
             }
 
             Object[] row = new Object[5];

@@ -11,7 +11,7 @@ package Business.People;
 public class Person {
     
     // ATTRIBUTES
-    String name;
+    private String name;
     
     // CONSTRUCTORS
     public Person(String n) {

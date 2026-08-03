@@ -15,9 +15,9 @@ import Business.Vehicle.Part;
 public class InspectPartTask extends WorkTask {
     // ATTRIBUTES
     private Part part;
+
     private String result;    // Tracks inspector decision: "Pass" or "Fail"
     private String qaMessage; // Form comment storage field for inspector notes
-
     // CONSTRUCTORS
     public InspectPartTask(User assigner, Part pt) {
         super(assigner);      // Calls parent constructor (sets unique ID, completes = false)

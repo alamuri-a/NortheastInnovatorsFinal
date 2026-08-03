@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 public class ProductionManager extends Role {
     
     // ATTRIBUTES
-    WorkTask currentTask;
+    private WorkTask currentTask;
     
     // CONSTRUCTOR
     public ProductionManager() {

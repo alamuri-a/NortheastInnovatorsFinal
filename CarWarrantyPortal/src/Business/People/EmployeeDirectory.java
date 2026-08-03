@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class EmployeeDirectory {
     
     // ATTRIBUTES
-    ArrayList<Employee> employees;
+    private ArrayList<Employee> employees;
     
     // CONSTRUCTORS
     public EmployeeDirectory() {

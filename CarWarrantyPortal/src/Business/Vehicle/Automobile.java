@@ -14,11 +14,11 @@ import java.util.ArrayList;
 public class Automobile {
     
     // ATTRIBUTES
-    int VIN;
-    String make;
-    String model;
-    ArrayList<Part> parts;
-    Person owner;
+    private int VIN;
+    private String make;
+    private String model;
+    private ArrayList<Part> parts;
+    private Person owner;
     
     // CONSTRUCTOR
     public Automobile(int vin, String mk, String mdl, Person own) {

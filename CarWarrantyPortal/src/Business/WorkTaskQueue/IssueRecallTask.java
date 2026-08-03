@@ -11,13 +11,13 @@ import Business.Vehicle.Part;
  *
  * @author Ajay Alamuri
  */
-public class BackOrderTask extends WorkTask {
+public class IssueRecallTask extends WorkTask {
     
     // ATTRIBUTES
     private Part part;
     
     // CONSTRUCTORS
-    public BackOrderTask(User assigner, Part pt) {
+    public IssueRecallTask(User assigner, Part pt) {
         super(assigner);
         this.part = pt;
     }
