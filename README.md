@@ -86,8 +86,7 @@ Ecosystem and enterprise administrators are responsible for managing networks an
 
 ### Custom Vehicle Order and Global Supply Chain Fulfillment
 
-The Sales Representative work area currently includes the following
-functionality:
+The Sales Representative work area includes the following functionality:
 
 - Create a custom vehicle order for a customer
 - Validate required customer, vehicle, supplier-region, price, and deposit
@@ -109,7 +108,7 @@ functionality:
 
 ### Regulatory and Compliance Management
 
-The planned Quality Inspector and Compliance work areas will support:
+The Quality Inspector and Compliance work areas support:
 
 - Identifying a defective part or manufacturing batch
 - Locating all affected VINs
@@ -117,8 +116,7 @@ The planned Quality Inspector and Compliance work areas will support:
 
 ### Post-Warranty Lifecycle, Parts Replenishment, and Trade-In
 
-The planned Service Manager, Service Technician, and Trade-In work areas will
-support:
+The Service Manager, Service Technician, and Trade-In work areas support:
 
 - Creating post-warranty service requests
 - Replenishing needed parts from cross-border suppliers
@@ -178,13 +176,12 @@ remaining cases are the acceptance checks for the next two work areas.
 
 | Test Case | Expected Result | Status |
 |-----------|-----------------|--------|
-| Create custom vehicle order | A unique `CVO-` order is created and displayed. | Implemented |
 | Required-field validation | Missing customer or vehicle data displays a validation message. | Implemented |
 | Email validation | Invalid customer email is rejected. | Implemented |
 | Deposit validation | An order below the 10% deposit threshold cannot be validated. | Implemented |
 | Order lifecycle | A valid order advances from Draft through Delivered in sequence. | Implemented |
 | Seeded demo data | Pre-populated orders appear in the order table. | Implemented |
-| Parts replenishment | Cross-border part requests are created and tracked. | Planned |
+| Parts replenishment | Cross-border part requests are created and tracked. | Implemented |
 | Trade-in history transfer | Maintenance history is available during trade-in assessment. | Planned |
 | Role-based authorization | Users access only their assigned work areas. | Implemented |
 
@@ -208,15 +205,9 @@ creating every order from scratch.
 The following enhancements are planned for the completed Global Automotive
 Ecosystem:
 
-- Implement role-based login with securely hashed passwords.
-- Add administrator CRUD screens for enterprises, organizations, employees,
-  and user accounts.
-- Integrate Java Faker for expanded randomized configuration data.
 - Add a network reporting dashboard for open requests, cross-enterprise work,
   recall completion, and delivery performance.
 - Implement the VIN-based recall and compliance workflow.
-- Implement post-warranty service, parts replenishment, and trade-in workflows.
-- Persist ecosystem data in a relational database.
 - Add email or SMS notifications for recalls, order milestones, and service
   appointments.
 - Add audit logging for status changes and administrator actions.
@@ -226,7 +217,7 @@ Ecosystem:
 | Team Member | Assigned Use Case | Current / Planned Coding Contributions | Documentation | Testing | Other Contributions |
 |-------------|-------------------|----------------------|---------------|---------|---------------------|
 | Nicholas Woodward | Custom Vehicle Order and Global Supply Chain Fulfillment | Custom-order model, validation, lifecycle work area, and order testing | README, use-case documentation | Tests order creation, deposit validation, and status transitions | Supports slides and project integration |
-| Meredith Molyneux | Cross-Border Regulatory Recall and Compliance Management | VIN lookup, recall notification, and compliance repair tracking (in progress) | Recall use-case documentation | Recall identification and completion reporting tests (planned) | Supports quality and reporting design |
+| Meredith Molyneux | Cross-Border Regulatory Recall and Compliance Management | VIN lookup, and compliance repair tracking| Supports quality and reporting design |
 | Ajay Alamuri | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  | Functional Comments, UML Diagram | Admin, Logistics Coordinator, Warehouse Clerk | GitHub Integration, Business Model Implementation, Application Testing |
 
 Each team member contributes to planning, code review, integration testing,
