@@ -5,7 +5,7 @@
 | Team Member | NUID | Assigned Use Case | Responsibilities |
 |-------------|------|-------------------|------------------|
 | Nicholas Woodward | 002478780 | Custom Vehicle Order and Global Supply Chain Fulfillment | README, sales-order workflow, global order tracking, documentation |
-| Meredith Molyneux | 003978998 | Cross-Border Regulatory and Compliance Management | VIN workflow, compliance tracking, quality reporting |
+| Meredith Molyneux | 003978998 | Manufacturer Enterprise |Production and Quality Assurance Organization, Work Areas, Roles and tasks|SuperAdmin Responsibilities |Power Point Presentation |
 | Ajay Alamuri | 003915177 | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting, Application Testing |
 
 ## Project Overview
@@ -22,9 +22,7 @@ The system is centered on three connected use cases:
 1. **Custom Vehicle Order and Global Supply Chain Fulfillment** - A customer
    order created in the United States is validated, supplied with components
    from Mexico and/or Asia, built in Germany, shipped, and delivered.
-2. **Cross-Border Regulatory and Compliance Management** - A VIN is
-   used as the common record to identify affected vehicles, notify owners and
-   dealers, and document completed repairs.
+2. **Manufacturer Use Case ** -TBD
 3. **Post-Warranty Lifecycle, Parts Replenishment, and Trade-In** - Service
    teams request parts across borders, complete maintenance, preserve vehicle
    history, and support a vehicle's trade-in and resale lifecycle.
@@ -106,13 +104,8 @@ The Sales Representative work area includes the following functionality:
   Japan/Mexico, with Germany as the manufacturing location
 - Display seeded custom orders for a reliable demonstration and analytics view
 
-### Regulatory and Compliance Management
+### Manufacturer Use case - TBD
 
-The Quality Inspector and Compliance work areas support:
-
-- Identifying a defective part or manufacturing batch
-- Locating all affected VINs
-- Reporting compliance completion across the network
 
 ### Post-Warranty Lifecycle, Parts Replenishment, and Trade-In
 
@@ -151,13 +144,9 @@ The project model includes three enterprise types and their organizations:
    status transition from Draft to Validated.
 7. Continue through sourcing, German production, shipment, and delivery.
 
-### Compliance Workflow
+### Manufacturer Workflow -TBD
 
-1. The Quality Inspector identifies a defective part or batch.
-2. The system uses the VIN to locate all affected vehicles.
-3. Dealers, service centers, and vehicle owners receive recall notification.
-4. Service teams record the repair against the affected VIN.
-5. Compliance staff review completion reporting.
+
 
 ### Post-Warranty and Trade-In Workflow
 
@@ -217,7 +206,7 @@ Ecosystem:
 | Team Member | Assigned Use Case | Current / Planned Coding Contributions | Documentation | Testing | Other Contributions |
 |-------------|-------------------|----------------------|---------------|---------|---------------------|
 | Nicholas Woodward | Custom Vehicle Order and Global Supply Chain Fulfillment | Custom-order model, validation, lifecycle work area, and order testing | README, use-case documentation | Tests order creation, deposit validation, and status transitions | Supports slides and project integration |
-| Meredith Molyneux | Cross-Border Regulatory Recall and Compliance Management | VIN lookup, and compliance repair tracking| Supports quality and reporting design |
+| Meredith Molyneux |  Manufacturer Enterprise |Production and Quality Assurance Organization, Work Areas, Roles and tasks|SuperAdmin Responsibilities |Power Point Presentation |
 | Ajay Alamuri | Parts Supplier Enterprise | Parts Acquisition + Backordering, Shipment Processing + Routing, Admin Work Area + Responsibilities, Logistics Coordinator Work Area + Responsibilities, Warehouse Clerk Work Area + Responsibilities, Initial Application Structuring + Formatting  | Functional Comments, UML Diagram | Admin, Logistics Coordinator, Warehouse Clerk | GitHub Integration, Business Model Implementation, Application Testing |
 
 Each team member contributes to planning, code review, integration testing,
