@@ -158,6 +158,7 @@ public class ConfigureABusiness {
         User sr = saleOrg.getUsers().createUser(employee12, "sales", "sales", new SalesRepresentative());
         seedDealershipCustomOrders(de, saleOrg, sr, pOrg, lOrg, pm);
         seedSupplier(se, de);
+        seedManufacturer(mfe, de);
         
         // Return demo ecosystem
         return system;
