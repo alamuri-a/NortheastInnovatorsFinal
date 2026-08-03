@@ -30,16 +30,20 @@ import Business.Roles.ServiceTechnician;
 import Business.Roles.SuperAdmin;
 import Business.Roles.WarehouseClerk;
 import Business.User.User;
+import Business.Vehicle.Automobile;
 import Business.Vehicle.CustomVehicleOrder;
 import Business.Vehicle.Part;
-import Business.Vehicle.Automobile;
 import Business.WorkTaskQueue.BuildCarTask;
+import Business.WorkTaskQueue.BuildPartTask;
 import Business.WorkTaskQueue.ServiceAppointmentTask;
 import Business.WorkTaskQueue.VehicleDeliveryTask;
 import Business.WorkTaskQueue.GetPartTask;
+import Business.WorkTaskQueue.InspectCarBuildTask;
+import Business.WorkTaskQueue.InspectPartTask;
 import Business.WorkTaskQueue.ProcessShipmentTask;
 import Business.WorkTaskQueue.SellVehicleTask;
 import Business.WorkTaskQueue.SendShipmentTask;
+import Business.WorkTaskQueue.VehicleDeliveryTask;
 import com.github.javafaker.Faker;
 /**
  *
@@ -156,6 +160,7 @@ public class ConfigureABusiness {
         User sr = saleOrg.getUsers().createUser(employee12, "sales", "sales", new SalesRepresentative());
         seedDealershipCustomOrders(de, saleOrg, sr, pOrg, lOrg, pm);
         seedSupplier(se, de);
+        seedManufacturer(mfe, de);
         
         Faker dealershipFaker = new Faker();
 
@@ -421,4 +426,106 @@ private static void seedDealershipCustomOrders(
             }
         }
     }
+
+        private static void seedManufacturer(ManufacturerEnterprise mfe, DealershipEnterprise de) {
+        ProductionOrganization pOrg = null;
+        QualityAssuranceOrganization qaOrg = null;
+
+        Faker faker = new Faker();
+        String[] models = {"Camry", "RAV4", "Highlander", "Prius"};
+        String[] trims = {"LE", "XLE", "SE", "Limited"};
+        String[] supplierRegions = {
+        "Mexico",
+        "Asia",
+        "Mexico and Asia"};
+        Part part = new Part(faker.number().numberBetween(10000000, 10000010));
+
+        for (Organization o : mfe.getOrganizations().getOrganizations()) {
+            if (o instanceof ProductionOrganization p) pOrg = p;
+            if (o instanceof QualityAssuranceOrganization qa) qaOrg = qa;
+        }
+
+        if (pOrg == null || qaOrg == null) return;
+
+       //Seed Production Employees
+        for (int i = 1; i < 11; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            Person p = new Person(firstName + " " + lastName);
+            Employee emp = pOrg.getEmployees().createEmployee(p);
+            User user = pOrg.getUsers().createUser(emp, lastName.toLowerCase() + firstName.toLowerCase(), firstName.toUpperCase(), new ProductionManager());
+        }
+        //Seed QA Employees
+        for (int i = 1; i < 11; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            Person p = new Person(firstName + " " + lastName);
+            Employee emp = qaOrg.getEmployees().createEmployee(p);
+            User user = qaOrg.getUsers().createUser(emp, lastName.toLowerCase() + firstName.toLowerCase(), firstName.toUpperCase(), new QualityInspector());
+        }
+    // Complete the loop and call the child seeding methods safely
+    for (User u : qaOrg.getUsers().getUsers()) {
+        seedInspectPartTasks(mfe, qaOrg, u);
+        seedInspectCarBuildTasks(mfe, qaOrg, u, models, trims);
+        seedBuildPartTasks(pOrg, u, part);
+           }
+        }
+
+
+    private static void seedInspectPartTasks (ManufacturerEnterprise mfe, QualityAssuranceOrganization qaOrg, User qi) {
+     Faker faker = new Faker();
+
+    for (int i = 0; i < 5; i++) {
+        // Pick random attributes using Faker's options feature
+        Part part = new Part(faker.number().numberBetween(10000000, 10000010));
+     
+        try{
+        
+        InspectPartTask iptask = qaOrg.getInTasks().createInspectPartTask(qi,part);
+        }
+        catch (Exception e) {
+                System.out.println("Failed to create Inspect Part tasks for QA.");
+            }
+    }
+}
+
+private static void seedInspectCarBuildTasks(
+    ManufacturerEnterprise mfe,
+    QualityAssuranceOrganization qaOrg,
+    User qi,
+    String[] models,
+    String[] trims
+
+) {
+    Faker faker = new Faker();
+
+    for (int i = 0; i < 5; i++) {
+        String model = faker.options().option(models);
+        String trim = faker.options().option(trims);
+        String color = faker.color().name();
+
+        try {
+            InspectCarBuildTask cbtask = qaOrg.getInTasks().createInspectCarBuildTask(qi, model, trim);
+        } catch (Exception ex) {
+            System.out.println("Failed to create Inspect Car Build tasks for QA.");
+        }
+    }
+}
+
+private static void seedBuildPartTasks(ProductionOrganization pOrg, User pm,Part part) {
+    Faker faker = new Faker();
+     
+    for (int i = 0; i < 5; i++) {
+        String partId = faker.idNumber().valid();
+         int quantityRequested = faker.number().numberBetween(10, 100);
+
+        try {
+            BuildPartTask bptask = pOrg.getInTasks().createBuildPartTask(pm,part);
+        } catch (Exception ex) {
+             System.out.println("Failed to create Build Part tasks for Prod.");
+        }
+
+    }
+}
+
 }

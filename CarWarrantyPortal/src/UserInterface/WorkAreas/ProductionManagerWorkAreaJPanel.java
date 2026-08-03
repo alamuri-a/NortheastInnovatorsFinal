@@ -20,7 +20,6 @@ import UserInterface.ProductionMgr.NewPartJPanel;
 import UserInterface.ProductionMgr.ProdMgrDoneQueue;
 import UserInterface.ProductionMgr.ProdMgrProfile;
 import UserInterface.ProductionMgr.ProdMgrWorkQueue;
-import UserInterface.ProductionMgr.RecallComplianceTracking;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,11 +59,9 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnProdStatus = new javax.swing.JButton();
         btnMyRequest = new javax.swing.JButton();
         btnClosedRequests = new javax.swing.JButton();
         btnMyProfile = new javax.swing.JButton();
-        btnRecallTracking = new javax.swing.JButton();
         lblWelcome = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
         btnQueue1 = new javax.swing.JButton();
@@ -74,14 +71,6 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(680, 500));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnProdStatus.setText("View Production Status");
-        btnProdStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProdStatusActionPerformed(evt);
-            }
-        });
-        add(btnProdStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 410, 160, 70));
-
         btnMyRequest.setText("My Requests");
         btnMyRequest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,7 +79,7 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         });
         add(btnMyRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 160, 160, 70));
 
-        btnClosedRequests.setText("Closed Requests");
+        btnClosedRequests.setText("Actioned Requests");
         btnClosedRequests.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClosedRequestsActionPerformed(evt);
@@ -105,16 +94,6 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
             }
         });
         add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, 160, 70));
-
-        btnRecallTracking.setText("Recall Tracking");
-        btnRecallTracking.setMinimumSize(new java.awt.Dimension(700, 600));
-        btnRecallTracking.setPreferredSize(new java.awt.Dimension(680, 500));
-        btnRecallTracking.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRecallTrackingActionPerformed(evt);
-            }
-        });
-        add(btnRecallTracking, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 420, 160, 70));
 
         lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblWelcome.setText("Welcome <User>");
@@ -134,18 +113,6 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         });
         add(btnQueue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 160, 160, 70));
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnProdStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdStatusActionPerformed
-          ProdMgrWorkQueue pmwq = new ProdMgrWorkQueue(workArea, user, organization, business);
-        this.workArea.add(pmwq, "ProdMgrWorkQueue");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
-    }//GEN-LAST:event_btnProdStatusActionPerformed
-
-    private void btnRecallTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallTrackingActionPerformed
-       RecallComplianceTracking rctp = new RecallComplianceTracking(workArea, user, organization, business);
-        this.workArea.add(rctp, "Recall Compliance Tracking");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
-    }//GEN-LAST:event_btnRecallTrackingActionPerformed
 
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
         ProdMgrProfile pmp = new ProdMgrProfile(workArea, user, organization, business);
@@ -189,9 +156,7 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnClosedRequests;
     private javax.swing.JButton btnMyProfile;
     private javax.swing.JButton btnMyRequest;
-    private javax.swing.JButton btnProdStatus;
     private javax.swing.JButton btnQueue1;
-    private javax.swing.JButton btnRecallTracking;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables

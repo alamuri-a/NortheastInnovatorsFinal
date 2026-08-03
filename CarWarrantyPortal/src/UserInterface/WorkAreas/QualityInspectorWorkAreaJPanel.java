@@ -12,11 +12,11 @@ import Business.People.Person;
 import Business.Roles.QualityInspector;
 import Business.User.User;
 import Business.Vehicle.Part;
+import Business.WorkTaskQueue.InspectCarBuildTask;
 import Business.WorkTaskQueue.InspectPartTask;
-import Business.WorkTaskQueue.IssueRecallTask;
 import Business.WorkTaskQueue.WorkTask;
+import UserInterface.QualityAssurance.InspectNewCarBuildJPanel;
 import UserInterface.QualityAssurance.InspectPartJPanel;
-import UserInterface.QualityAssurance.IssueRecallJPanel;
 import UserInterface.QualityAssurance.QADoneQueue;
 import UserInterface.QualityAssurance.QAProfile;
 import UserInterface.QualityAssurance.QARequestQueue;
@@ -58,25 +58,15 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnRequestStatus = new javax.swing.JButton();
         btnMyRequest = new javax.swing.JButton();
         btnClosedRequests = new javax.swing.JButton();
         btnMyProfile = new javax.swing.JButton();
-        btnRecallTracking = new javax.swing.JButton();
         lblWelcome = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
         btnQueue1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 153, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        btnRequestStatus.setText("View QA Request");
-        btnRequestStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRequestStatusActionPerformed(evt);
-            }
-        });
-        add(btnRequestStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 360, 160, 70));
 
         btnMyRequest.setText("My Requests");
         btnMyRequest.addActionListener(new java.awt.event.ActionListener() {
@@ -86,7 +76,7 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
         });
         add(btnMyRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 110, 160, 70));
 
-        btnClosedRequests.setText("Closed Requests");
+        btnClosedRequests.setText("Actioned Requests");
         btnClosedRequests.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnClosedRequestsActionPerformed(evt);
@@ -101,16 +91,6 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
             }
         });
         add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 240, 160, 70));
-
-        btnRecallTracking.setText("Recall Tracking");
-        btnRecallTracking.setMinimumSize(new java.awt.Dimension(700, 600));
-        btnRecallTracking.setPreferredSize(new java.awt.Dimension(680, 500));
-        btnRecallTracking.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRecallTrackingActionPerformed(evt);
-            }
-        });
-        add(btnRecallTracking, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 360, 160, 70));
 
         lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblWelcome.setText("Welcome <User>");
@@ -131,10 +111,6 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
         add(btnQueue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 110, 160, 70));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRequestStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestStatusActionPerformed
-
-    }//GEN-LAST:event_btnRequestStatusActionPerformed
-
     private void btnMyRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyRequestActionPerformed
         WorkTask task = ((QualityInspector) user.getRole()).getCurrentTask();
         if (task == null) {
@@ -145,18 +121,23 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
             InspectPartJPanel ipjp = new InspectPartJPanel(workArea, user, organization, business, ipTask);
             this.workArea.add(ipjp, "Inspect Part Panel");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
-        } else if (task instanceof IssueRecallTask irTask) {
+        } else if (task instanceof InspectCarBuildTask icTask) {
 
-            IssueRecallJPanel irjp = new IssueRecallJPanel(workArea, user, organization, business, irTask);
-            this.workArea.add(irjp, "Issue Recall");
+            InspectNewCarBuildJPanel irjp = new InspectNewCarBuildJPanel(workArea, user, organization, business, icTask);
+            this.workArea.add(irjp, "InspectNewCarBuild");
             ((CardLayout) this.workArea.getLayout()).next(workArea);
         }
     }//GEN-LAST:event_btnMyRequestActionPerformed
 
     private void btnClosedRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosedRequestsActionPerformed
-        QADoneQueue qadq = new QADoneQueue(workArea, user, organization, business);
-        this.workArea.add(qadq, "QA Done Queue");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
+        QADoneQueue doneQueuePanel = new QADoneQueue(workArea, user, organization, business);
+        workArea.add("QADoneQueuePanel", doneQueuePanel);
+
+        // FORCE THE INSTANCE TO RE-READ THE SHARED ARRAY DATA BEFORE DISPLAY
+        doneQueuePanel.refreshCompletedTable();
+
+        CardLayout layout = (CardLayout) workArea.getLayout();
+        layout.next(workArea);
     }//GEN-LAST:event_btnClosedRequestsActionPerformed
 
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
@@ -165,14 +146,12 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
         ((CardLayout) this.workArea.getLayout()).next(workArea);
     }//GEN-LAST:event_btnMyProfileActionPerformed
 
-    private void btnRecallTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecallTrackingActionPerformed
-
-    }//GEN-LAST:event_btnRecallTrackingActionPerformed
-
     private void btnQueue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueue1ActionPerformed
-           QARequestQueue qarq = new QARequestQueue(workArea, user, organization, business);
-        this.workArea.add(qarq, "QA Request Queue");
-        ((CardLayout) this.workArea.getLayout()).next(workArea);
+        QARequestQueue activeQueuePanel = new QARequestQueue(workArea, user, organization, business);
+
+        workArea.add("QARequestQueuePanel", activeQueuePanel);
+        CardLayout layout = (CardLayout) workArea.getLayout();
+        layout.next(workArea);
     }//GEN-LAST:event_btnQueue1ActionPerformed
 
 
@@ -181,25 +160,40 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnMyProfile;
     private javax.swing.JButton btnMyRequest;
     private javax.swing.JButton btnQueue1;
-    private javax.swing.JButton btnRecallTracking;
-    private javax.swing.JButton btnRequestStatus;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
+  
     private void DemoData() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Person p = new Person("Person" + i);
-                Employee emp = organization.getEmployees().createEmployee(p);
-                User newUser = organization.getUsers().createUser(emp, "QA", "temp", new QualityInspector());
-                Part part = new Part(i);
-                organization.getInTasks().createInspectPartTask(newUser, part);
-                organization.getInTasks().createIssueRecallTask(newUser, part);
-            }
-        } catch (Exception e) {
+    try {
+        // Sample vehicle datasets to generate diverse and distinct test data row items
+        String[] makes = {"Ford", "Tesla", "Toyota", "BMW", "Chevrolet", "Honda", "Audi", "Nissan", "Rivian", "Porsche"};
+        String[] models = {"Mustang", "Model 3", "Camry", "M3", "Silverado", "Civic", "A4", "Altima", "R1T", "911"};
 
+        for (int i = 0; i < 10; i++) {
+            // 1. Structural infrastructure data creation
+            Person p = new Person("Inspector " + i);
+            Employee emp = organization.getEmployees().createEmployee(p);
+            User newUser = organization.getUsers().createUser(emp, "QA" + i, "temp", new QualityInspector());
+
+            // 2. Component Inspection Task Generation
+            Part part = new Part(i);
+            organization.getInTasks().createInspectPartTask(newUser, part);
+
+            // 3. Vehicle Build Inspection Task Generation
+            // Picks values sequentially out of our dataset arrays to match the current loop index
+            String mockMake = makes[i % makes.length];
+            String mockModel = models[i % models.length];
+
+            // Fires the factory instantiation request into your shared WorkQueue database
+            organization.getInTasks().createInspectCarBuildTask(newUser, mockMake, mockModel);
         }
+
+    } catch (Exception e) {
+        // Logs framework generation failures cleanly out to your NetBeans Output window pane
+        System.err.println("Error initializing system QA demonstration data: " + e.getMessage());
     }
+}
 
 
 }
