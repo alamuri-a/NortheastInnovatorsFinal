@@ -47,7 +47,6 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
-        DemoData();
     }
 
     /**
@@ -160,18 +159,4 @@ public class ProductionManagerWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
-    private void DemoData() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Person p = new Person("Person" + i);
-                Employee emp = organization.getEmployees().createEmployee(p);
-                User newUser = organization.getUsers().createUser(emp, "prodmgr", "temp", new ProductionManager());
-                Part part = new Part(i);
-                organization.getInTasks().createBuildCarTask(newUser, "Toyota", "Camry");
-                organization.getInTasks().createBuildPartTask(newUser, part);
-            }
-        } catch (Exception e) {
-
-        }
-    }
 }

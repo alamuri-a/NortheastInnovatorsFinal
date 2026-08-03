@@ -47,7 +47,6 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getCompany().getName() + " - " + this.organization.getName());
         lblWelcome.setText("Welcome " + this.user.getEmployee().getPerson().getName());
-        DemoData();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -163,37 +162,4 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
-  
-    private void DemoData() {
-    try {
-        // Sample vehicle datasets to generate diverse and distinct test data row items
-        String[] makes = {"Ford", "Tesla", "Toyota", "BMW", "Chevrolet", "Honda", "Audi", "Nissan", "Rivian", "Porsche"};
-        String[] models = {"Mustang", "Model 3", "Camry", "M3", "Silverado", "Civic", "A4", "Altima", "R1T", "911"};
-
-        for (int i = 0; i < 10; i++) {
-            // 1. Structural infrastructure data creation
-            Person p = new Person("Inspector " + i);
-            Employee emp = organization.getEmployees().createEmployee(p);
-            User newUser = organization.getUsers().createUser(emp, "QA" + i, "temp", new QualityInspector());
-
-            // 2. Component Inspection Task Generation
-            Part part = new Part(i);
-            organization.getInTasks().createInspectPartTask(newUser, part);
-
-            // 3. Vehicle Build Inspection Task Generation
-            // Picks values sequentially out of our dataset arrays to match the current loop index
-            String mockMake = makes[i % makes.length];
-            String mockModel = models[i % models.length];
-
-            // Fires the factory instantiation request into your shared WorkQueue database
-            organization.getInTasks().createInspectCarBuildTask(newUser, mockMake, mockModel);
-        }
-
-    } catch (Exception e) {
-        // Logs framework generation failures cleanly out to your NetBeans Output window pane
-        System.err.println("Error initializing system QA demonstration data: " + e.getMessage());
-    }
-}
-
-
 }
