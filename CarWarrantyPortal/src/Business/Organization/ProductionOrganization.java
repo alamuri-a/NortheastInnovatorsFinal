@@ -22,6 +22,6 @@ public class ProductionOrganization extends Organization {
     // METHODS
     @Override
     public String toString() {
-        return this.name;
+        return this.getName();
     }
 }

@@ -14,11 +14,10 @@ import java.util.ArrayList;
 public class Ecosystem {
     
     // ATTRIBUTES
-    String name;
-    ArrayList<Network> networks;
+    private String name;
+    private ArrayList<Network> networks;
+    private UserDirectory superAdmins;
     private static Ecosystem business;// Database masterDB
-   
-    UserDirectory superAdmins;
     // Database masterDB
     
     // CONSTRUCTORS

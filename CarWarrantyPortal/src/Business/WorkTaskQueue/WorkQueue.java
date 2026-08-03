@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class WorkQueue {
     
     // ATTRIBUTES
-    ArrayList<WorkTask> tasks;
-    Organization organization;
+    private ArrayList<WorkTask> tasks;
+    private Organization organization;
     
     // CONSTRUCTORS
     public WorkQueue(Organization org) {

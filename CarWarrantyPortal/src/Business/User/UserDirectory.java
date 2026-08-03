@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class UserDirectory {
     
     // ATTRIBUTES
-    ArrayList<User> users;
+    private ArrayList<User> users;
     
     // CONSTRUCTORS
     public UserDirectory() {

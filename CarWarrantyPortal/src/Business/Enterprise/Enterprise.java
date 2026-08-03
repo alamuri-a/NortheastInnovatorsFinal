@@ -15,12 +15,12 @@ import Business.Organization.OrganizationDirectory;
 public abstract class Enterprise {
     
     // ATTRIBUTES
-    int id;
-    String name;
-    OrganizationDirectory organizations;
-    AdminOrganization admins;
+    private int id;
+    private String name;
+    private OrganizationDirectory organizations;
+    private AdminOrganization admins;
     private Type enterpriseType;
-    static int instances = 0;
+    private static int instances = 0;
     
     // CONSTRUCTORS
     public Enterprise(String n) {

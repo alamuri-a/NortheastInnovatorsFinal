@@ -17,13 +17,13 @@ import Business.WorkTaskQueue.WorkQueue;
 public abstract class Organization {
     
     // ATTRIBUTES
-    int id;
-    String name;
-    UserDirectory users;
-    EmployeeDirectory employees;
-    Enterprise company;
-    WorkQueue inTasks;
-    WorkQueue outTasks;
+    private int id;
+    private String name;
+    private UserDirectory users;
+    private EmployeeDirectory employees;
+    private Enterprise company;
+    private WorkQueue inTasks;
+    private WorkQueue outTasks;
     
     // CONSTRUCTORS
     public Organization(String n, int ID, Enterprise enterprise) {

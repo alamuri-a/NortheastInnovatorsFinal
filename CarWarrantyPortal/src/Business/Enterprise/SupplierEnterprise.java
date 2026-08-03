@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class SupplierEnterprise extends Enterprise {
     
     // ATTRIBUTES
-    HashMap<Integer, Integer> partsStock;
+    private HashMap<Integer, Integer> partsStock;
     
     // CONSTRUCTORS
     public SupplierEnterprise(String name) {

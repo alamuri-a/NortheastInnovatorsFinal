@@ -14,7 +14,7 @@ import Business.Vehicle.Part;
 public class BackOrderTask extends WorkTask {
     
     // ATTRIBUTES
-    Part part;
+    private Part part;
     
     // CONSTRUCTORS
     public BackOrderTask(User assigner, Part pt) {

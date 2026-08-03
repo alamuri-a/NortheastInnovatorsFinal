@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 public class SalesRepresentative extends Role {
     
     // ATTRIBUTES
-    WorkTask currentTask;
+    private WorkTask currentTask;
     
     // CONSTRUCTOR
     public SalesRepresentative() {
