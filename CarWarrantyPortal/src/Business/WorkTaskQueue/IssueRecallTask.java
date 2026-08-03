@@ -14,7 +14,7 @@ import Business.Vehicle.Part;
 public class IssueRecallTask extends WorkTask {
     
     // ATTRIBUTES
-    Part part;
+    private Part part;
     
     // CONSTRUCTORS
     public IssueRecallTask(User assigner, Part pt) {

@@ -104,7 +104,7 @@ public class GetPartTask extends WorkTask {
     public boolean BackOrder(ProductionOrganization production) {
         try {
             production.getInTasks().createBuildPartTask(
-                    this.assigner, this.part);
+                    this.getAssigner(), this.part);
             this.backordered = true;
         } catch (Exception exception) {
             this.backordered = false;

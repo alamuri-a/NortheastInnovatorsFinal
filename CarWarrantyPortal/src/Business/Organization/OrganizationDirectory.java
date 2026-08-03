@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class OrganizationDirectory {
     
     // ATTRIBUTES
-    ArrayList<Organization> organizations;
-    Enterprise company;
-    int organizationCount;
+    private ArrayList<Organization> organizations;
+    private Enterprise company;
+    private int organizationCount;
     
     // CONSTRUCTORS
     public OrganizationDirectory(Enterprise ent) {

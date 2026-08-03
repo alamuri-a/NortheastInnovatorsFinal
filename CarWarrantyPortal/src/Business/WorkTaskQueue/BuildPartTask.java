@@ -15,7 +15,7 @@ import Business.Vehicle.Part;
 public class BuildPartTask extends WorkTask {
     
     // ATTRIBUTES
-    Part part;
+    private Part part;
     
     // CONSTRUCTORS
     public BuildPartTask(User assigner, Part pt) {

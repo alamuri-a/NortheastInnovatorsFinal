@@ -14,14 +14,13 @@ import Business.Roles.Role;
 public class User {
     
     // ATTRIBUTES
-    int id;
-    Employee employee;
-    String username;
-    String password;
-    Role role;
-    int tasksCreated;
-    
-    static int instances = 0;
+    private int id;
+    private Employee employee;
+    private String username;
+    private String password;
+    private Role role;
+    private int tasksCreated;
+    private static int instances = 0;
     
     // CONSTRUCTORS
     public User(Employee emp, String usrnm, String pswd, Role rol) {

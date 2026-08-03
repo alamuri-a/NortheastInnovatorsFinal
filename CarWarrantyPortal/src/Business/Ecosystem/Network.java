@@ -13,11 +13,11 @@ import Business.Enterprise.EnterpriseDirectory;
 public class Network {
     
     // ATTRIBUTES
-    int id;
-    String name;
-    EnterpriseDirectory enterprises;
+    private int id;
+    private String name;
+    private EnterpriseDirectory enterprises;
     
-    static int instances = 0;
+    private static int instances = 0;
     
     // CONSTRUCTORS
     public Network(String n) {

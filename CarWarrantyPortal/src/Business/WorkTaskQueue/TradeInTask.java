@@ -14,7 +14,7 @@ import Business.User.User;
 public class TradeInTask extends WorkTask {
     
     // ATTRIBUTES
-    int VIN;
+    private int VIN;
     
     // CONSTRUCTORS
     public TradeInTask(User assigner, int vin) {

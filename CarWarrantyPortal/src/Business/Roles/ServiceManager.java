@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 public class ServiceManager extends Role {
     
     // ATTRIBUTES
-    WorkTask currentTask;
+    private WorkTask currentTask;
     
     // CONSTRUCTOR
     public ServiceManager() {

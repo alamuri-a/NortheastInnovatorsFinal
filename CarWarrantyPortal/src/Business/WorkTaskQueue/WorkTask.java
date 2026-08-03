@@ -15,10 +15,10 @@ public abstract class WorkTask {
     
     // ATTRIBUTES
 
-    int id;
-    User assigner;
-    User assignee;
-    boolean completed;
+    private int id;
+    private User assigner;
+    private User assignee;
+    private boolean completed;
     
     static int instances = 0;
 

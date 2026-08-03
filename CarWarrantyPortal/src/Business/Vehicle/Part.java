@@ -11,8 +11,8 @@ package Business.Vehicle;
 public class Part {
     
     // ATTRIBUTES
-    int id;
-    boolean working;
+    private int id;
+    private boolean working;
     
     // CONSTRUCTORS
     public Part(int ID) {

@@ -13,7 +13,7 @@ import Business.User.User;
 public class ServiceTask extends WorkTask {
     
     // ATTRIBUTES
-    int VIN;
+    private int VIN;
     
     // CONSTRUCTORS
     public ServiceTask(User assigner, int vin) {

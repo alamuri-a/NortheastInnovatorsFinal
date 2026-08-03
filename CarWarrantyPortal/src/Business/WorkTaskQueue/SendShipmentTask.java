@@ -15,10 +15,10 @@ import Business.Vehicle.Part;
 public class SendShipmentTask extends WorkTask {
     
     // ATTRIBUTES
-    Part part;
-    int partCount;
-    DealershipEnterprise dealership;
-    GetPartTask retrieval;
+    private Part part;
+    private int partCount;
+    private DealershipEnterprise dealership;
+    private GetPartTask retrieval;
     
     // CONSTRUCTORS
     public SendShipmentTask(User assigner, DealershipEnterprise dealer, Part pt, int quantity) {

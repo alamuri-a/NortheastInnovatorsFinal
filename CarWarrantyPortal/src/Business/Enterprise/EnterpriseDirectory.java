@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class EnterpriseDirectory {
     
     // ATTRIBUTES
-    ArrayList<Enterprise> enterprises;
+    private ArrayList<Enterprise> enterprises;
     
     // CONSTRUCTORS
     public EnterpriseDirectory() {
