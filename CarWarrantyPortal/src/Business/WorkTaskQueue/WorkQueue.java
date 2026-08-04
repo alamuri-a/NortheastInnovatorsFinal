@@ -85,9 +85,9 @@ public class WorkQueue {
     * 
     * @throws Exception If attempted to be instantiated for organization other than Production organization
     */
-    public BuildCarTask createBuildCarTask(User assigner, String make, String model) throws Exception {
+    public BuildCarTask createBuildCarTask(User assigner, String mk, String mdl,int vin) throws Exception {
         if (this.organization instanceof ProductionOrganization) {
-            BuildCarTask newTask = new BuildCarTask(assigner, make, model);
+            BuildCarTask newTask = new BuildCarTask(assigner,mk,mdl,vin);
             this.tasks.add(newTask);
             return newTask;
         }

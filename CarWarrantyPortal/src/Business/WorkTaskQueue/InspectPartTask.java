@@ -62,7 +62,7 @@ public class InspectPartTask extends WorkTask {
         return (part != null) ? "Part Number " + part.getId() : "Unknown Part";
     }
 
-    public String getPartSerialNumber() {
+    public String getPartTestingStatus() {
         if (part == null) return "N/A";
         // Provides a clear descriptive string based on the part's native operational health
         return part.isWorking() ? "STATUS: Functional" : "STATUS: Defective";

@@ -56,7 +56,7 @@ private void populateVehicleDetails() {
             txtCarDetails.setText(task.getCustomOrder().getVehicleDescription());
         } else {
             // Adds a clean space between make and model strings
-            txtCarDetails.setText(task.getMake() + " " + task.getModel());
+            txtCarDetails.setText(task.getMake() + " " + task.getModel()+" " +task.getTrim());
         }
 
         // Fix 3: Handle comments null-pointer guard safely
@@ -244,7 +244,7 @@ private void populateVehicleDetails() {
             ((Business.Roles.QualityInspector) user.getRole()).setCurrentTask(null);
         }
 
-        JOptionPane.showMessageDialog(this, "Vehicle assembly APPROVED and cleared for Logistics deployment!", "Audit Cleared", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Vehicle assembly APPROVED and cleared for Delivery!", "Audit Cleared", JOptionPane.INFORMATION_MESSAGE);
         goBack();
     
 

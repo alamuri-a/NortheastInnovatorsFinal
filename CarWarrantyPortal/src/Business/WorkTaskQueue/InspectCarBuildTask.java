@@ -19,6 +19,7 @@ public class InspectCarBuildTask extends WorkTask {
     private String make;
     private String model;
     private int VIN;
+    private String trim;
 
     // Links the inspection task to the dealership's customer order.
     private CustomVehicleOrder customOrder;
@@ -83,6 +84,7 @@ public class InspectCarBuildTask extends WorkTask {
     public String getModel() { return model; }
     public int getVIN() { return VIN; }
     public void setVIN(int VIN) { this.VIN = VIN; }
+     public String getTrim() {return customOrder.getTrim();}
 
     /**
      * Returns the custom order associated with this vehicle inspection.

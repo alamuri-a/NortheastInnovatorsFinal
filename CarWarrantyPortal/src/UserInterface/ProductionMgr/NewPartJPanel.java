@@ -15,11 +15,13 @@ import Business.Organization.QualityAssuranceOrganization;
 import Business.Roles.ProductionManager;
 import Business.WorkTaskQueue.InspectPartTask;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 /**
@@ -72,7 +74,7 @@ private void buildPartProductionScreen() {
     headerPanel.add(partLabel, BorderLayout.SOUTH);
 
     JLabel instructionsLabel = new JLabel(
-            "Complete the part build to send the component to Supplier Logistics.");
+            "Complete the part build to send the component to Quality Assurance Inspection.");
     instructionsLabel.setHorizontalAlignment(SwingConstants.CENTER);
     instructionsLabel.setBorder(new EmptyBorder(30, 20, 30, 20));
 

@@ -35,8 +35,6 @@ import Business.Vehicle.CustomVehicleOrder;
 import Business.Vehicle.Part;
 import Business.WorkTaskQueue.BuildCarTask;
 import Business.WorkTaskQueue.BuildPartTask;
-import Business.WorkTaskQueue.ServiceAppointmentTask;
-import Business.WorkTaskQueue.VehicleDeliveryTask;
 import Business.WorkTaskQueue.GetPartTask;
 import Business.WorkTaskQueue.InspectCarBuildTask;
 import Business.WorkTaskQueue.InspectPartTask;
@@ -467,12 +465,12 @@ private static void seedDealershipCustomOrders(
     for (User u : qaOrg.getUsers().getUsers()) {
         seedInspectPartTasks(mfe, qaOrg, u);
         seedInspectCarBuildTasks(mfe, qaOrg, u, models, trims);
-        seedBuildPartTasks(pOrg, u, part);
+        seedBuildPartTasks(pOrg, u,u, part);
            }
         }
 
 
-    private static void seedInspectPartTasks (ManufacturerEnterprise mfe, QualityAssuranceOrganization qaOrg, User qi) {
+    private static void seedInspectPartTasks (ManufacturerEnterprise mfe, QualityAssuranceOrganization qaOrg, User pm) {
      Faker faker = new Faker();
 
     for (int i = 0; i < 5; i++) {
@@ -481,7 +479,7 @@ private static void seedDealershipCustomOrders(
      
         try{
         
-        InspectPartTask iptask = qaOrg.getInTasks().createInspectPartTask(qi,part);
+        InspectPartTask iptask = qaOrg.getInTasks().createInspectPartTask(pm,part);
         }
         catch (Exception e) {
                 System.out.println("Failed to create Inspect Part tasks for QA.");
@@ -492,7 +490,7 @@ private static void seedDealershipCustomOrders(
 private static void seedInspectCarBuildTasks(
     ManufacturerEnterprise mfe,
     QualityAssuranceOrganization qaOrg,
-    User qi,
+    User pm,
     String[] models,
     String[] trims
 
@@ -505,27 +503,31 @@ private static void seedInspectCarBuildTasks(
         String color = faker.color().name();
 
         try {
-            InspectCarBuildTask cbtask = qaOrg.getInTasks().createInspectCarBuildTask(qi, model, trim);
+            InspectCarBuildTask cbtask = qaOrg.getInTasks().createInspectCarBuildTask(pm, model, trim);
         } catch (Exception ex) {
             System.out.println("Failed to create Inspect Car Build tasks for QA.");
         }
     }
 }
 
-private static void seedBuildPartTasks(ProductionOrganization pOrg, User pm,Part part) {
+private static void seedBuildPartTasks(ProductionOrganization pOrg, User st, User lc, Part part) {
     Faker faker = new Faker();
-     
+
     for (int i = 0; i < 5; i++) {
         String partId = faker.idNumber().valid();
-         int quantityRequested = faker.number().numberBetween(10, 100);
+        int quantityRequested = faker.number().numberBetween(10, 100);
+
+        // Randomly pick either 'st' or 'lc'
+        User assignedUser = faker.random().nextBoolean() ? st : lc;
 
         try {
-            BuildPartTask bptask = pOrg.getInTasks().createBuildPartTask(pm,part);
+            // Pass the randomly selected user into the task creator
+            BuildPartTask bptask = pOrg.getInTasks().createBuildPartTask(assignedUser, part);
         } catch (Exception ex) {
-             System.out.println("Failed to create Build Part tasks for Prod.");
+            System.out.println("Failed to create Build Part tasks for Prod.");
         }
-
     }
 }
+
 
 }
