@@ -5,15 +5,15 @@
 package UserInterface.ProductionMgr;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Ecosystem.Network;
-import Business.Enterprise.Enterprise;
-import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
 import Business.Organization.ProductionOrganization;
-import Business.Roles.ProductionManager;
 import Business.User.User;
 import Business.WorkTaskQueue.BuildPartTask;
-import Business.WorkTaskQueue.ProcessShipmentTask;
+import java.awt.CardLayout;
+import javax.swing.JPanel;
+import Business.Organization.QualityAssuranceOrganization;
+import Business.Roles.ProductionManager;
+import Business.WorkTaskQueue.InspectPartTask;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -106,29 +106,32 @@ private void completePartBuild() {
         return;
     }
 
-    LogisticsOrganization logisticsOrganization
-            = findLogisticsOrganization();
+    QualityAssuranceOrganization qaorg = null;
+    for (Organization org : organization.getCompany().getOrganizations().getOrganizations()) {
+        if (org instanceof QualityAssuranceOrganization qa) {
+            qaorg = qa;
+            break;
+        }
+    }
+    
 
-    if (logisticsOrganization == null) {
+    if (qaorg == null) {
         JOptionPane.showMessageDialog(
                 this,
-                "Supplier Logistics could not be found.",
-                "Logistics Unavailable",
+                "QA Organization could not be found.",
+                "QA Unavailable",
                 JOptionPane.ERROR_MESSAGE);
         return;
     }
 
     try {
-        ProcessShipmentTask shipment
-                = logisticsOrganization.getInTasks()
-                        .createProcessShipmentTask(user, task.getPart());
+        InspectPartTask inspect
+                = qaorg.getInTasks()
+                        .createInspectPartTask(user, task.getPart());
 
         task.Complete();
         organization.getInTasks().popTask(task);
         organization.getOutTasks().pushTask(task);
-
-        // Production retains an outbound record of the cross-enterprise handoff.
-        organization.getOutTasks().pushTask(shipment);
 
         if (user.getRole() instanceof ProductionManager) {
             ProductionManager productionManager
@@ -138,8 +141,8 @@ private void completePartBuild() {
 
         JOptionPane.showMessageDialog(
                 this,
-                "Component build completed and sent to Quality Assurance for Inspection "
-               );
+                "Component build completed and sent to "
+                + qaorg.getName() + ".");
 
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);
@@ -148,30 +151,9 @@ private void completePartBuild() {
         JOptionPane.showMessageDialog(
                 this,
                 exception.getMessage(),
-                "Shipment Not Created",
+                "Inspection Not Created",
                 JOptionPane.ERROR_MESSAGE);
     }
-}
-
-/**
- * Finds the Supplier Logistics organization used to receive completed parts.
- *
- * @return Supplier Logistics organization, or null when unavailable
- */
-private LogisticsOrganization findLogisticsOrganization() {
-    for (Network network : business.getNetworks()) {
-        for (Enterprise enterprise
-                : network.getEnterprises().getEnterprises()) {
-            for (Organization organization
-                    : enterprise.getOrganizations().getOrganizations()) {
-                if (organization instanceof LogisticsOrganization) {
-                    return (LogisticsOrganization) organization;
-                }
-            }
-        }
-    }
-
-    return null;
 }
     /**
      * This method is called from within the constructor to initialize the form.

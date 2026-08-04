@@ -5,9 +5,16 @@
 package UserInterface.QualityAssurance;
 
 import Business.Ecosystem.Ecosystem;
+import Business.Ecosystem.Network;
+import Business.Enterprise.DealershipEnterprise;
+import Business.Enterprise.Enterprise;
+import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
 import Business.Organization.QualityAssuranceOrganization;
 import Business.User.User;
 import Business.WorkTaskQueue.InspectCarBuildTask;
+import Business.WorkTaskQueue.SellVehicleTask;
+import Business.WorkTaskQueue.VehicleDeliveryTask;
 import java.awt.CardLayout;
 import java.awt.Component;
 import javax.swing.JOptionPane;
@@ -187,7 +194,47 @@ private void populateVehicleDetails() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-                   task.setResult("Pass");
+        
+        LogisticsOrganization logisticsOrganization = null;
+        DealershipEnterprise dealership = null;
+
+        for (Network network : business.getNetworks()) {
+            Enterprise ent = network.getEnterprises().findEnterprise(organization.getCompany().getID());
+            if (ent != null) {
+                for (Enterprise enterprise : network.getEnterprises().getEnterprises()) {
+                    if (enterprise instanceof DealershipEnterprise) {
+                        dealership = (DealershipEnterprise) enterprise;
+                    }
+                    for (Organization org : enterprise.getOrganizations().getOrganizations()) {
+                        if (org instanceof LogisticsOrganization) {
+                            logisticsOrganization = (LogisticsOrganization) org;
+                        }
+                    }
+                } 
+            }
+        }
+        
+        if (logisticsOrganization == null || dealership == null) {
+            JOptionPane.showMessageDialog(this, "Could not find Logistics organization or Dealership.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        VehicleDeliveryTask deliveryTask = new VehicleDeliveryTask(user, task.getCustomOrder(), dealership);
+        
+        logisticsOrganization.getInTasks().pushTask(deliveryTask);
+        organization.getOutTasks().pushTask(deliveryTask);
+        // Update the matching dealership order when it enters Logistics transit.
+        for (SellVehicleTask salesTask : dealership.getSalesRecords()) {
+            if (salesTask.getCustomOrder() != null
+                    && salesTask.getCustomOrder().getOrderId().equals(
+                            task.getCustomOrder().getOrderId())) {
+                salesTask.markInTransit();
+                break;
+            }
+        }
+        
+        
+        task.setResult("Pass");
         task.setMessage(txtComments.getText().trim());
         task.setAssignee(user);
         task.Complete(); // Flips parent completed flag to true
