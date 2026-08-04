@@ -137,7 +137,6 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
 
         for (WorkTask task : this.organization.getInTasks().getTasks()) {
             Object[] row = new Object[5];
-
             row[0] = task;
             row[1] = task.getClass().getSimpleName();
             row[2] = task.getAssigner();

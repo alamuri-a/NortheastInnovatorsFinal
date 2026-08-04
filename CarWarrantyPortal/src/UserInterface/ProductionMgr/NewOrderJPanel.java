@@ -5,25 +5,31 @@
 package UserInterface.ProductionMgr;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Organization.ProductionOrganization;
-import Business.User.User;
-import Business.WorkTaskQueue.BuildCarTask;
 import Business.Ecosystem.Network;
 import Business.Enterprise.DealershipEnterprise;
 import Business.Enterprise.Enterprise;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
-import Business.WorkTaskQueue.VehicleDeliveryTask;
-import Business.WorkTaskQueue.SellVehicleTask;
-import java.awt.CardLayout;
-import javax.swing.JPanel;
+import Business.Organization.ProductionOrganization;
 import Business.Roles.ProductionManager;
+import Business.User.User;
+import Business.WorkTaskQueue.BuildCarTask;
+import Business.WorkTaskQueue.SellVehicleTask;
+import Business.WorkTaskQueue.VehicleDeliveryTask;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 /**
@@ -81,10 +87,58 @@ private void buildProductionOrderScreen() {
     headerPanel.add(titleLabel, BorderLayout.NORTH);
     headerPanel.add(orderLabel, BorderLayout.SOUTH);
 
+        // --- CENTRAL CONTENT PANEL ---
+    JPanel centerContentPanel = new JPanel();
+    centerContentPanel.setLayout(new BoxLayout(centerContentPanel, BoxLayout.Y_AXIS));
+
     JLabel instructionsLabel = new JLabel(
             "Complete the vehicle build after required components are available.");
     instructionsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    instructionsLabel.setBorder(new EmptyBorder(30, 20, 30, 20));
+    instructionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    instructionsLabel.setBorder(new EmptyBorder(30, 20, 15, 20));
+    centerContentPanel.add(instructionsLabel);
+
+    // GridBagLayout keeps the form fields perfectly centered and prevents them from stretching infinitely
+    JPanel formPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(6, 10, 6, 10); // Spacing between rows and columns
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    // --- MAKE ROW ---
+    JLabel makeLabel = new JLabel("Make:");
+    JTextField makeField = new JTextField(task.getMake(), 15);
+    makeField.setEditable(false); // Make false if it's read-only display data
+
+    gbc.gridx = 0; gbc.gridy = 0;
+    formPanel.add(makeLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 0;
+    formPanel.add(makeField, gbc);
+
+    // --- MODEL ROW ---
+    JLabel modelLabel = new JLabel("Model:");
+    JTextField modelField = new JTextField(task.getModel(), 15);
+    modelField.setEditable(false);
+
+    gbc.gridx = 0; gbc.gridy = 1;
+    formPanel.add(modelLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 1;
+    formPanel.add(modelField, gbc);
+
+    // --- VIN ROW ---
+    JLabel vinLabel = new JLabel("VIN:");
+    JTextField vinField = new JTextField(String.valueOf(task.getVIN()), 15);
+    vinField.setEditable(false);
+
+    gbc.gridx = 0; gbc.gridy = 2;
+    formPanel.add(vinLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 2;
+    formPanel.add(vinField, gbc);
+
+    // Wrap the form in a centered box alignment container
+    formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    formPanel.setBorder(new EmptyBorder(0, 0, 30, 0)); // Bottom padding below the whole form
+
+    centerContentPanel.add(formPanel);
 
     JButton completeBuildButton = new JButton("Complete Vehicle Build");
     completeBuildButton.addActionListener(event -> completeVehicleBuild());
@@ -169,9 +223,9 @@ for (SellVehicleTask salesTask : dealership.getSalesRecords()) {
 
     JOptionPane.showMessageDialog(
             this,
-            "Vehicle build completed. A delivery task was sent to "
-                    + "Manufacturer Logistics for "
-                    + dealership.getName() + ".");
+            "Vehicle build completed. A  task was sent to "
+                    + "Manufacturer Quality Insurance for Inspection."
+                    );
 
     workArea.remove(this);
     ((CardLayout) workArea.getLayout()).previous(workArea);

@@ -32,10 +32,11 @@ public class BuildCarTask extends WorkTask {
      * @param mk vehicle make
      * @param mdl vehicle model
      */
-    public BuildCarTask(User assigner, String mk, String mdl) {
+    public BuildCarTask(User assigner, String mk, String mdl,int vin) {
         super(assigner);
         this.make = mk;
         this.model = mdl;
+        this.VIN = vin;
         this.customOrder = null;
         this.result = "Pending";
         this.qaMessage = "";
@@ -58,6 +59,7 @@ public class BuildCarTask extends WorkTask {
         this.customOrder = order;
         this.make = order.getMake();
         this.model = order.getModel();
+        this.VIN = order.getVehicleVin();
         this.result = "Pending";
         this.qaMessage = "";
     }
@@ -82,6 +84,7 @@ public class BuildCarTask extends WorkTask {
     public String getModel() { return model; }
     public int getVIN() { return VIN; }
     public void setVIN(int VIN) { this.VIN = VIN; }
+    public String getTrim() {return customOrder.getTrim();}
     /**
      * Returns the custom order associated with this vehicle build.
      *
@@ -103,6 +106,6 @@ public class BuildCarTask extends WorkTask {
                     + customOrder.getVehicleDescription();
         }
 
-        return make + " " + model;
+        return make + " " + model+" "+customOrder.getTrim();
     }
 }
