@@ -8,16 +8,13 @@ import Business.Ecosystem.Ecosystem;
 import Business.Organization.ProductionOrganization;
 import Business.User.User;
 import Business.WorkTaskQueue.BuildCarTask;
-import Business.Ecosystem.Network;
-import Business.Enterprise.DealershipEnterprise;
-import Business.Enterprise.Enterprise;
-import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
-import Business.WorkTaskQueue.VehicleDeliveryTask;
+import Business.Organization.QualityAssuranceOrganization;
 import Business.WorkTaskQueue.SellVehicleTask;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 import Business.Roles.ProductionManager;
+import Business.WorkTaskQueue.InspectCarBuildTask;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -112,51 +109,28 @@ private void completeVehicleBuild() {
                 JOptionPane.INFORMATION_MESSAGE);
         return;
     }
-    LogisticsOrganization logisticsOrganization = null;
-    DealershipEnterprise dealership = null;
-
-    for (Network network : business.getNetworks()) {
-        for (Enterprise enterprise
-                : network.getEnterprises().getEnterprises()) {
-
-            if (enterprise instanceof DealershipEnterprise) {
-                dealership = (DealershipEnterprise) enterprise;
-            }
-
-            for (Organization org
-                    : enterprise.getOrganizations().getOrganizations()) {
-                if (org instanceof LogisticsOrganization) {
-                    logisticsOrganization = (LogisticsOrganization) org;
-                }
-            }
+    
+    QualityAssuranceOrganization qaorg = null;
+    for (Organization org : organization.getCompany().getOrganizations().getOrganizations()) {
+        if (org instanceof QualityAssuranceOrganization qa) {
+            qaorg = qa;
+            break;
         }
     }
+    
 
-    if (logisticsOrganization == null || dealership == null) {
+    if (qaorg == null) {
         JOptionPane.showMessageDialog(
                 this,
-                "Unable to locate Logistics or the Dealership destination.",
-                "Delivery Setup Error",
+                "QA Organization could not be found.",
+                "QA Unavailable",
                 JOptionPane.ERROR_MESSAGE);
         return;
     }
+    
+    InspectCarBuildTask inspect = new InspectCarBuildTask(user, task.getCustomOrder());
+    qaorg.getInTasks().pushTask(inspect);
 
-    VehicleDeliveryTask deliveryTask = new VehicleDeliveryTask(
-            user,
-            task.getCustomOrder(),
-            dealership);
-
-    logisticsOrganization.getInTasks().pushTask(deliveryTask);
-    organization.getOutTasks().pushTask(deliveryTask);
-// Update the matching dealership order when it enters Logistics transit.
-for (SellVehicleTask salesTask : dealership.getSalesRecords()) {
-    if (salesTask.getCustomOrder() != null
-            && salesTask.getCustomOrder().getOrderId().equals(
-                    task.getCustomOrder().getOrderId())) {
-        salesTask.markInTransit();
-        break;
-    }
-}
     task.Complete();
     organization.getInTasks().popTask(task);
     organization.getOutTasks().pushTask(task);
@@ -169,9 +143,8 @@ for (SellVehicleTask salesTask : dealership.getSalesRecords()) {
 
     JOptionPane.showMessageDialog(
             this,
-            "Vehicle build completed. A delivery task was sent to "
-                    + "Manufacturer Logistics for "
-                    + dealership.getName() + ".");
+            "Vehicle build completed. An inspection task was sent to "
+                    + "QA.");
 
     workArea.remove(this);
     ((CardLayout) workArea.getLayout()).previous(workArea);
