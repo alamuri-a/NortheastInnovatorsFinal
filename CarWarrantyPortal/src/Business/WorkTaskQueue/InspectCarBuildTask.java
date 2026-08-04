@@ -4,6 +4,7 @@
  */
 package Business.WorkTaskQueue;
 
+import Business.Enterprise.DealershipEnterprise;
 import Business.User.User;
 import Business.Vehicle.CustomVehicleOrder;
 
@@ -23,10 +24,12 @@ public class InspectCarBuildTask extends WorkTask {
 
     // Links the inspection task to the dealership's customer order.
     private CustomVehicleOrder customOrder;
+    private DealershipEnterprise destinationDealership;
 
-    // QA STRUCTURAL ATTRIBUTES
-    private String result;     // Tracks inspection choice: "Pass" or "Fail"
-    private String qaMessage;  // Form comment storage field for inspector notes
+    // CHANGED: Use OrderStatus enum instead of raw String "Pending"/"Pass"/"Fail"
+    private OrderStatus status;
+    private String qaMessage; // Form comment storage field for inspector notes
+
 
     /**
      * Creates a basic vehicle-inspection task for general Production workflows.
@@ -40,7 +43,7 @@ public class InspectCarBuildTask extends WorkTask {
         this.make = mk;
         this.model = mdl;
         this.customOrder = null;
-        this.result = "Pending";
+        this.status = OrderStatus.READY_FOR_PRODUCTION; // Safe default state before QA
         this.qaMessage = "";
     }
 
@@ -54,22 +57,28 @@ public class InspectCarBuildTask extends WorkTask {
         super(assigner);
         if (order == null) {
             throw new IllegalArgumentException(
-                "A custom vehicle order is required for quality inspection tracking.");
+                    "A custom vehicle order is required for quality inspection tracking.");
         }
         this.customOrder = order;
         this.make = order.getMake();
         this.model = order.getModel();
-        this.result = "Pending";
+
+        // Grab current order state, or fallback to standard workflow step
+        this.status = (order.getStatus() != null) ? order.getStatus() : OrderStatus.READY_FOR_PRODUCTION;
         this.qaMessage = "";
     }
 
-    // QA INTERFACE GETTERS & SETTERS
-    public String getResult() {
-        return result;
+    // CHANGED: Getters and setters refactored to support OrderStatus
+    public OrderStatus getStatus() {
+        return this.status;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+        // Automatically sync status change back up to the master custom order tracking block
+        if (this.customOrder != null) {
+            this.customOrder.setStatus(status);
+        }
     }
 
     public String getMessage() {
@@ -84,7 +93,13 @@ public class InspectCarBuildTask extends WorkTask {
     public String getModel() { return model; }
     public int getVIN() { return VIN; }
     public void setVIN(int VIN) { this.VIN = VIN; }
-     public String getTrim() {return customOrder.getTrim();}
+
+    public String getTrim() {
+        if (customOrder != null) {
+            return customOrder.getTrim();
+        }
+        return this.trim != null ? this.trim : ""; // Protects against null pointers
+    }
 
     /**
      * Returns the custom order associated with this vehicle inspection.
@@ -94,6 +109,10 @@ public class InspectCarBuildTask extends WorkTask {
     public CustomVehicleOrder getCustomOrder() {
         return customOrder;
     }
+// Inside InspectCarBuildTask.java
+            public DealershipEnterprise getDestinationDealership() {
+            return this.destinationDealership; // Ensure this attribute is initialized when task is built
+                }
 
     /**
      * Returns a readable QA queue label.
@@ -108,4 +127,3 @@ public class InspectCarBuildTask extends WorkTask {
         return "QA - " + make + " " + model;
     }
 }
-

@@ -4,6 +4,8 @@
  */
 package Business.Vehicle;
 
+import Business.WorkTaskQueue.OrderStatus;
+
 /**
  *
  * @author nicholaswoodward
@@ -33,6 +35,9 @@ public class CustomVehicleOrder {
     private final String manufacturerCountry;
     private final double totalPrice;
     private final double depositPaid;
+
+     // NEW: Enforced Enum tracking field
+    private OrderStatus status;
 /**
  * Creates a validated custom vehicle order.
  *
@@ -89,8 +94,17 @@ public class CustomVehicleOrder {
         this.manufacturerCountry = "Germany";
         this.totalPrice = totalPrice;
         this.depositPaid = depositPaid;
+        this.status = OrderStatus.DRAFT;
     }
 
+    // NEW: Enforced Status Getters & Setters
+    public OrderStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
     private void validateText(String value, String fieldName) {
         if (value == null || value.trim().isEmpty()) {
             throw new IllegalArgumentException(fieldName + " is required.");

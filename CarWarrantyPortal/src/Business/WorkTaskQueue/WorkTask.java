@@ -6,6 +6,7 @@ package Business.WorkTaskQueue;
 
 import Business.User.User;
 
+
 /**
  *
  * @author Ajay Alamuri
@@ -21,6 +22,8 @@ public abstract class WorkTask {
     private boolean completed;
     
     static int instances = 0;
+    private String part;
+    public Object getPartName;
 
     // CONSTRUCTORS
     public WorkTask(User aser) {
@@ -28,11 +31,12 @@ public abstract class WorkTask {
         this.completed = false;
         this.assigner = aser;
         this.assignee = null;
+
         
         aser.incrementTasksCreated();
     }
-    
     // METHODS
+   
     public int getID() {
         return this.id;
     }

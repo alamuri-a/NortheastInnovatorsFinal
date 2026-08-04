@@ -1,75 +1,60 @@
+package Business.WorkTaskQueue;
+
+
+import Business.User.User;
+import Business.Vehicle.CustomVehicleOrder;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Business.WorkTaskQueue;
-
-import Business.User.User;
-import Business.Vehicle.CustomVehicleOrder;
-/**
- *
- * @author Ajay Alamuri
- * @author Nicholas Woodward
- */
 public class BuildCarTask extends WorkTask {
 
-    // Basic vehicle data retained for existing Production work-queue behavior.
     private String make;
     private String model;
     private int VIN;
-
-    // Links a production task to the dealership's customer order.
     private CustomVehicleOrder customOrder;
 
-  // QA STRUCTURAL ATTRIBUTES
-    private String result;     // Tracks inspection choice: "Pass" or "Fail"
-    private String qaMessage;  // Form comment storage field for inspector notes
+    // CHANGED: Use OrderStatus enum instead of raw String "Pending"/"Pass"/"Fail"
+    private OrderStatus status;
+    private String qaMessage;
 
-    /**
-     * Creates a basic vehicle-build task for existing Production workflows.
-     *
-     * @param assigner user requesting production
-     * @param mk vehicle make
-     * @param mdl vehicle model
-     */
-    public BuildCarTask(User assigner, String mk, String mdl,int vin) {
+    public BuildCarTask(User assigner, String mk, String mdl, int vin) {
         super(assigner);
         this.make = mk;
         this.model = mdl;
         this.VIN = vin;
         this.customOrder = null;
-        this.result = "Pending";
+        this.status = OrderStatus.IN_PRODUCTION; // Initial default status
         this.qaMessage = "";
     }
 
-    /**
-     * Creates a production task linked to a validated dealership custom order.
-     *
-     * @param assigner Sales Representative requesting production
-     * @param order customer vehicle order to build
-     */
     public BuildCarTask(User assigner, CustomVehicleOrder order) {
         super(assigner);
-
         if (order == null) {
-            throw new IllegalArgumentException(
-                    "A custom vehicle order is required for production.");
+            throw new IllegalArgumentException("A custom vehicle order is required for production.");
         }
-
         this.customOrder = order;
         this.make = order.getMake();
         this.model = order.getModel();
         this.VIN = order.getVehicleVin();
-        this.result = "Pending";
+
+        // Grab existing status from order or default to production
+        this.status = (order.getStatus() != null) ? order.getStatus() : OrderStatus.IN_PRODUCTION;
         this.qaMessage = "";
     }
-    // QA INTERFACE GETTERS & SETTERS
-    public String getResult() {
-        return result;
+
+    // CHANGED: Updated getters/setters to enforce OrderStatus enum
+    public OrderStatus getStatus() {
+        return this.status;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+        // Keep the main customer order synchronized
+        if (this.customOrder != null) {
+            this.customOrder.setStatus(status);
+        }
     }
 
     public String getMessage() {
@@ -84,28 +69,23 @@ public class BuildCarTask extends WorkTask {
     public String getModel() { return model; }
     public int getVIN() { return VIN; }
     public void setVIN(int VIN) { this.VIN = VIN; }
-    public String getTrim() {return customOrder.getTrim();}
-    /**
-     * Returns the custom order associated with this vehicle build.
-     *
-     * @return customer order, or null for older general build tasks
-     */
+
+    public String getTrim() {
+        if (customOrder != null) {
+            return customOrder.getTrim();
+        }
+        return ""; // Safe fallback if no custom order
+    }
+
     public CustomVehicleOrder getCustomOrder() {
         return customOrder;
     }
 
-    /**
-     * Returns a readable Production queue label.
-     *
-     * @return linked order ID and vehicle, or the basic vehicle description
-     */
     @Override
     public String toString() {
         if (customOrder != null) {
-            return customOrder.getOrderId() + " - "
-                    + customOrder.getVehicleDescription();
+            return customOrder.getOrderId() + " - " + customOrder.getVehicleDescription();
         }
-
-        return make + " " + model+" "+customOrder.getTrim();
+        return make + " " + model + " " + getTrim();
     }
 }

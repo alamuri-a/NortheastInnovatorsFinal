@@ -15,37 +15,33 @@ import Business.Vehicle.Part;
 public class InspectPartTask extends WorkTask {
     // ATTRIBUTES
     private Part part;
+    private OrderStatus result; // UPDATED: Changed from String to OrderStatus enum
+    private String qaMessage;
 
-    private String result;    // Tracks inspector decision: "Pass" or "Fail"
-    private String qaMessage; // Form comment storage field for inspector notes
     // CONSTRUCTORS
     public InspectPartTask(User assigner, Part pt) {
-        super(assigner);      // Calls parent constructor (sets unique ID, completes = false)
+        super(assigner);
         this.part = pt;
-        this.result = "Pending";
+        this.result = OrderStatus.PENDING; // UPDATED: Initialized with Enum constant instead of "Pending"
         this.qaMessage = "";
     }
 
     // METHODS
-
     /**
      * Deny shipping of part due to defects
      *
      * @return True if part is not working, False if part is working
      */
-   
     public boolean deny() {
-        // Leverages your Part class's intrinsic operational health status
         if (part != null && !part.isWorking()) {
             return true;
         }
-        // Also denies if explicitly failed by the inspector during audit
-        return "Fail".equalsIgnoreCase(this.result);
+        // UPDATED: Direct comparison with the enum type instead of .equalsIgnoreCase()
+        return this.result == OrderStatus.QA_FAILED || this.result == OrderStatus.QA_FAILED;
     }
 
     // UI FRAMEWORK BRIDGES (Maps your specific variables to Panel fields)
     public String getStatus() {
-        // Formulates a user-friendly string from your parent's boolean 'completed' flag
         return isCompleted() ? "Processed" : "Pending QA Review";
     }
 
@@ -64,13 +60,28 @@ public class InspectPartTask extends WorkTask {
 
     public String getPartTestingStatus() {
         if (part == null) return "N/A";
-        // Provides a clear descriptive string based on the part's native operational health
         return part.isWorking() ? "STATUS: Functional" : "STATUS: Defective";
     }
 
     // GETTERS & SETTERS
-    public Part getPart() { return part; }
-    public void setPart(Part part) { this.part = part; }
-    public String getResult() { return result; }
-    public void setResult(String result) { this.result = result; }
+    public Part getPart() {
+        return part;
+    }
+
+    public void setPart(Part part) {
+        this.part = part;
+    }
+
+    public OrderStatus getResult() { // UPDATED: Return type changed to OrderStatus
+        return result;
+    }
+
+    public void setResult(OrderStatus result) { // UPDATED: Now matches your requested signature
+        this.result = result;
+    }
+
+    @Override
+    public String toString(){
+        return (part != null) ? "Part Number " + part.getId() : "Unknown Part";
+    }
 }

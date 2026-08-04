@@ -69,13 +69,13 @@ public class QARequestQueue extends javax.swing.JPanel {
 
         tblTasks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "ID", "Task", "Assigned By", "Assigned To", "Status"
+                "ID", "Assigned By", "Assigned To", "Status"
             }
         ));
         jScrollPane1.setViewportView(tblTasks);
@@ -164,21 +164,22 @@ int selectedRow = tblTasks.getSelectedRow();
     private javax.swing.JTable tblTasks;
     // End of variables declaration//GEN-END:variables
 
-    public void refreshTable() {
-        DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
-        model.setRowCount(0);
+public void refreshTable() {
+    DefaultTableModel model = (DefaultTableModel) tblTasks.getModel();
+    model.setRowCount(0); // Clear table data
 
-        // Grabs remaining active and unassigned work lines
-        for (WorkTask task : this.organization.getInTasks().getTasks()) {
-             if (!task.isCompleted()) {
-            Object[] row = new Object[5];
-            row[0] = task; // Keeps object baseline for the row select action
-            row[1] = task.getClass().getSimpleName();
-            row[2] = task.getAssigner();
-            row[3] = task.getAssignee() == null ? null : task.getAssignee();
-            row[4] = task.getAssignee() == null ? "Waiting" : "In Progress";
+    // Grabs remaining active and unassigned work lines
+    for (WorkTask task : this.organization.getInTasks().getTasks()) {
+        if (!task.isCompleted()) {
+            Object[] row = new Object[4];
+
+            row[0] = task;               // Column 1: ID / Task Object reference
+            row[1] = task.getAssigner(); // Column 3: Assigned By (Production Manager)
+            row[2] = task.getAssignee() == null ? "Unassigned" : task.getAssignee(); // Column 4: Assigned To
+            row[3] = task.getAssignee() == null ? "Waiting" : "In Progress";         // Column 5: Status
+
             model.addRow(row);
         }
     }
-    }
+}
 }

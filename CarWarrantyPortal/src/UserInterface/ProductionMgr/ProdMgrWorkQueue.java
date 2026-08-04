@@ -69,13 +69,13 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
 
         tblTasks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "ID", "Task", "Assigned By", "Assigned To", "Status"
+                "ID", "Assigned By", "Assigned To", "Status"
             }
         ));
         jScrollPane1.setViewportView(tblTasks);
@@ -136,12 +136,11 @@ public class ProdMgrWorkQueue extends javax.swing.JPanel {
         model.setRowCount(0);
 
         for (WorkTask task : this.organization.getInTasks().getTasks()) {
-            Object[] row = new Object[5];
+            Object[] row = new Object[4];
             row[0] = task;
-            row[1] = task.getClass().getSimpleName();
-            row[2] = task.getAssigner();
-            row[3] = task.getAssignee() == null ? null : task.getAssignee();
-            row[4] = task.getAssignee() == null ? "Waiting" : "In Progress";
+            row[1] = task.getAssigner();
+            row[2] = task.getAssignee() == null ? null : task.getAssignee();
+            row[3] = task.getAssignee() == null ? "Waiting" : "In Progress";
 
             model.addRow(row);
         }
