@@ -5,23 +5,23 @@
 package UserInterface.ProductionMgr;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Organization.ProductionOrganization;
-import Business.User.User;
-import Business.WorkTaskQueue.BuildPartTask;
-import java.awt.CardLayout;
-import javax.swing.JPanel;
 import Business.Ecosystem.Network;
 import Business.Enterprise.Enterprise;
 import Business.Organization.LogisticsOrganization;
 import Business.Organization.Organization;
+import Business.Organization.ProductionOrganization;
 import Business.Roles.ProductionManager;
+import Business.User.User;
+import Business.WorkTaskQueue.BuildPartTask;
 import Business.WorkTaskQueue.ProcessShipmentTask;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 /**
@@ -74,7 +74,7 @@ private void buildPartProductionScreen() {
     headerPanel.add(partLabel, BorderLayout.SOUTH);
 
     JLabel instructionsLabel = new JLabel(
-            "Complete the part build to send the component to Supplier Logistics.");
+            "Complete the part build to send the component to Quality Assurance Inspection.");
     instructionsLabel.setHorizontalAlignment(SwingConstants.CENTER);
     instructionsLabel.setBorder(new EmptyBorder(30, 20, 30, 20));
 
@@ -138,8 +138,8 @@ private void completePartBuild() {
 
         JOptionPane.showMessageDialog(
                 this,
-                "Component build completed and sent to "
-                + logisticsOrganization.getName() + ".");
+                "Component build completed and sent to Quality Assurance for Inspection "
+               );
 
         workArea.remove(this);
         ((CardLayout) workArea.getLayout()).previous(workArea);

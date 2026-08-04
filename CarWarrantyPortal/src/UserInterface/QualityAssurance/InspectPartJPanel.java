@@ -60,7 +60,7 @@ public class InspectPartJPanel extends javax.swing.JPanel {
         if (task != null) {
             // Using your exact requested mapping signatures
             txtPartName.setText(task.getPartName());
-            txtPartSerial.setText(task.getPartSerialNumber());
+            txtPartSerial.setText(task.getPartTestingStatus());
             txtComments.setText(task.getMessage()); // Inherited from WorkTask
 
             txtPartName.setEditable(false);
