@@ -5,19 +5,9 @@
 package UserInterface.QualityAssurance;
 
 import Business.Ecosystem.Ecosystem;
-import Business.Ecosystem.Network;
-import Business.Enterprise.DealershipEnterprise;
-import Business.Enterprise.Enterprise;
-import Business.Enterprise.EnterpriseDirectory;
-import Business.Organization.Organization;
-import Business.Organization.ProductionOrganization;
 import Business.Organization.QualityAssuranceOrganization;
-import Business.Organization.SalesOrganization;
 import Business.User.User;
-import Business.Vehicle.CustomVehicleOrder;
 import Business.WorkTaskQueue.InspectCarBuildTask;
-import Business.WorkTaskQueue.OrderStatus;
-import Business.WorkTaskQueue.VehicleDeliveryTask;
 import java.awt.CardLayout;
 import java.awt.Component;
 import javax.swing.JOptionPane;
@@ -33,7 +23,6 @@ public class InspectNewCarBuildJPanel extends javax.swing.JPanel {
         User user;
         Ecosystem business;
         InspectCarBuildTask task;
-        private  DealershipEnterprise destinationDealership;
     /**
      * Creates new form InspectPartJPanel
      */
@@ -46,34 +35,38 @@ public class InspectNewCarBuildJPanel extends javax.swing.JPanel {
         initComponents();
         lblTitle.setText(this.organization.getName() + "- Inspect Car Build");
          populateVehicleDetails();
-        this.destinationDealership = destinationDealership;
     }
     /**
      * Populates vehicle metrics into the Swing fields and enforces screen read-only locks
      */
-  private void populateVehicleDetails() {
-        if (task != null) {
-            txtCarId.setText(String.valueOf(task.getVIN()));
+private void populateVehicleDetails() {
+    if (task != null) {
+        // Fix 1: Handle String conversion for VIN safely
+        txtCarId.setText(String.valueOf(task.getVIN()));
 
-            if (task.getCustomOrder() != null) {
-                txtCarDetails.setText(task.getCustomOrder().getVehicleDescription());
-            } else {
-                txtCarDetails.setText(task.getMake() + " " + task.getModel() + " " + task.getTrim());
-            }
+        // Fix 2: Add spacing and fall back cleanly if customOrder or direct fields are populated
+        if (task.getCustomOrder() != null) {
+            txtCarDetails.setText(task.getCustomOrder().getVehicleDescription());
+        } else {
+            // Adds a clean space between make and model strings
+            txtCarDetails.setText(task.getMake() + " " + task.getModel()+" " +task.getTrim());
+        }
 
-            txtComments.setText(task.getMessage() == null ? "" : task.getMessage());
+        // Fix 3: Handle comments null-pointer guard safely
+        txtComments.setText(task.getMessage() == null ? "" : task.getMessage());
 
-            txtCarId.setEditable(false);
-            txtCarDetails.setEditable(false);
+        // Enforce component locks
+        txtCarId.setEditable(false);
+        txtCarDetails.setEditable(false);
 
-            // Lock controls if the task is complete OR has already passed/failed QA
-            if (task.isCompleted() || task.getStatus() == OrderStatus.QA_PASSED || task.getStatus() == OrderStatus.QA_FAILED) {
-                btnApprove.setEnabled(false);
-                btnReject.setEnabled(false);
-                txtComments.setEditable(false);
-            }
+        // Check if task is already processed using your parent WorkTask boolean state flag
+        if (task.isCompleted()) {
+            btnApprove.setEnabled(false);
+            btnReject.setEnabled(false);
+            txtComments.setEditable(false);
         }
     }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -194,77 +187,21 @@ public class InspectNewCarBuildJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-     if (!(task instanceof Business.WorkTaskQueue.InspectCarBuildTask)) {
-            JOptionPane.showMessageDialog(this, "Invalid task type for vehicle build approval.", "System Error", JOptionPane.ERROR_MESSAGE);
-            return;
+                   task.setResult("Pass");
+        task.setMessage(txtComments.getText().trim());
+        task.setAssignee(user);
+        task.Complete(); // Flips parent completed flag to true
+
+        // Clear user role lock status slot so they can grab new tasks
+        if (user.getRole() instanceof Business.Roles.QualityInspector) {
+            ((Business.Roles.QualityInspector) user.getRole()).setCurrentTask(null);
         }
 
-        Business.WorkTaskQueue.InspectCarBuildTask carBuildTask = (Business.WorkTaskQueue.InspectCarBuildTask) task;
+        JOptionPane.showMessageDialog(this, "Vehicle assembly APPROVED and cleared for Delivery!", "Audit Cleared", JOptionPane.INFORMATION_MESSAGE);
+        goBack();
+    
 
-        // 1. Find the Sales Organization safely
-        SalesOrganization salesOrganization = findSalesOrganization();
-        if (salesOrganization == null) {
-            JOptionPane.showMessageDialog(this, "Sales Organization could not be found.", "Sales Unavailable", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
 
-        try {
-            CustomVehicleOrder customOrder = carBuildTask.getCustomOrder();
-            if (customOrder == null) {
-                JOptionPane.showMessageDialog(this, "No valid custom order is associated with this vehicle build task.", "Data Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
- // 2. HARDCODED OBJECT LOOKUP: Locate the specific DealershipEnterprise reference
-            DealershipEnterprise destinationDealership = null;
-
-            // Loop through all enterprises in the system directory
-            // (Note: Change 'business' to your exact EcoSystem variable name if needed, e.g., 'system' or 'ecoSystem')
-            for (Network net : business.getNetworks()) {
-            EnterpriseDirectory ed = net.getEnterprises();
-            if (ed.findEnterprise(organization.getCompany().getID()) != null) {
-                for (DealershipEnterprise de : ed.getDealerships())
-
-                    if (destinationDealership != null) break;
-                }
-            }
-
-            // 3. Verify that the enterprise reference was found in memory
-            if (destinationDealership == null) {
-                JOptionPane.showMessageDialog(this, "The hardcoded Dealership Enterprise could not be found in the system registry.", "Routing Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // 3. Verify that the enterprise reference was successfully resolved
-            if (destinationDealership == null) {
-                JOptionPane.showMessageDialog(this, "The target destination dealership could not be resolved from the system directory.", "Routing Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // 4. Create the new vehicle delivery task inside the Sales inbound queue
-            VehicleDeliveryTask delivery = salesOrganization.getInTasks().createVehicleDeliveryTask(user, customOrder, destinationDealership);
-
-            // 5. Update and complete the current vehicle build inspection task
-            carBuildTask.setStatus(OrderStatus.QA_PASSED);
-            carBuildTask.setMessage(txtComments.getText().trim());
-            carBuildTask.setAssignee(user);
-            carBuildTask.Complete();
-
-            // 6. Move the original task out of your current inbound queue
-            organization.getInTasks().popTask(carBuildTask);
-            organization.getOutTasks().pushTask(carBuildTask);
-
-            // 7. Clear user workspace slot
-            if (user != null && user.getRole() instanceof Business.Roles.QualityInspector) {
-                ((Business.Roles.QualityInspector) user.getRole()).setCurrentTask(null);
-            }
-
-            JOptionPane.showMessageDialog(this, "Vehicle assembly APPROVED and cleared for Delivery!", "Audit Cleared", JOptionPane.INFORMATION_MESSAGE);
-            goBack();
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error routing vehicle to Sales: " + e.getMessage(), "Routing Error", JOptionPane.ERROR_MESSAGE);
-            goBack();
-        }
     }//GEN-LAST:event_btnApproveActionPerformed
 
     private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
@@ -273,11 +210,10 @@ public class InspectNewCarBuildJPanel extends javax.swing.JPanel {
             return;
         }
 
-        // CHANGED: Applying global Enum instead of raw string "Fail"
-        task.setStatus(OrderStatus.QA_FAILED);
+        task.setResult("Fail");
         task.setMessage(txtComments.getText().trim());
         task.setAssignee(user);
-        task.Complete();
+        task.Complete(); // Flips parent completed flag to true
 
         if (user.getRole() instanceof Business.Roles.QualityInspector) {
             ((Business.Roles.QualityInspector) user.getRole()).setCurrentTask(null);
@@ -285,7 +221,6 @@ public class InspectNewCarBuildJPanel extends javax.swing.JPanel {
 
         JOptionPane.showMessageDialog(this, "Vehicle FAILED audit metrics. Routed back to work floor modifications.", "Audit Rejection", JOptionPane.WARNING_MESSAGE);
         goBack();
-    
     }//GEN-LAST:event_btnRejectActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -318,41 +253,12 @@ public class InspectNewCarBuildJPanel extends javax.swing.JPanel {
             // Triggers a table refresh depending on which dashboard queue you backed out of
             if (previousComponent instanceof UserInterface.QualityAssurance.QARequestQueue) {
                 ((UserInterface.QualityAssurance.QARequestQueue) previousComponent).refreshTable();
-       
+            } else if (previousComponent instanceof UserInterface.QualityAssurance.QADoneQueue) {
+                ((UserInterface.QualityAssurance.QADoneQueue) previousComponent).refreshCompletedTable();
             }
         }
         
         CardLayout layout = (CardLayout) workArea.getLayout();
         layout.previous(workArea);
-    }
-       private SalesOrganization findSalesOrganization() {
-        for (Network network : business.getNetworks()) {
-            for (Enterprise enterprise
-                    : network.getEnterprises().getEnterprises()) {
-                for (Organization organization
-                        : enterprise.getOrganizations().getOrganizations()) {
-                    if (organization instanceof SalesOrganization) {
-                        return (SalesOrganization) organization;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-    private ProductionOrganization findProductionOrganization() {
-        for (Network network : business.getNetworks()) {
-            for (Enterprise enterprise
-                    : network.getEnterprises().getEnterprises()) {
-                for (Organization organization
-                        : enterprise.getOrganizations().getOrganizations()) {
-                    if (organization instanceof ProductionOrganization) {
-                        return (ProductionOrganization) organization;
-                    }
-                }
-            }
-        }
-
-        return null;
     }
 }

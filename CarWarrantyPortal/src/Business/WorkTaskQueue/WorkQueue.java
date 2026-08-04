@@ -311,22 +311,4 @@ public class WorkQueue {
         }
         throw new Exception("Sell Vehicle task can only be created for Sales organizations.");
     }
-
- public VehicleDeliveryTask createVehicleDeliveryTask(User user, CustomVehicleOrder customOrder, DealershipEnterprise destinationDealership) throws Exception {
-    // 1. Check if the context organization is a Sales Organization
-    if (this.organization instanceof SalesOrganization) {
-
-        // 2. Instantiate using the exact parameters requested by the constructor
-        VehicleDeliveryTask newTask = new VehicleDeliveryTask(user, customOrder, destinationDealership);
-
-        // 3. Add to your InTasks/OutTasks standard arraylist tracking structure
-        this.tasks.add(newTask);
-        return newTask;
-    }
-
-    // 4. Throw explicit exception for cross-enterprise safety boundaries
-    throw new Exception("Vehicle Delivery tasks can only be initiated by Sales organizations.");
-}
-
-
 }

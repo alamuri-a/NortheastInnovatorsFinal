@@ -14,6 +14,7 @@ import Business.WorkTaskQueue.InspectPartTask;
 import Business.WorkTaskQueue.WorkTask;
 import UserInterface.QualityAssurance.InspectNewCarBuildJPanel;
 import UserInterface.QualityAssurance.InspectPartJPanel;
+import UserInterface.QualityAssurance.QADoneQueue;
 import UserInterface.QualityAssurance.QAProfile;
 import UserInterface.QualityAssurance.QARequestQueue;
 import java.awt.CardLayout;
@@ -54,6 +55,7 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         btnMyRequest = new javax.swing.JButton();
+        btnClosedRequests = new javax.swing.JButton();
         btnMyProfile = new javax.swing.JButton();
         lblWelcome = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
@@ -68,7 +70,15 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
                 btnMyRequestActionPerformed(evt);
             }
         });
-        add(btnMyRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 140, 160, 70));
+        add(btnMyRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 110, 160, 70));
+
+        btnClosedRequests.setText("Actioned Requests");
+        btnClosedRequests.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClosedRequestsActionPerformed(evt);
+            }
+        });
+        add(btnClosedRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 240, 160, 70));
 
         btnMyProfile.setText("My Profile");
         btnMyProfile.addActionListener(new java.awt.event.ActionListener() {
@@ -76,7 +86,7 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
                 btnMyProfileActionPerformed(evt);
             }
         });
-        add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 280, 160, 70));
+        add(btnMyProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 240, 160, 70));
 
         lblWelcome.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblWelcome.setText("Welcome <User>");
@@ -94,7 +104,7 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
                 btnQueue1ActionPerformed(evt);
             }
         });
-        add(btnQueue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 140, 160, 70));
+        add(btnQueue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 110, 160, 70));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMyRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyRequestActionPerformed
@@ -115,6 +125,17 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnMyRequestActionPerformed
 
+    private void btnClosedRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosedRequestsActionPerformed
+        QADoneQueue doneQueuePanel = new QADoneQueue(workArea, user, organization, business);
+        workArea.add("QADoneQueuePanel", doneQueuePanel);
+
+        // FORCE THE INSTANCE TO RE-READ THE SHARED ARRAY DATA BEFORE DISPLAY
+        doneQueuePanel.refreshCompletedTable();
+
+        CardLayout layout = (CardLayout) workArea.getLayout();
+        layout.next(workArea);
+    }//GEN-LAST:event_btnClosedRequestsActionPerformed
+
     private void btnMyProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyProfileActionPerformed
         QAProfile pmp = new QAProfile(workArea, user, organization, business);
         this.workArea.add(pmp, "ProdMgrWorkQueue");
@@ -131,6 +152,7 @@ public class QualityInspectorWorkAreaJPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClosedRequests;
     private javax.swing.JButton btnMyProfile;
     private javax.swing.JButton btnMyRequest;
     private javax.swing.JButton btnQueue1;

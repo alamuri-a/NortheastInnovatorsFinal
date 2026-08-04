@@ -147,7 +147,7 @@ private void buildProductionOrderScreen() {
     buttonPanel.add(completeBuildButton);
 
     add(headerPanel, BorderLayout.NORTH);
-    add(centerContentPanel, BorderLayout.CENTER);
+    add(instructionsLabel, BorderLayout.CENTER);
     add(buttonPanel, BorderLayout.SOUTH);
 
     revalidate();
@@ -224,7 +224,7 @@ for (SellVehicleTask salesTask : dealership.getSalesRecords()) {
     JOptionPane.showMessageDialog(
             this,
             "Vehicle build completed. A  task was sent to "
-                    + "Manufacturer Quality Insurance Inspection."
+                    + "Manufacturer Quality Insurance for Inspection."
                     );
 
     workArea.remove(this);
