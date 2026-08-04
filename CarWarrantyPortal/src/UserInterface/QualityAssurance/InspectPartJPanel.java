@@ -5,9 +5,15 @@
 package UserInterface.QualityAssurance;
 
 import Business.Ecosystem.Ecosystem;
+import Business.Ecosystem.Network;
+import Business.Enterprise.DealershipEnterprise;
+import Business.Enterprise.Enterprise;
+import Business.Organization.LogisticsOrganization;
+import Business.Organization.Organization;
 import Business.Organization.QualityAssuranceOrganization;
 import Business.User.User;
 import Business.WorkTaskQueue.InspectPartTask;
+import Business.WorkTaskQueue.ProcessShipmentTask;
 import java.awt.CardLayout;
 import java.awt.Component;
 import javax.swing.JOptionPane;
@@ -232,8 +238,40 @@ public class InspectPartJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRejectActionPerformed
 
     private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-       // 1. Commit data updates to the task wrapper
-      task.setResult("Pass");
+        // 1. Commit data updates to the task wrapper
+        
+        LogisticsOrganization logisticsOrganization = null;
+        DealershipEnterprise dealership = null;
+
+        for (Network network : business.getNetworks()) {
+            Enterprise ent = network.getEnterprises().findEnterprise(organization.getCompany().getID());
+            if (ent != null) {
+                for (Enterprise enterprise : network.getEnterprises().getEnterprises()) {
+                    if (enterprise instanceof DealershipEnterprise) {
+                        dealership = (DealershipEnterprise) enterprise;
+                    }
+                    for (Organization org : enterprise.getOrganizations().getOrganizations()) {
+                        if (org instanceof LogisticsOrganization) {
+                            logisticsOrganization = (LogisticsOrganization) org;
+                        }
+                    }
+                } 
+            }
+        }
+        
+        if (logisticsOrganization == null || dealership == null) {
+            JOptionPane.showMessageDialog(this, "Could not find Logistics organization or Dealership.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            ProcessShipmentTask pstask = logisticsOrganization.getInTasks().createProcessShipmentTask(user, task.getPart());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Failed to create delivery task, please retry.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        task.setResult("Pass");
         task.setMessage(txtComments.getText().trim());
         task.setAssignee(user);
         task.Complete(); // This flips the completed flag to true inside your shared WorkTask class
@@ -243,7 +281,7 @@ public class InspectPartJPanel extends javax.swing.JPanel {
             ((Business.Roles.QualityInspector) user.getRole()).setCurrentTask(null);
         }
 
-        JOptionPane.showMessageDialog(this, "Component verified and marked as APPROVED.", "Inspection Saved", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Component verified and marked as APPROVED, shipment sent to Logistics.", "Inspection Saved", JOptionPane.INFORMATION_MESSAGE);
         goBack();
    
     }//GEN-LAST:event_btnApproveActionPerformed
@@ -291,5 +329,4 @@ public class InspectPartJPanel extends javax.swing.JPanel {
         CardLayout layout = (CardLayout) workArea.getLayout();
         layout.previous(workArea);
     }
-
 }
